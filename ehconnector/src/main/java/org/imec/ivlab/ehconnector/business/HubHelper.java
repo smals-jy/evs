@@ -448,12 +448,15 @@ public class HubHelper {
         person.setUsuallanguage("fr");
 
         DateType dateType = new DateType();
+        dateType.setDate(new DateTime(1991, 12, 12, 0, 0));
+        // Previously in EVS 
+        /*
         try {
             LocalDate localDate = LocalDate.of(1991, 12, 12);
             dateType.setDate(DateUtils.toXmlGregorianCalendar(localDate));
         } catch (DatatypeConfigurationException e) {
             e.printStackTrace();
-        }
+        }*/
         person.setBirthdate(dateType);
 
         Nationality nationality = new Nationality();
