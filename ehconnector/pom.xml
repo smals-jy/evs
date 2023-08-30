@@ -71,347 +71,347 @@
             <version>0.6.6</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-addressbook</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-chapter4</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-civicsv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-common</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-consultrn</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-dicsv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-dicsv4</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-dmg</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-ehboxdomainmodel</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-ehboxv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-genericasync</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-genins</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-geninsasync</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahub</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahubcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahubv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-kmehrcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mediprima</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mediprimauma</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mycarenetattest</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mycarenetattestv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mycarenetcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mycarenetdomaincommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-mycarenetmemberdata</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-registration</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-ssinhistory</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-tarification</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-therlink</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-wsconsent</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-base</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-bootstrap</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-core</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-jca</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-ra</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-signature</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-smartcardio</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-addressbook</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-bcp</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-chapter4</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-civicsv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-codage</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-common</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-consultrn</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-core</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-dicsv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-dicsv4</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-ehboxv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-etee</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-external</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-genericasync</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-genins</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetmemberdatasync</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-gmfv1</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-hubservicesv1</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-hubservicesv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-hubservicesv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-idsupport</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mediprima</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mediprimauma</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-memberdata</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-messageservices</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetattest</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetattestv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetcommonsv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenetregistration</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-mycarenettarification</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-ssinhistory</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-timestamping</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
@@ -426,17 +426,17 @@
             <version>5.5.1</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>ehcache</artifactId>
             <version>3.4.0</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>cache-api</artifactId>
             <version>1.1.0</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>etee-crypto-lib</artifactId>
             <version>2.3.0</version>
         </dependency>
@@ -476,7 +476,7 @@
             <version>2.16.0</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>pkcs11</artifactId>
             <version>1.0</version>
         </dependency>
@@ -543,7 +543,7 @@
             <version>2.6.9</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-testcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>

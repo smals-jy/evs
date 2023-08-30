@@ -38,18 +38,18 @@
         </dependency>
 
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-base</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-bootstrap</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>be.ehealth.connector</groupId>
+            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-core</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
