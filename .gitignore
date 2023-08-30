@@ -114,4 +114,4 @@ messages/
 *.pdf
 
 # Locale maven repo
-local-maven-repo
+local-maven-repo/be
