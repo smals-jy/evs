@@ -59,6 +59,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HeaderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
+import be.fgov.ehealth.standards.kmehr.schema.v1.Nationality;
 import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RecipientType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.SenderType;
@@ -262,9 +263,13 @@ public class HubHelper {
 
         header.setStandard(standard);
         header.getIds().add(createMessageId(SessionUtil.getNihii11() + "." + IdGeneratorFactory.getIdGenerator().generateId()));
-        LocalDate now = LocalDate.now();
-        header.setDate(DateUtils.toXmlGregorianCalendar(now));
-        header.setTime(DateUtils.toXmlGregorianCalendar(now));
+        DateTime now = DateTime.now();
+        header.setDate(now);
+        header.setTime(now);
+        // Previously in EVS : 
+        // LocalDate now = LocalDate.now();
+        // header.setDate(DateUtils.toXmlGregorianCalendar(now));
+        // header.setTime(DateUtils.toXmlGregorianCalendar(now));
         header.getRecipients().add(createHubRecipient());
         header.setSender(createSender());
         return header;
@@ -437,19 +442,21 @@ public class HubHelper {
         PersonType person = new PersonType();
         person.getFirstnames().add(testPatient.getFirstName());
         person.setFamilyname(testPatient.getLastName());
-        person.setRecorddatetime(DateUtils.getCalendar());
+        person.setRecorddatetime(DateTime.now());
+        // Previously in EVS : 
+        //person.setRecorddatetime(DateUtils.getCalendar());
         person.setUsuallanguage("fr");
 
         DateType dateType = new DateType();
-        LocalDate localDate = LocalDate.of(1991, 12, 12);
         try {
+            LocalDate localDate = LocalDate.of(1991, 12, 12);
             dateType.setDate(DateUtils.toXmlGregorianCalendar(localDate));
         } catch (DatatypeConfigurationException e) {
             e.printStackTrace();
         }
         person.setBirthdate(dateType);
 
-        PersonType.Nationality nationality = new PersonType.Nationality();
+        Nationality nationality = new Nationality();
         CDCOUNTRY cdCountry = new CDCOUNTRY();
         cdCountry.setS(CDCOUNTRYschemes.CD_FED_COUNTRY);
         cdCountry.setSV("1.0");

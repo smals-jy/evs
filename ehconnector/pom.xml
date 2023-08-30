@@ -419,7 +419,7 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.9.7</version>
+            <version>2.12.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -503,11 +503,12 @@
             <artifactId>ognl</artifactId>
             <version>2.6.9</version>
         </dependency>
-        <dependency>
+        <!-- This eHealth dependency breaks the build  -->
+        <!-- <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-testcommons</artifactId>
             <version>${ehealth.connector.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
