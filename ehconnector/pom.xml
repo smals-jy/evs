@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-business-consultrn</artifactId>
+            <artifactId>connector-business-consultrnv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
@@ -243,11 +243,6 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-technical-smartcardio</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-addressbook</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
@@ -278,7 +273,7 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-utilities-consultrn</artifactId>
+            <artifactId>connector-utilities-consultrnv2</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
@@ -420,21 +415,6 @@
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>cache-api</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>etee-crypto-lib</artifactId>
-            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
