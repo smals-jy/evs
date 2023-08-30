@@ -624,31 +624,6 @@
 
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>eHealth</id>
-            <name>eHealth</name>
-            <url>https://repo.ehealth.fgov.be/artifactory/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-              </releases>
-              <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>e-Contract.be</id>
-            <url>https://www.e-contract.be/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
     <!-- https://www.e-contract.be/sites/commons-eid/ -->
     <dependencyManagement>
         <dependencies>

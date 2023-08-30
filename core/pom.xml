@@ -126,22 +126,5 @@
             <url>https://repo.ehealth.fgov.be/artifactory/maven2/</url>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>eHealth</id>
-            <name>eHealth</name>
-            <url>https://repo.ehealth.fgov.be/artifactory/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-              </releases>
-              <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
