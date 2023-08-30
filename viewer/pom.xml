@@ -29,8 +29,8 @@
             <version>5.5.13.3</version>
             <!-- TODO You have to use your own version of itextpdf for local builds -->
             <!-- Uncomment these lines so it work on local -->
-            <!-- <scope>system</scope> -->
-            <!-- <systemPath>${basedir}/lib/itextpdf-5.5.13.3.jar</systemPath> -->
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/itextpdf-5.5.13.3.jar</systemPath>
         </dependency>
 
     </dependencies>
