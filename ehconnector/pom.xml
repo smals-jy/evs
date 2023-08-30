@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <ehealth.connector.version>3.24.0</ehealth.connector.version>
+        <ehealth.connector.version>4.3.0</ehealth.connector.version>
     </properties>
     <parent>
         <artifactId>super</artifactId>
@@ -53,22 +53,18 @@
         <dependency>
             <groupId>be.fedict.commons-eid</groupId>
             <artifactId>commons-eid-client</artifactId>
-            <version>0.6.6</version>
         </dependency>
         <dependency>
             <groupId>be.fedict.commons-eid</groupId>
             <artifactId>commons-eid-consumer</artifactId>
-            <version>0.6.6</version>
         </dependency>
         <dependency>
             <groupId>be.fedict.commons-eid</groupId>
             <artifactId>commons-eid-dialogs</artifactId>
-            <version>0.6.6</version>
         </dependency>
         <dependency>
             <groupId>be.fedict.commons-eid</groupId>
             <artifactId>commons-eid-jca</artifactId>
-            <version>0.6.6</version>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
@@ -643,6 +639,13 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>ignore</checksumPolicy>
             </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>e-Contract.be</id>
+            <url>https://www.e-contract.be/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
 
