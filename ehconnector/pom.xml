@@ -623,7 +623,7 @@
         <repository>
             <id>eHealth</id>
             <name>eHealth</name>
-            <url>https://repo.ehealth.fgov.be/artifactory/maven2</url>
+            <url>https://repo.ehealth.fgov.be/artifactory/maven2/</url>
         </repository>
 
     </repositories>
@@ -632,7 +632,7 @@
         <pluginRepository>
             <id>eHealth</id>
             <name>eHealth</name>
-            <url>https://repo.ehealth.fgov.be/artifactory/maven2</url>
+            <url>https://repo.ehealth.fgov.be/artifactory/maven2/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
