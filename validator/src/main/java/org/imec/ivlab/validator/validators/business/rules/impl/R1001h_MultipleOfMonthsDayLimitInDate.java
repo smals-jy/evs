@@ -57,7 +57,7 @@ public class R1001h_MultipleOfMonthsDayLimitInDate extends BaseMSEntryRule imple
 
                 if (CollectionUtils.isNotEmpty(dates)) {
                     for (Calendar regimenDate : dates) {
-                        LocalDate localDate = DateUtils.toLocalDate(regimenDate);
+                        LocalDate localDate = LocalDate.fromCalendarFields(regimenDate);
                         if (localDate.getDayOfMonth() > 28) {
                             return failRule(msEntry.getMseTransaction());
                         }

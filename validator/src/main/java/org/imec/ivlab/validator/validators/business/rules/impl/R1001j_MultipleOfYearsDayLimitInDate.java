@@ -58,7 +58,7 @@ public class R1001j_MultipleOfYearsDayLimitInDate extends BaseMSEntryRule implem
                 if (CollectionUtils.isNotEmpty(dates)) {
 
                     for (Calendar regimenDate : dates) {
-                        LocalDate localDate = DateUtils.toLocalDate(regimenDate);
+                        LocalDate localDate = LocalDate.fromCalendarFields(regimenDate);
 
                         if (localDate.getDayOfMonth() > 28 && localDate.getMonthOfYear() == 2) {
                             return failRule(msEntry.getMseTransaction());
