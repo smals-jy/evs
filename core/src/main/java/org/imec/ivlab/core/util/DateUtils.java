@@ -92,7 +92,6 @@ public class DateUtils {
         );
     }
 
-    // TODO issue here
     public static LocalTime toLocalTime(DateTime joDateTime) {
         return LocalTime.of(
             joDateTime.getHourOfDay(),
@@ -109,6 +108,7 @@ public class DateUtils {
         return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
     }
 
+    // TODO issue here
     public static LocalDateTime toLocalDateTime(org.joda.time.DateTime calendar) {
         if (calendar == null) {
             return null;
@@ -118,8 +118,8 @@ public class DateUtils {
             calendar.getMonthOfYear(),
             calendar.getDayOfMonth(),
             calendar.getHourOfDay(),
-            calendar.getMinuteOfDay(),
-            calendar.getSecondOfDay()
+            calendar.getMinuteOfHour(),
+            calendar.getSecondOfMinute()
         );
     }
 
