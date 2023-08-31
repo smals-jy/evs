@@ -17,9 +17,6 @@ import org.imec.ivlab.core.kmehr.mapper.ToKmehrMapper;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
 import org.imec.ivlab.core.util.DateUtils;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 public class PatientDataModifier implements KmehrModification {
 
     private final static Logger log = LogManager.getLogger(PatientDataModifier.class);
@@ -46,19 +43,6 @@ public class PatientDataModifier implements KmehrModification {
             person = new PersonType();
         }
 
-        if (person.getBirthdate() != null) {
-            DateType birtyDayDateType = new DateType();
-            try {
-                XMLGregorianCalendar xmlGregorianCalendar = DateUtils.toXmlGregorianCalendar(patient.getBirthDate());
-                xmlGregorianCalendar.setTimezone(0);
-                birtyDayDateType.setDate(xmlGregorianCalendar);
-                person.setBirthdate(birtyDayDateType);
-            } catch (DatatypeConfigurationException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-
         SexType sexType = new SexType();
         CDSEX cdSex = new CDSEX();
         cdSex.setValue(ToKmehrMapper.genderToCDSEXValues(patient.getGender()));
@@ -78,6 +62,8 @@ public class PatientDataModifier implements KmehrModification {
         IDPatient.setS(IDPATIENTschemes.ID_PATIENT);
         IDPatient.setSV("1.0");
         person.getIds().add(IDPatient);
+
+        person.setBirthdate(patient.getBirthDate());
 
         person.setUsuallanguage(patient.getUsualLanguage());
 

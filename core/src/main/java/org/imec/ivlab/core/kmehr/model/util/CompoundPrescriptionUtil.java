@@ -17,9 +17,7 @@ public class CompoundPrescriptionUtil {
      * @return
      */
     public List<TextType> getMagistralText(CompoundprescriptionType compoundprescriptionType) {
-
-        return getCompoundFieldsAsJaxBElements(compoundprescriptionType, TextType.class);
-
+        return compoundprescriptionType.getMagistraltext();
     }
 
     /**
@@ -28,54 +26,7 @@ public class CompoundPrescriptionUtil {
      * @return
      */
     public List<String> getCompoundText(CompoundprescriptionType compoundprescriptionType) {
-
-        return getCompoundFields(compoundprescriptionType, String.class);
-
-    }
-
-    private static <T> List<T> getCompoundFieldsAsJaxBElements(CompoundprescriptionType compoundprescriptionType, Class<T> objectType) {
-
-        List<T> compoundFields = new ArrayList<>();
-
-        if (compoundprescriptionType == null || CollectionUtils.isEmpty(compoundprescriptionType.getContent())) {
-            return null;
-        }
-
-        for (Object object : compoundprescriptionType.getContent()) {
-
-            if (! (object instanceof JAXBElement)) {
-                continue;
-            }
-            JAXBElement jaxbElement = (JAXBElement) object;
-
-            if (objectType.isInstance(jaxbElement.getValue()) ) {
-                compoundFields.add((T) jaxbElement.getValue());
-            }
-
-        }
-
-        return compoundFields;
-
-    }
-
-    private <T> List<T> getCompoundFields(CompoundprescriptionType compoundprescriptionType, Class<T> objectType) {
-
-        List<T> transactionFields = new ArrayList<>();
-
-        if (compoundprescriptionType == null || CollectionUtils.isEmpty(compoundprescriptionType.getContent())) {
-            return null;
-        }
-
-        for (Object object : compoundprescriptionType.getContent()) {
-
-            if (objectType.isInstance(object) ) {
-                transactionFields.add((T) object);
-            }
-
-        }
-
-        return transactionFields;
-
+        return compoundprescriptionType.getMixedContent();
     }
 
 }

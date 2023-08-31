@@ -3,6 +3,8 @@ package org.imec.ivlab.core.kmehr.model.util;
 import be.fgov.ehealth.standards.kmehr.schema.v1.AdministrationquantityType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.WeekdayType;
+import be.fgov.ehealth.standards.kmehr.schema.v1.Regimen;
+import be.fgov.ehealth.standards.kmehr.schema.v1.Daytime;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.imec.ivlab.core.kmehr.model.RegimenEntry;
@@ -16,37 +18,37 @@ import java.util.List;
 
 public class RegimenUtil {
 
-    public static List<BigInteger> getDayNumbers(ItemType.Regimen regimen) {
+    public static List<BigInteger> getDayNumbers(Regimen regimen) {
 
         return getRegimenFields(regimen, BigInteger.class);
 
     }
 
-    public static List<Calendar> getDates(ItemType.Regimen regimen) {
+    public static List<Calendar> getDates(Regimen regimen) {
 
         return getRegimenFields(regimen, Calendar.class);
 
     }
 
-    public static List<WeekdayType> getWeekdays(ItemType.Regimen regimen) {
+    public static List<WeekdayType> getWeekdays(Regimen regimen) {
 
         return getRegimenFields(regimen, WeekdayType.class);
 
     }
 
-    public static List<ItemType.Regimen.Daytime> getDaytimes(ItemType.Regimen regimen) {
+    public static List<Daytime> getDaytimes(Regimen regimen) {
 
-        return getRegimenFields(regimen, ItemType.Regimen.Daytime.class);
+        return getRegimenFields(regimen, Daytime.class);
 
     }
 
-    public static List<AdministrationquantityType> getQuantities(ItemType.Regimen regimen) {
+    public static List<AdministrationquantityType> getQuantities(Regimen regimen) {
 
         return getRegimenFields(regimen, AdministrationquantityType.class);
 
     }
 
-    private static <T> List<T> getRegimenFields(ItemType.Regimen regimen, Class<T> objectType) {
+    private static <T> List<T> getRegimenFields(Regimen regimen, Class<T> objectType) {
 
         List<T> regimenFields = new ArrayList<>();
 
@@ -68,7 +70,7 @@ public class RegimenUtil {
 
     }
 
-    public static List<RegimenEntry> getRegimenEntries(ItemType.Regimen regimen) {
+    public static List<RegimenEntry> getRegimenEntries(Regimen regimen) {
 
         if (regimen == null || CollectionUtils.isEmpty(regimen.getDaynumbersAndQuantitiesAndDates())) {
             return null;
@@ -125,8 +127,8 @@ public class RegimenUtil {
             }
 
 
-            if (ItemType.Regimen.Daytime.class.isInstance(jaxbElement.getValue()) ) {
-                regimenEntry.setDaytime((ItemType.Regimen.Daytime) jaxbElement.getValue());
+            if (Daytime.class.isInstance(jaxbElement.getValue()) ) {
+                regimenEntry.setDaytime((Daytime) jaxbElement.getValue());
                 continue;
             }
 

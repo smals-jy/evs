@@ -16,8 +16,8 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.ContentType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.DayperiodType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.DurationType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
-import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType.Posology.Takes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.MedicinalProductType;
+import be.fgov.ehealth.standards.kmehr.schema.v1.Substanceproduct;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RouteType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import java.math.BigInteger;
@@ -219,7 +219,7 @@ public class MedicationMapper {
     }
 
     private static Regimen mapRegimen(ItemType medicationItem) {
-        ItemType.Regimen regimen = medicationItem.getRegimen();
+        Regimen regimen = medicationItem.getRegimen();
 
         if (regimen == null) {
             return null;
@@ -464,7 +464,7 @@ public class MedicationMapper {
             }
             return identifier;
         } else if (contentType.getSubstanceproduct() != null) {
-            ContentType.Substanceproduct substanceproduct = contentType.getSubstanceproduct();
+            Substanceproduct substanceproduct = contentType.getSubstanceproduct();
 
             identifier.setId(getCNKIdentifier(Arrays.asList(substanceproduct.getDeliveredcd())));
             if (identifier.getId() == null) {
@@ -506,7 +506,7 @@ public class MedicationMapper {
         }
 
         if (contentType.getSubstanceproduct() != null) {
-            ContentType.Substanceproduct substanceproduct = contentType.getSubstanceproduct();
+            Substanceproduct substanceproduct = contentType.getSubstanceproduct();
             String deliveredName = getName(substanceproduct.getDeliveredname());
             if (deliveredName != null) {
                 return deliveredName;

@@ -3,7 +3,7 @@ package org.imec.ivlab.core.model.upload.msentrylist;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
-import org.imec.ivlab.core.util.DateUtils;
+import org.joda.time.DateTime;
 
 import java.time.LocalDate;
 
@@ -16,9 +16,8 @@ public class ReferenceDateUtil {
         if (patient == null || patient.getRecorddatetime() == null) {
             return null;
         }
-
-        return DateUtils.toLocalDateTime(patient.getRecorddatetime()).toLocalDate();
-
+        DateTime patientDate = patient.getRecorddatetime();
+        return LocalDate.of(patientDate.getYear(), patientDate.getMonthOfYear(), patientDate.getDayOfMonth());
     }
 
     public static void setReferenceDate(Kmehrmessage kmehrmessage, LocalDate referenceDate) {
@@ -28,8 +27,9 @@ public class ReferenceDateUtil {
         if (patient == null) {
             patient = new PersonType();
         }
-
-        patient.setRecorddatetime(DateUtils.toCalendar(referenceDate));
+        patient.setRecorddatetime(
+            new DateTime(referenceDate.getYear(), referenceDate.getMonthValue(), referenceDate.getDayOfMonth(), 0, 0, 0, 0)
+        );
 
     }
 
