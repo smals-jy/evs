@@ -69,7 +69,8 @@ public class ChildPreventionMapper extends BaseMapper {
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
 
-        entry.setChildPreventionFile(getLinksAndRemoveFromTransaction(firstTransaction).stream().findFirst().orElse(null));
+        entry.setChildPreventionFile(firstTransaction.getLnk().stream().findFirst().orElse(null));
+        //entry.setChildPreventionFile(getLinksAndRemoveFromTransaction(firstTransaction).stream().findFirst().orElse(null));
 
         markTransactionAsProcessed(firstTransaction);
 
