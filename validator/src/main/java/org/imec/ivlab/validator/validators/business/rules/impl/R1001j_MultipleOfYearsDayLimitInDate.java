@@ -17,7 +17,7 @@ import org.imec.ivlab.validator.validators.business.rules.MSEntryRule;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
 
-import java.time.LocalDate;
+import org.joda.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
@@ -58,6 +58,7 @@ public class R1001j_MultipleOfYearsDayLimitInDate extends BaseMSEntryRule implem
                 if (CollectionUtils.isNotEmpty(dates)) {
 
                     for (Calendar regimenDate : dates) {
+                        LocalDate localDate = 
                         LocalDate localDate = DateUtils.toLocalDate(regimenDate);
 
                         if (localDate.getDayOfMonth() > 28 && localDate.getMonthValue() == 2) {

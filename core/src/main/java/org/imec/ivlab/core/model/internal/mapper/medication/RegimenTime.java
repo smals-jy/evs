@@ -1,7 +1,7 @@
 package org.imec.ivlab.core.model.internal.mapper.medication;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import org.joda.time.LocalTime;
 
 public class RegimenTime extends DayperiodOrTime implements Serializable {
 

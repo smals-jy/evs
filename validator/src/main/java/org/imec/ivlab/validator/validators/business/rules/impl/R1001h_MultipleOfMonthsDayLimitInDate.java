@@ -17,7 +17,7 @@ import org.imec.ivlab.validator.validators.business.rules.MSEntryRule;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
 
-import java.time.LocalDate;
+import org.joda.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 

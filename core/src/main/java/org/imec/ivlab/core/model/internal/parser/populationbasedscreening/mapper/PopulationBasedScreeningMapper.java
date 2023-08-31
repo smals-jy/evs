@@ -11,7 +11,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
-import java.time.LocalDate;
+import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

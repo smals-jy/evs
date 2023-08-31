@@ -72,13 +72,14 @@ import org.imec.ivlab.core.kmehr.modifier.impl.PatientDataModifier;
 import org.imec.ivlab.core.util.JAXBUtils;
 import org.imec.ivlab.ehconnector.business.medicationscheme.hubhelper.HubConfigCommon;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -578,7 +579,7 @@ public class HubHelper {
         Map<String, Object> velocityContext = new HashMap<String, Object>();
 
         velocityContext.put("today", DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime()));
-        velocityContext.put("timenow", ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_TIME)); //
+        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now())); //
         velocityContext.put("idToday", DateTimeFormat.forPattern("yyyyMMdd").print(new DateTime()));
         velocityContext.put("startTransactionId", startTransactionId);
 
@@ -596,7 +597,7 @@ public class HubHelper {
         Map<String, Object> velocityContext = new HashMap<String, Object>();
 
         velocityContext.put("today", DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime()));
-        velocityContext.put("timenow", ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_TIME)); //
+        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now())); //
         velocityContext.put("idToday", DateTimeFormat.forPattern("yyyyMMdd").print(new DateTime()));
 
 

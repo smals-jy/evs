@@ -23,6 +23,7 @@ import org.imec.ivlab.core.model.internal.parser.vaccination.Vaccination;
 import org.imec.ivlab.core.model.internal.parser.vaccination.VaccinationItem;
 import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.DateUtils;
+import org.joda.time.DateTime;
 
 
 public class VaccinationMapper extends BaseMapper {
@@ -47,20 +48,11 @@ public class VaccinationMapper extends BaseMapper {
         entry.getTransactionCommon().setPerson(toPatient(folderType.getPatient()));
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(DateUtils.toLocalDate(firstTransaction.getDate()));
-        entry.getTransactionCommon().setTime(DateUtils.toLocalTime(firstTransaction.getTime()));
+        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
+        entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
 
-        org.joda.time.DateTime recordDateTime = firstTransaction.getRecorddatetime();
-        entry.getTransactionCommon().setRecordDateTime(
-            java.time.LocalDateTime.of(
-                recordDateTime.getYear(),
-                recordDateTime.getMonthOfYear(),
-                recordDateTime.getDayOfMonth(),
-                recordDateTime.getHourOfDay(),
-                recordDateTime.getMinuteOfDay(),
-                recordDateTime.getSecondOfDay()
-            )
-        );
+        DateTime recordDateTime = firstTransaction.getRecorddatetime();
+        entry.getTransactionCommon().setRecordDateTime(recordDateTime.toLocalDateTime());
         //entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
@@ -121,7 +113,7 @@ public class VaccinationMapper extends BaseMapper {
         clearCds(clone);
 
         if (itemType.getBeginmoment() != null) {
-            vaccination.setBeginMoment(DateUtils.toLocalDate(itemType.getBeginmoment().getDate()));
+            vaccination.setBeginMoment(itemType.getBeginmoment().getDate().toLocalDate());
             clone.getBeginmoment().setDate(null);
         }
 

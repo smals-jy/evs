@@ -8,7 +8,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.MedicinalProductType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Substanceproduct;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

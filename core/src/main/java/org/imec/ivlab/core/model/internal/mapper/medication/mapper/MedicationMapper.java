@@ -22,10 +22,10 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.Takes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RouteType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import java.math.BigInteger;
-import java.time.LocalTime;
+
+import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -97,11 +97,13 @@ public class MedicationMapper {
         }
 
         if (medicationItem.getBeginmoment() != null) {
-            medicationEntry.setBeginDate(DateUtils.toLocalDate(medicationItem.getBeginmoment().getDate()));
+            medicationEntry.setBeginDate(medicationItem.getBeginmoment().getDate().toLocalDate());
+            //medicationEntry.setBeginDate(DateUtils.toLocalDate(medicationItem.getBeginmoment().getDate()));
         }
 
         if (medicationItem.getEndmoment() != null) {
-            medicationEntry.setEndDate(DateUtils.toLocalDate(medicationItem.getEndmoment().getDate()));
+            medicationEntry.setEndDate(medicationItem.getEndmoment().getDate().toLocalDate());
+            //medicationEntry.setEndDate(DateUtils.toLocalDate(medicationItem.getEndmoment().getDate()));
         }
 
         if (medicationItem.getFrequency() != null && medicationItem.getFrequency().getPeriodicity() != null && medicationItem.getFrequency().getPeriodicity().getCd() != null) {
@@ -160,8 +162,8 @@ public class MedicationMapper {
         }
 
         entry.setSuspensions(getSuspensions(suspensionTransactions));
-        entry.setCreatedDate(DateUtils.toLocalDate(medicationTransaction.getDate()));
-        entry.setCreatedTime(DateUtils.toLocalTime(medicationTransaction.getTime()));
+        entry.setCreatedDate(medicationTransaction.getDate().toLocalDate());
+        entry.setCreatedTime(medicationTransaction.getTime().toLocalTime());
         entry.setLocalId(getLocalId(medicationTransaction));
 
         return entry;
@@ -241,7 +243,9 @@ public class MedicationMapper {
 
             if (regimenEntry.getDate() != null) {
                 RegimenDate date = new RegimenDate();
-                date.setDate(DateUtils.toLocalDate(regimenEntry.getDate()));
+                date.setDate(
+                    LocalDate.fromDateFields(regimenEntry.getDate())
+                );
                 regimenEntryOut.setDaynumberOrDateOrWeekday(date);
             } else if (regimenEntry.getDayNumber() != null) {
                 RegimenDaynumber daynumber = new RegimenDaynumber();
@@ -260,7 +264,7 @@ public class MedicationMapper {
             } else if (regimenEntry.getDaytime() != null && regimenEntry.getDaytime().getTime() != null) {
                 RegimenTime regimenTime = new RegimenTime();
                 regimenTime.setTime(
-                    DateUtils.toLocalTime(regimenEntry.getDaytime().getTime())
+                    regimenEntry.getDaytime().getTime().toLocalTime()
                 );
                 //regimenTime.setTime(LocalTime.of(regimenEntry.getDaytime().getTime().get(Calendar.HOUR_OF_DAY), regimenEntry.getDaytime().getTime().get(Calendar.MINUTE), regimenEntry.getDaytime().getTime().get(Calendar.SECOND)));
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
@@ -331,17 +335,17 @@ public class MedicationMapper {
                 suspension.setAuthors(suspensionTransaction.getAuthor().getHcparties());
             }
 
-            suspension.setCreatedDate(DateUtils.toLocalDate(suspensionTransaction.getDate()));
+            suspension.setCreatedDate(suspensionTransaction.getDate().toLocalDate());
             if (suspensionTransaction.getTime() != null) {
-                suspension.setCreatedTime(DateUtils.toLocalTime(suspensionTransaction.getTime()));
+                suspension.setCreatedTime(suspensionTransaction.getTime().toLocalTime());
             }
 
             if (medicationItem.getBeginmoment() != null) {
-                suspension.setBeginDate(DateUtils.toLocalDate(medicationItem.getBeginmoment().getDate()));
+                suspension.setBeginDate(medicationItem.getBeginmoment().getDate().toLocalDate());
             }
 
             if (medicationItem.getEndmoment() != null) {
-                suspension.setEndDate(DateUtils.toLocalDate(medicationItem.getEndmoment().getDate()));
+                suspension.setEndDate(medicationItem.getEndmoment().getDate().toLocalDate());
             }
 
             suspension.setLifecycle(KmehrMapper.toLifeCycleValues(medicationItem.getLifecycle()));

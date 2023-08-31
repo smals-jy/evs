@@ -32,7 +32,9 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -334,7 +336,18 @@ public abstract class Writer {
         cell.setColspan(3);
         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.of(header.getDate(), header.getTime()))));
+        
+        LocalDate headerDate = header.getDate();
+        LocalTime headerTime = header.getTime();
+        LocalDateTime headerDateTime = new LocalDateTime(
+            headerDate.getYear(),
+            headerDate.getMonthOfYear(), 
+            headerDate.getDayOfMonth(), 
+            headerTime.getHourOfDay(),
+            headerTime.getMinuteOfHour(), 
+            headerTime.getSecondOfMinute() 
+        );
+        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(headerDateTime)));
         cell.setBorderColor(BaseColor.WHITE);
         cell.setColspan(3);
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);

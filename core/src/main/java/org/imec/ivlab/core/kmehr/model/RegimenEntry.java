@@ -1,7 +1,6 @@
 package org.imec.ivlab.core.kmehr.model;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.AdministrationquantityType;
-import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.WeekdayType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Daytime;
 

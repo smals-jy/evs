@@ -65,18 +65,7 @@ public class PatientDataModifier implements KmehrModification {
         person.getIds().add(IDPatient);
 
         DateType birDateType = new DateType();
-        java.time.LocalDate patientDate = patient.getBirthDate();
-        birDateType.setDate(
-            new DateTime(
-                patientDate.getYear(),
-                patientDate.getYear(),
-                patientDate.getDayOfMonth(),
-                0, 
-                0,
-                0,
-                0
-            )
-        );
+        birDateType.setDate(patient.getBirthDate().toDateTimeAtStartOfDay());
         person.setBirthdate(birDateType);
 
         person.setUsuallanguage(patient.getUsualLanguage());

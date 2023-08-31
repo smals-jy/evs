@@ -2,8 +2,8 @@ package org.imec.ivlab.viewer.pdf;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +46,10 @@ public class TakeTimeManager {
     }
 
     public String toTakeTimeString(LocalTime localTime) {
-        return StringUtils.joinWith("u", localTime.format(DateTimeFormatter.ofPattern("HH")), localTime.format(DateTimeFormatter.ofPattern("mm")));
+        return StringUtils.joinWith(
+            "u", 
+            DateTimeFormat.mediumTime().print(localTime)
+        );
     }
 
     public Set<String> getTakeTimes() {

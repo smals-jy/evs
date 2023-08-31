@@ -2,9 +2,9 @@ package org.imec.ivlab.core.model.internal.parser.common;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDKMEHR;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;

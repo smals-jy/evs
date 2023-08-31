@@ -18,9 +18,9 @@ import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
 import org.joda.time.DateTime;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,14 +70,14 @@ public class R1002_UniqueTakingTimes extends BaseMSEntryRule implements MSEntryR
 
                 if (regimenEntry.getDaytime().getTime() != null) {
                     DateTime regimenTime = regimenEntry.getDaytime().getTime();
-                    LocalTime localTime = LocalTime.of(
+                    LocalTime localTime = new LocalTime(
                         regimenTime.getHourOfDay(),
                         regimenTime.getMinuteOfHour(),
                         regimenTime.getSecondOfMinute()
                     );
                     //LocalTime localTime = regimenEntry.getDaytime().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 
-                    String timeString = dateDaynumberWeekday + StringUtils.joinWith(":", localTime.getHour(), localTime.getMinute());
+                    String timeString = dateDaynumberWeekday + StringUtils.joinWith(":", localTime.getHourOfDay(), localTime.getMinuteOfHour());
                     if (times.contains(timeString)) {
                         return failRule(msEntry.getMseTransaction());
                     } else {
@@ -113,17 +113,17 @@ public class R1002_UniqueTakingTimes extends BaseMSEntryRule implements MSEntryR
         }
 
         if (regimenEntry.getDate() != null) {
-            LocalDate localDate = regimenEntry.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate localDate = LocalDate.fromDateFields(regimenEntry.getDate());
 
             if (frequencyCode != null && frequencyCode.getFrequency().equals(Frequency.MONTH)) {
                 return String.valueOf(localDate.getDayOfMonth());
             }
 
             if (frequencyCode != null  && frequencyCode.getFrequency().equals(Frequency.YEAR)) {
-                return String.valueOf(localDate.getDayOfMonth()) + "-" + String.valueOf(localDate.getMonthValue());
+                return String.valueOf(localDate.getDayOfMonth()) + "-" + String.valueOf(localDate.getMonthOfYear());
             }
 
-            return String.valueOf(localDate.getDayOfMonth()) + "-" + String.valueOf(localDate.getMonthValue()) + "-" + String.valueOf(localDate.getYear());
+            return String.valueOf(localDate.getDayOfMonth()) + "-" + String.valueOf(localDate.getMonthOfYear()) + "-" + String.valueOf(localDate.getYear());
 
         }
 

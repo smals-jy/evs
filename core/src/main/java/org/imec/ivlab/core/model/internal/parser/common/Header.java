@@ -1,7 +1,7 @@
 package org.imec.ivlab.core.model.internal.parser.common;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.imec.ivlab.core.model.internal.parser.sumehr.Recipient;
