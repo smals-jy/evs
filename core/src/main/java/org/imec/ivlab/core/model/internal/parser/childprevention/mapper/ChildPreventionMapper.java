@@ -1,8 +1,6 @@
 package org.imec.ivlab.core.model.internal.parser.childprevention.mapper;
 
 import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getItems;
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getItemsAndRemoveFromTransaction;
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getLinksAndRemoveFromTransaction;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENTschemes;

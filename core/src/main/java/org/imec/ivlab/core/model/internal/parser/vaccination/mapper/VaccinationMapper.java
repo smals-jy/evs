@@ -1,9 +1,5 @@
 package org.imec.ivlab.core.model.internal.parser.vaccination.mapper;
 
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getItemsAndRemoveFromTransaction;
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getLinksAndRemoveFromTransaction;
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getTextAndRemoveFromTransaction;
-
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDITEMvalues;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ContentType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
@@ -20,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.SerializationUtils;
 import org.imec.ivlab.core.kmehr.mapper.KmehrMapper;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
+import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
 import org.imec.ivlab.core.model.internal.parser.common.BaseMapper;
 import org.imec.ivlab.core.model.internal.parser.vaccination.EncounterLocation;
 import org.imec.ivlab.core.model.internal.parser.vaccination.Vaccination;
@@ -68,10 +65,10 @@ public class VaccinationMapper extends BaseMapper {
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
-        entry.setVaccinationItems(toVaccinations(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.VACCINE)));
-        entry.setEncounterLocations(toEncounterLocations(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.ENCOUNTERLOCATION)));
-        entry.setTextTypes(getTextAndRemoveFromTransaction(firstTransaction));
-        entry.setLinkTypes(getLinksAndRemoveFromTransaction(firstTransaction));
+        entry.setVaccinationItems(toVaccinations(TransactionUtil.getItems(firstTransaction, CDITEMvalues.VACCINE)));
+        entry.setEncounterLocations(toEncounterLocations(TransactionUtil.getItems(firstTransaction, CDITEMvalues.ENCOUNTERLOCATION)));
+        entry.setTextTypes(TransactionUtil.getText(firstTransaction));
+        entry.setLinkTypes(TransactionUtil.getLinks(firstTransaction));
         markTransactionAsProcessed(firstTransaction);
 
         entry.setUnparsed(cloneKmehr);

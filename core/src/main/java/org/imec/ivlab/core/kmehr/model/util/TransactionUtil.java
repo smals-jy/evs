@@ -15,11 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.util.CollectionsUtil;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class TransactionUtil {
@@ -60,60 +56,11 @@ public class TransactionUtil {
 
     }
 
-    public static List<LnkType> getLinksAndRemoveFromTransaction(TransactionType transactionType) {
-        List<LnkType> lnkTypes = transactionType.getLnk();
-        return lnkTypes;
-    }
-
-    public static List<TextType> getTextAndRemoveFromTransaction(TransactionType transactionType) {
-
-        return getTransactionFieldsAndRemoveFromTransaction(transactionType, TextType.class);
-
-    }
-
-    public static List<TextWithLayoutType> getTextWithLayoutAndRemoveFromTransaction(TransactionType transactionType) {
-
-        return getTransactionFieldsAndRemoveFromTransaction(transactionType, TextWithLayoutType.class);
-
-    }
-
-    public static List<LnkType> getLinks(TransactionType firstTransaction) {
-        return getTransactionFields(firstTransaction, LnkType.class);
+    public static List<LnkType> getLinks(TransactionType transactionType) {
+        return transactionType.getLnk();
     }
 
     public static List<ItemType> getItems(TransactionType transactionType, CDITEMvalues cdItemTypeFilter) {
-
-        List<ItemType> allItemTypes = getItems(transactionType);
-        List<ItemType> itemTypes = new ArrayList<>();
-
-        Iterator<ItemType> itemTypeIterator = allItemTypes.iterator();
-
-        while (itemTypeIterator.hasNext()) {
-
-            ItemType itemType = itemTypeIterator.next();
-
-            if (CollectionUtils.isEmpty(itemType.getCds())) {
-                continue;
-            }
-
-            for (CDITEM cdItem : itemType.getCds()) {
-                if (StringUtils.equalsIgnoreCase(cdItem.getValue(), cdItemTypeFilter.value())) {
-                    itemTypes.add(itemType);
-                    break;
-                }
-            }
-
-        }
-
-        if (itemTypes.size() == 0) {
-            return null;
-        }
-
-        return itemTypes;
-
-    }
-
-    public static List<ItemType> getItemsAndRemoveFromTransaction(TransactionType transactionType, CDITEMvalues cdItemTypeFilter) {
 
         return transactionType
             .getItem()

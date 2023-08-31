@@ -1,8 +1,5 @@
 package org.imec.ivlab.core.model.internal.parser.sumehr.mapper;
 
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getItemsAndRemoveFromTransaction;
-import static org.imec.ivlab.core.kmehr.model.util.TransactionUtil.getTextAndRemoveFromTransaction;
-
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENTschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDITEM;
@@ -28,6 +25,7 @@ import org.imec.ivlab.core.kmehr.model.util.CDContentUtil;
 import org.imec.ivlab.core.kmehr.model.util.CDItemUtil;
 import org.imec.ivlab.core.kmehr.model.util.ItemUtil;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
+import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
 import org.imec.ivlab.core.model.evsref.EVSREF;
 import org.imec.ivlab.core.model.evsref.extractor.impl.SumehrEVSRefExtractor;
 import org.imec.ivlab.core.model.internal.mapper.medication.mapper.MedicationMapper;
@@ -78,20 +76,20 @@ public class SumehrMapper extends BaseMapper {
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
 
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
-        entry.setHealthCareElements(toHealthCareElements(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.HEALTHCAREELEMENT)));
-        entry.setSocialRisks(toRisks(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.SOCIALRISK)));
-        entry.setProblems(toProblems(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.PROBLEM)));
-        entry.setTreatments(toTreatments(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.TREATMENT)));
-        entry.setRisks(toRisks(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.RISK)));
-        entry.setAllergies(toRisks(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.ALLERGY)));
-        entry.setAdrs(toRisks(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.ADR)));
-        entry.setPatientWills(toPatientWills(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.PATIENTWILL)));
-        entry.setContactPersons(toContactPersons(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.CONTACTPERSON)));
-        entry.setVaccinations(toVaccinations(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.VACCINE)));
-        entry.setContactHCParties(collectHCPartyTypes(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.CONTACTHCPARTY)));
-        entry.setGmdManagers(collectHCPartyTypes(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.GMDMANAGER)));
-        entry.setMedicationEntries(toMedicationItems(getItemsAndRemoveFromTransaction(firstTransaction, CDITEMvalues.MEDICATION)));
-        entry.setTextTypes(getTextAndRemoveFromTransaction(firstTransaction));
+        entry.setHealthCareElements(toHealthCareElements(TransactionUtil.getItems(firstTransaction, CDITEMvalues.HEALTHCAREELEMENT)));
+        entry.setSocialRisks(toRisks(TransactionUtil.getItems(firstTransaction, CDITEMvalues.SOCIALRISK)));
+        entry.setProblems(toProblems(TransactionUtil.getItems(firstTransaction, CDITEMvalues.PROBLEM)));
+        entry.setTreatments(toTreatments(TransactionUtil.getItems(firstTransaction, CDITEMvalues.TREATMENT)));
+        entry.setRisks(toRisks(TransactionUtil.getItems(firstTransaction, CDITEMvalues.RISK)));
+        entry.setAllergies(toRisks(TransactionUtil.getItems(firstTransaction, CDITEMvalues.ALLERGY)));
+        entry.setAdrs(toRisks(TransactionUtil.getItems(firstTransaction, CDITEMvalues.ADR)));
+        entry.setPatientWills(toPatientWills(TransactionUtil.getItems(firstTransaction, CDITEMvalues.PATIENTWILL)));
+        entry.setContactPersons(toContactPersons(TransactionUtil.getItems(firstTransaction, CDITEMvalues.CONTACTPERSON)));
+        entry.setVaccinations(toVaccinations(TransactionUtil.getItems(firstTransaction, CDITEMvalues.VACCINE)));
+        entry.setContactHCParties(collectHCPartyTypes(TransactionUtil.getItems(firstTransaction, CDITEMvalues.CONTACTHCPARTY)));
+        entry.setGmdManagers(collectHCPartyTypes(TransactionUtil.getItems(firstTransaction, CDITEMvalues.GMDMANAGER)));
+        entry.setMedicationEntries(toMedicationItems(TransactionUtil.getItems(firstTransaction, CDITEMvalues.MEDICATION)));
+        entry.setTextTypes(TransactionUtil.getText(firstTransaction));
         markTransactionAsProcessed(firstTransaction);
         entry.setEvsRef(getEvsRef(kmehrmessage));
 
