@@ -16,6 +16,7 @@ import org.imec.ivlab.core.model.patient.model.Patient;
 import org.imec.ivlab.core.kmehr.mapper.ToKmehrMapper;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
 import org.imec.ivlab.core.util.DateUtils;
+import org.joda.time.DateTime;
 
 public class PatientDataModifier implements KmehrModification {
 
@@ -63,7 +64,20 @@ public class PatientDataModifier implements KmehrModification {
         IDPatient.setSV("1.0");
         person.getIds().add(IDPatient);
 
-        person.setBirthdate(patient.getBirthDate());
+        DateType birDateType = new DateType();
+        java.time.LocalDate patientDate = patient.getBirthDate();
+        birDateType.setDate(
+            new DateTime(
+                patientDate.getYear(),
+                patientDate.getYear(),
+                patientDate.getDayOfMonth(),
+                0, 
+                0,
+                0,
+                0
+            )
+        );
+        person.setBirthdate(birDateType);
 
         person.setUsuallanguage(patient.getUsualLanguage());
 

@@ -16,6 +16,7 @@ import org.imec.ivlab.validator.validators.business.rules.BaseMSEntryRule;
 import org.imec.ivlab.validator.validators.business.rules.MSEntryRule;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
+import org.joda.time.DateTime;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -68,7 +69,13 @@ public class R1002_UniqueTakingTimes extends BaseMSEntryRule implements MSEntryR
                 String dateDaynumberWeekday = getDateDaynumberWeekdayOrEmptyString(regimenEntry, frequencyCode) + "-";
 
                 if (regimenEntry.getDaytime().getTime() != null) {
-                    LocalTime localTime = regimenEntry.getDaytime().getTime().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+                    DateTime regimenTime = regimenEntry.getDaytime().getTime();
+                    LocalTime localTime = LocalTime.of(
+                        regimenTime.getHourOfDay(),
+                        regimenTime.getMinuteOfHour(),
+                        regimenTime.getSecondOfMinute()
+                    );
+                    //LocalTime localTime = regimenEntry.getDaytime().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 
                     String timeString = dateDaynumberWeekday + StringUtils.joinWith(":", localTime.getHour(), localTime.getMinute());
                     if (times.contains(timeString)) {

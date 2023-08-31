@@ -18,6 +18,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.DurationType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.MedicinalProductType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Substanceproduct;
+import be.fgov.ehealth.standards.kmehr.schema.v1.Takes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RouteType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import java.math.BigInteger;
@@ -219,7 +220,7 @@ public class MedicationMapper {
     }
 
     private static Regimen mapRegimen(ItemType medicationItem) {
-        Regimen regimen = medicationItem.getRegimen();
+        be.fgov.ehealth.standards.kmehr.schema.v1.Regimen regimen = medicationItem.getRegimen();
 
         if (regimen == null) {
             return null;
@@ -279,7 +280,7 @@ public class MedicationMapper {
     private static Posology mapPosology(ItemType medicationItem) {
         Posology posologyOut = new Posology();
 
-        ItemType.Posology posologyIn = medicationItem.getPosology();
+        be.fgov.ehealth.standards.kmehr.schema.v1.Posology posologyIn = medicationItem.getPosology();
         if (posologyIn == null) {
             return null;
         }

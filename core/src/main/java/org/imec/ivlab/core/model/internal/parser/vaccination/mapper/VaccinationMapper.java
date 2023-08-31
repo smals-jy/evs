@@ -52,7 +52,19 @@ public class VaccinationMapper extends BaseMapper {
 
         entry.getTransactionCommon().setDate(DateUtils.toLocalDate(firstTransaction.getDate()));
         entry.getTransactionCommon().setTime(DateUtils.toLocalTime(firstTransaction.getTime()));
-        entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
+
+        org.joda.time.DateTime recordDateTime = firstTransaction.getRecorddatetime();
+        entry.getTransactionCommon().setRecordDateTime(
+            java.time.LocalDateTime.of(
+                recordDateTime.getYear(),
+                recordDateTime.getMonthOfYear(),
+                recordDateTime.getDayOfMonth(),
+                recordDateTime.getHourOfDay(),
+                recordDateTime.getMinuteOfDay(),
+                recordDateTime.getSecondOfDay()
+            )
+        );
+        //entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));

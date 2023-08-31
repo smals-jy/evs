@@ -108,6 +108,20 @@ public class DateUtils {
         return LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
     }
 
+    public static LocalDateTime toLocalDateTime(org.joda.time.DateTime calendar) {
+        if (calendar == null) {
+            return null;
+        }
+        return LocalDateTime.of(
+            calendar.getYear(),
+            calendar.getMonthOfYear(),
+            calendar.getDayOfMonth(),
+            calendar.getHourOfDay(),
+            calendar.getMinuteOfDay(),
+            calendar.getSecondOfDay()
+        );
+    }
+
 
     public static LocalDate toLocalDate(Date date) {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
