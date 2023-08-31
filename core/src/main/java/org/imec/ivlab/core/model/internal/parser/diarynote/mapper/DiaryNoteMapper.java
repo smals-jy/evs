@@ -40,9 +40,9 @@ public class DiaryNoteMapper extends BaseMapper {
         entry.getTransactionCommon().setPerson(toPatient(folderType.getPatient()));
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(DateUtils.toLocalDate(firstTransaction.getDate()));
-        entry.getTransactionCommon().setTime(DateUtils.toLocalTime(firstTransaction.getTime()));
-        entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
+        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
+        entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
+        entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));

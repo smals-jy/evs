@@ -58,18 +58,17 @@ public class R1001j_MultipleOfYearsDayLimitInDate extends BaseMSEntryRule implem
                 if (CollectionUtils.isNotEmpty(dates)) {
 
                     for (Calendar regimenDate : dates) {
-                        LocalDate localDate = 
                         LocalDate localDate = DateUtils.toLocalDate(regimenDate);
 
-                        if (localDate.getDayOfMonth() > 28 && localDate.getMonthValue() == 2) {
+                        if (localDate.getDayOfMonth() > 28 && localDate.getMonthOfYear() == 2) {
                             return failRule(msEntry.getMseTransaction());
                         }
 
                     }
 
                 } else {
-                    LocalDate beginmomentDate = DateUtils.toLocalDate(medicationItem.getBeginmoment().getDate());
-                    if (beginmomentDate.getDayOfMonth() > 28 && beginmomentDate.getMonthValue() == 2) {
+                    LocalDate beginmomentDate = medicationItem.getBeginmoment().getDate().toLocalDate();
+                    if (beginmomentDate.getDayOfMonth() > 28 && beginmomentDate.getMonthOfYear() == 2) {
                         customMessage = ". Check the medication <beginmoment>";
                         return failRule(msEntry.getMseTransaction());
                     }

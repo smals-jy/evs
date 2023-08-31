@@ -104,8 +104,8 @@ public class BaseMapper {
   protected static Header mapHeaderFields(HeaderType headerType) {
       Header header = new Header();
       if (headerType != null) {
-          header.setDate(DateUtils.toLocalDate(headerType.getDate()));
-          header.setTime(DateUtils.toLocalTime(headerType.getTime()));
+          header.setDate(headerType.getDate().toLocalDate());
+          header.setTime(headerType.getTime().toLocalTime());
           List<HcParty> senderHcParties =
               Optional.ofNullable(headerType.getSender())
                   .map(SenderType::getHcparties)
@@ -151,7 +151,7 @@ public class BaseMapper {
   public static Patient toPatient(PersonType personType) {
     Patient patient = new Patient();
     toPerson(personType, patient);
-    patient.setRecordDateTime(DateUtils.toLocalDateTime(personType.getRecorddatetime()));
+    patient.setRecordDateTime(personType.getRecorddatetime().toLocalDateTime());
     return patient;
   }
 
@@ -169,11 +169,11 @@ public class BaseMapper {
       clearIds(clone);
 
       if (personType.getBirthdate() != null) {
-          person.setBirthdate(DateUtils.toLocalDate(personType.getBirthdate().getDate()));
+          person.setBirthdate(personType.getBirthdate().getDate().toLocalDate());
           clone.setBirthdate(null);
       }
       if (personType.getDeathdate() != null) {
-          person.setDeathdate(DateUtils.toLocalDate(personType.getDeathdate().getDate()));
+          person.setDeathdate(personType.getDeathdate().getDate().toLocalDate());
           clone.setDeathdate(null);
       }
 

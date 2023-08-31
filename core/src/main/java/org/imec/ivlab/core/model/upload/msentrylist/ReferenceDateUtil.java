@@ -28,7 +28,15 @@ public class ReferenceDateUtil {
         
         // TODO To fix
         patient.setRecorddatetime(
-            new DateTime(referenceDate.getYear(), referenceDate.getMonthValue(), referenceDate.getDayOfMonth(), 0, 0, 0, 0)
+            new DateTime(
+                referenceDate.getYear(),
+                referenceDate.getMonthOfYear(),
+                referenceDate.getDayOfMonth(),
+                0, 
+                0, 
+                0,
+                0
+            )
         );
 
     }
