@@ -61,13 +61,13 @@ jobs:
         run: zip -r -q EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v3
-        if: github.event.inputs.create_artifacts
+        if: github.event.inputs.create_artifacts == "true"
         with:
           name: EVS-build
           path: ${{ env.artifacts_path }}
       - uses: ncipollo/release-action@v1.13.0
         name: 🤖 Create release on Github
-        if: github.event.inputs.create_release
+        if: github.event.inputs.create_release == "true"
         with:
           artifacts: "EVS-${{ env.EVS_VERSION }}.zip"
           allowUpdates: "true"
