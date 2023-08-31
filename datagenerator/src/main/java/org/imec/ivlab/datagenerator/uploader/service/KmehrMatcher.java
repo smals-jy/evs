@@ -20,6 +20,7 @@ import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.DateUtils;
 import org.imec.ivlab.core.util.JAXBUtils;
 import org.imec.ivlab.core.util.XmlFormatterUtil;
+import org.joda.time.DateTime;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
@@ -397,16 +398,18 @@ public class KmehrMatcher {
             return;
         }
 
+        /*
         XMLGregorianCalendar calendarNow;
         try {
             calendarNow = DateUtils.toXmlGregorianCalendar(LocalDateTime.now());
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
-        }
+        }*/
+        DateTime now = DateTime.now();
 
         for (TransactionType transactionType : transactions) {
-            transactionType.setDate(calendarNow);
-            transactionType.setTime(calendarNow);
+            transactionType.setDate(now);
+            transactionType.setTime(now);
         }
 
     }

@@ -345,19 +345,27 @@ public class MSUploaderImpl implements Uploader, MSUploader {
             for (ItemType medicationItem : medicationItems) {
 
                 if (medicationItem.getBeginmoment() != null) {
-                    medicationItem.getBeginmoment().setDate(shiftDate(medicationItem.getBeginmoment().getDate(), daysDiff));
+                    medicationItem.getBeginmoment().setDate(
+                        medicationItem.getBeginmoment().getDate().plusDays(daysDiff.intValue())
+                    );
+                    //medicationItem.getBeginmoment().setDate(shiftDate(medicationItem.getBeginmoment().getDate(), daysDiff));
                 }
                 if (medicationItem.getEndmoment() != null) {
-                    medicationItem.getEndmoment().setDate(shiftDate(medicationItem.getEndmoment().getDate(), daysDiff));
+                    medicationItem.getEndmoment().setDate(
+                        medicationItem.getEndmoment().getDate().plusDays(daysDiff.intValue())
+                    );
+                    //medicationItem.getEndmoment().setDate(shiftDate(medicationItem.getEndmoment().getDate(), daysDiff));
                 }
 
+                /* 
+                TODO Understand & fix that as it isn't clear for me
                 List<Calendar> dates = RegimenUtil.getDates(medicationItem.getRegimen());
 
                 if (dates != null) {
                     for (Calendar date : dates) {
                         date.add(Calendar.DATE, daysDiff.intValue());
                     }
-                }
+                }*/
 
             }
 

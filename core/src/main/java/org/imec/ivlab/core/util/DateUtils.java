@@ -3,6 +3,9 @@ package org.imec.ivlab.core.util;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.joda.time.DateTime;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,6 +81,23 @@ public class DateUtils {
 
         return xmlGregorianCalendar.toGregorianCalendar().toZonedDateTime().toLocalDate();
 
+    }
+
+    public static LocalDate toLocalDate(DateTime joDateTime) {
+
+        return LocalDate.of(
+            joDateTime.getYear(),
+            joDateTime.getMonthOfYear(),
+            joDateTime.getDayOfMonth()
+        );
+    }
+
+    public static LocalTime toLocalTime(DateTime joDateTime) {
+        return LocalTime.of(
+            joDateTime.getHourOfDay(),
+            joDateTime.getMinuteOfDay(),
+            joDateTime.getSecondOfDay()
+        );
     }
 
 
