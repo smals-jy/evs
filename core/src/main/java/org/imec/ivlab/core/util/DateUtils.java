@@ -92,11 +92,12 @@ public class DateUtils {
         );
     }
 
+    // TODO issue here
     public static LocalTime toLocalTime(DateTime joDateTime) {
         return LocalTime.of(
             joDateTime.getHourOfDay(),
-            joDateTime.getMinuteOfDay(),
-            joDateTime.getSecondOfDay()
+            joDateTime.getMinuteOfHour(),
+            joDateTime.getSecondOfMinute()
         );
     }
 
