@@ -69,7 +69,6 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.TelecomType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import org.imec.ivlab.core.kmehr.KmehrMarshaller;
 import org.imec.ivlab.core.kmehr.modifier.impl.PatientDataModifier;
-import org.imec.ivlab.core.util.DateUtils;
 import org.imec.ivlab.core.util.JAXBUtils;
 import org.imec.ivlab.ehconnector.business.medicationscheme.hubhelper.HubConfigCommon;
 import org.joda.time.DateTime;
@@ -78,8 +77,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
