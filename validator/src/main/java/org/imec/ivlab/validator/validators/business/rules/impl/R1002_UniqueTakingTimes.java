@@ -72,8 +72,8 @@ public class R1002_UniqueTakingTimes extends BaseMSEntryRule implements MSEntryR
                     DateTime regimenTime = regimenEntry.getDaytime().getTime();
                     LocalTime localTime = LocalTime.of(
                         regimenTime.getHourOfDay(),
-                        regimenTime.getMinuteOfHour(),
-                        regimenTime.getSecondOfMinute()
+                        regimenTime.getMinuteOfDay(),
+                        regimenTime.getSecondOfDay()
                     );
                     //LocalTime localTime = regimenEntry.getDaytime().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
 
