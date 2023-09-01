@@ -85,8 +85,16 @@ public class JAXBUtils {
 
         jaxbMarshaller.marshal(root, writer);
 
-        return writer.toString();
+        return replaceTimeTags(writer.toString());
 
+    }
+
+    // Dirty trick as issue with JAXB adapter
+    private static String replaceTimeTags(String xmlString) {
+        // Define a regular expression to match <time> tags with a timezone offset
+        String regex = "<time>.*?\\+\\d{2}:\\d{2}</time>";
+        // Replace matched <time> tags with the content inside the tags
+        return xmlString.replaceAll(regex, "$1");
     }
 
 
