@@ -92,9 +92,9 @@ public class JAXBUtils {
     // Dirty trick as issue with JAXB adapter
     private static String replaceTimeTags(String xmlString) {
         // Define a regular expression to match <time> tags with a timezone offset
-        String regex = "<time>(.*?)\\+\\d{2}:\\d{2}</time>";
+        String regex = "<time>([^+Z]+)</time>";
         // Replace matched <time> tags with the content inside the tags
-        return xmlString.replaceAll(regex, "$1");
+        return xmlString.replaceAll(regex, "<time>$1</time>");
     }
 
 
