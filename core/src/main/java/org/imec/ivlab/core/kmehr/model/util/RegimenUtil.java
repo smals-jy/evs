@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.imec.ivlab.core.kmehr.model.RegimenEntry;
 import org.imec.ivlab.core.util.ArrayUtil;
+import org.joda.time.DateTime;
 
 import javax.xml.bind.JAXBElement;
 import java.math.BigInteger;
@@ -133,6 +134,13 @@ public class RegimenUtil {
 
             if (AdministrationquantityType.class.isInstance(jaxbElement.getValue()) ) {
                 regimenEntry.setQuantity((AdministrationquantityType) jaxbElement.getValue());
+                continue;
+            }
+
+            // TODO not quite sure it happens
+            if (DateTime.class.isInstance(jaxbElement.getValue())) {
+                DateTime dateTime = ( (DateTime) jaxbElement.getValue());
+                regimenEntry.setDate(dateTime.toDate());
                 continue;
             }
 
