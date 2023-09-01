@@ -4,9 +4,13 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDLIFECYCLEvalues;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 
 import java.io.Serializable;
+
+import org.imec.ivlab.core.xml.LocalTimeAdapter;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import java.util.List;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class Suspension implements Serializable {
 
@@ -15,6 +19,7 @@ public class Suspension implements Serializable {
     private LocalDate endDate;
     private CDLIFECYCLEvalues lifecycle;
     private LocalDate createdDate;
+    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime createdTime;
     private List<HcpartyType> authors;
 

@@ -2,10 +2,7 @@ package org.imec.ivlab.core.kmehr.model.util;
 
 import be.fgov.ehealth.standards.kmehr.dt.v1.TextType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.CompoundprescriptionType;
-import org.apache.commons.collections.CollectionUtils;
 
-import javax.xml.bind.JAXBElement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CompoundPrescriptionUtil {

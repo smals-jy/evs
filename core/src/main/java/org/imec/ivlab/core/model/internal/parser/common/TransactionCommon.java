@@ -7,17 +7,22 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.imec.ivlab.core.model.internal.parser.sumehr.HcParty;
 import org.imec.ivlab.core.model.internal.parser.sumehr.Patient;
+import org.imec.ivlab.core.xml.LocalTimeAdapter;
 
 @Getter
 @Setter
 public class TransactionCommon {
 
   private LocalDate date;
+  @XmlJavaTypeAdapter(LocalTimeAdapter.class)
   private LocalTime time;
   private LocalDateTime recordDateTime;
   private List<HcParty> author = new ArrayList<>();

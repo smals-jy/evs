@@ -5,9 +5,13 @@ import java.io.Serializable;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import java.util.List;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.imec.ivlab.core.kmehr.model.localid.LocalId;
+import org.imec.ivlab.core.xml.LocalTimeAdapter;
 
 @Getter
 @Setter
@@ -17,6 +21,7 @@ public class MedicationEntry extends MedicationEntryBasic implements Serializabl
     private String beginCondition;
     private String endCondition;
     private LocalDate createdDate;
+    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     private LocalTime createdTime;
 
     private PosologyOrRegimen posologyOrRegimen;
