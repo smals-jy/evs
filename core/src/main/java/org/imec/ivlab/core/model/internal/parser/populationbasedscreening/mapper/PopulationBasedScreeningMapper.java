@@ -74,7 +74,9 @@ public class PopulationBasedScreeningMapper extends BaseMapper {
 
         entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
         entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
-        entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
+        if (firstTransaction.getRecorddatetime() != null) {
+            entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
+        }
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setIdkmehrs(new ArrayList<>(firstTransaction.getIds()));

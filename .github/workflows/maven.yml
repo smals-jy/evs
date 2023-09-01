@@ -51,6 +51,7 @@ jobs:
         run: |
           echo "${{ env.EVS_VERSION }}" > release/version_input.txt
       - name: 🔨 Build project with Maven
+        shell: bash
         run: |
           cd builder && ./release.sh
       - name: 🚧 Workaround actions/upload-artifact#176

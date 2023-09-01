@@ -298,7 +298,9 @@ public class SumehrMapper extends BaseMapper {
             pb.getUnparsed().getEndmoment().setDate(null);
         }
 
-        pb.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        if (itemType.getRecorddatetime() != null) {
+            pb.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        }
         pb.getUnparsed().setRecorddatetime(null);
 
         pb.setLifecycle(KmehrMapper.toLifeCycleValues(itemType.getLifecycle()));
@@ -335,7 +337,9 @@ public class SumehrMapper extends BaseMapper {
         patientWill.setTextTypes(itemType.getTexts());
         clone.getTexts().clear();
 
-        patientWill.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        if (itemType.getRecorddatetime() != null) {
+            patientWill.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        }
         clone.setRecorddatetime(null);
 
         patientWill.setUnparsed(clone);
@@ -420,7 +424,9 @@ public class SumehrMapper extends BaseMapper {
         vaccination.setTextTypes(itemType.getTexts());
         clearTextTypes(clone);
 
-        vaccination.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        if (itemType.getRecorddatetime() != null) {
+            vaccination.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        }
         clone.setRecorddatetime(null);
 
         clearContentTypeAllMedicationRelatedInfo(clone);
