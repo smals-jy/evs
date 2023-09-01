@@ -105,7 +105,7 @@ public class BaseMapper {
       Header header = new Header();
       if (headerType != null) {
           header.setDate(headerType.getDate().toLocalDate());
-          header.setTime(headerType.getTime().toLocalTime());
+          header.setTime(headerType.getTime());
           List<HcParty> senderHcParties =
               Optional.ofNullable(headerType.getSender())
                   .map(SenderType::getHcparties)

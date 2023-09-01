@@ -5,6 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.core.exceptions.TransformationException;
 
+import be.ehealth.technicalconnector.adapter.XmlDateNoTzAdapter;
+import be.ehealth.technicalconnector.adapter.XmlTimeNoTzAdapter;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -62,6 +65,10 @@ public class JAXBUtils {
         jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8");
 
+        // Configure the Marshaller to use the custom XmlAdapter for LocalTime
+        jaxbMarshaller.setAdapter(new XmlTimeNoTzAdapter());
+        jaxbMarshaller.setAdapter(new XmlDateNoTzAdapter());
+
         StringWriter writer = new StringWriter();
 
         String nsURI = "";
@@ -81,5 +88,6 @@ public class JAXBUtils {
         return writer.toString();
 
     }
+
 
 }

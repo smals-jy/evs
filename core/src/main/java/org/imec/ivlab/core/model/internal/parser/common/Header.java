@@ -1,7 +1,10 @@
 package org.imec.ivlab.core.model.internal.parser.common;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
+
+import be.ehealth.technicalconnector.adapter.XmlTimeNoTzAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +19,8 @@ public class Header {
   private Sender sender;
   private List<Recipient> recipients = new ArrayList<>();
   private LocalDate date;
-  @XmlJavaTypeAdapter(LocalTimeAdapter.class)
-  private LocalTime time;
+  @XmlJavaTypeAdapter(XmlTimeNoTzAdapter.class)
+  private DateTime time;
 
   public Sender getSender() {
     return sender;
@@ -39,11 +42,11 @@ public class Header {
     this.date = date;
   }
 
-  public LocalTime getTime() {
+  public DateTime getTime() {
     return time;
   }
 
-  public void setTime(LocalTime time) {
+  public void setTime(DateTime time) {
     this.time = time;
   }
 

@@ -34,6 +34,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import java.io.IOException;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -338,7 +339,7 @@ public abstract class Writer {
         table.addCell(cell);
         
         LocalDate headerDate = header.getDate();
-        LocalTime headerTime = header.getTime();
+        DateTime headerTime = header.getTime();
         LocalDateTime headerDateTime = new LocalDateTime(
             headerDate.getYear(),
             headerDate.getMonthOfYear(), 

@@ -47,6 +47,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -1007,7 +1009,7 @@ public class MSWriter extends Writer {
 
     }
 
-    private static String combineDateAndTime(LocalDate date,  LocalTime time) {
+    private static String combineDateAndTime(LocalDate date,  DateTime time) {
         return joinFields(formatAsDate(date), formatAsTime(time), System.lineSeparator());
     }
 

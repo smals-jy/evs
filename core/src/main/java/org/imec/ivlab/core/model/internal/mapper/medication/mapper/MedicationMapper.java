@@ -163,7 +163,7 @@ public class MedicationMapper {
 
         entry.setSuspensions(getSuspensions(suspensionTransactions));
         entry.setCreatedDate(medicationTransaction.getDate().toLocalDate());
-        entry.setCreatedTime(medicationTransaction.getTime().toLocalTime());
+        entry.setCreatedTime(medicationTransaction.getTime());
         entry.setLocalId(getLocalId(medicationTransaction));
 
         return entry;
@@ -264,9 +264,7 @@ public class MedicationMapper {
             } else if (regimenEntry.getDaytime() != null && regimenEntry.getDaytime().getTime() != null) {
                 RegimenTime regimenTime = new RegimenTime();
                 DateTime time = regimenEntry.getDaytime().getTime();
-                // TODO bug is here
                 regimenTime.setTime(time);
-                //regimenTime.setTime(LocalTime.of(regimenEntry.getDaytime().getTime().get(Calendar.HOUR_OF_DAY), regimenEntry.getDaytime().getTime().get(Calendar.MINUTE), regimenEntry.getDaytime().getTime().get(Calendar.SECOND)));
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
             }
 
@@ -337,7 +335,7 @@ public class MedicationMapper {
 
             suspension.setCreatedDate(suspensionTransaction.getDate().toLocalDate());
             if (suspensionTransaction.getTime() != null) {
-                suspension.setCreatedTime(suspensionTransaction.getTime().toLocalTime());
+                suspension.setCreatedTime(suspensionTransaction.getTime());
             }
 
             if (medicationItem.getBeginmoment() != null) {

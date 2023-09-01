@@ -70,7 +70,7 @@ public class SumehrMapper extends BaseMapper {
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
         entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
+        entry.getTransactionCommon().setTime(firstTransaction.getTime());
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
 
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));

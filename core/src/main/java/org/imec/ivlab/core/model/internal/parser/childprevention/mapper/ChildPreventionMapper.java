@@ -63,7 +63,7 @@ public class ChildPreventionMapper extends BaseMapper {
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
         entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
+        entry.getTransactionCommon().setTime(firstTransaction.getTime());
         if (firstTransaction.getRecorddatetime() != null) {
             entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
         }
