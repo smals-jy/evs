@@ -264,14 +264,8 @@ public class MedicationMapper {
             } else if (regimenEntry.getDaytime() != null && regimenEntry.getDaytime().getTime() != null) {
                 RegimenTime regimenTime = new RegimenTime();
                 DateTime time = regimenEntry.getDaytime().getTime();
-                // TODO maybe one day we can use the same type as eHealth
-                regimenTime.setTime(
-                    java.time.LocalTime.of(
-                        time.getHourOfDay(),
-                        time.getMinuteOfHour(),
-                        time.getSecondOfMinute()
-                    )
-                );
+                // TODO bug is here
+                regimenTime.setTime(time.toLocalTime());
                 //regimenTime.setTime(LocalTime.of(regimenEntry.getDaytime().getTime().get(Calendar.HOUR_OF_DAY), regimenEntry.getDaytime().getTime().get(Calendar.MINUTE), regimenEntry.getDaytime().getTime().get(Calendar.SECOND)));
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
             }

@@ -15,8 +15,6 @@ import org.imec.ivlab.core.kmehr.modifier.KmehrModification;
 import org.imec.ivlab.core.model.patient.model.Patient;
 import org.imec.ivlab.core.kmehr.mapper.ToKmehrMapper;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
-import org.imec.ivlab.core.util.DateUtils;
-import org.joda.time.DateTime;
 
 public class PatientDataModifier implements KmehrModification {
 

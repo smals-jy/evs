@@ -1,7 +1,6 @@
 package org.imec.ivlab.core.model.internal.mapper.medication.mapper;
 
 import org.imec.ivlab.core.TestUtil;
-import org.imec.ivlab.core.model.internal.mapper.medication.mapper.MedicationMapper;
 import org.imec.ivlab.core.model.upload.kmehrentrylist.KmehrEntryList;
 import org.imec.ivlab.core.model.upload.msentrylist.MSEntryList;
 import org.imec.ivlab.core.kmehr.model.AdministrationUnit;
