@@ -15,12 +15,18 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RegimenUtil {
 
     public static List<BigInteger> getDayNumbers(Regimen regimen) {
 
-        return getRegimenFields(regimen, BigInteger.class);
+        return regimen
+            .getDaynumbersAndQuantitiesAndDates()
+            .stream()
+            .filter(s -> BigInteger.class.isInstance(s.getValue()))
+            .map(s -> (BigInteger) s.getValue())
+            .collect(Collectors.toList());
 
     }
 
@@ -32,13 +38,23 @@ public class RegimenUtil {
 
     public static List<WeekdayType> getWeekdays(Regimen regimen) {
 
-        return getRegimenFields(regimen, WeekdayType.class);
+        return regimen
+            .getDaynumbersAndQuantitiesAndDates()
+            .stream()
+            .filter(s -> WeekdayType.class.isInstance(s.getValue()))
+            .map(s -> (WeekdayType) s.getValue())
+            .collect(Collectors.toList());
 
     }
 
     public static List<Daytime> getDaytimes(Regimen regimen) {
 
-        return getRegimenFields(regimen, Daytime.class);
+        return regimen
+            .getDaynumbersAndQuantitiesAndDates()
+            .stream()
+            .filter(s -> Daytime.class.isInstance(s.getValue()))
+            .map(s -> (Daytime) s.getValue())
+            .collect(Collectors.toList());
 
     }
 
