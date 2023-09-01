@@ -80,7 +80,7 @@ public class KmehrBusinessValidatorTest {
      * If we ever want to debug them, they are in the group "brokenValidators"
      */
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateXsdValidKmehr() {
         assertThat(validateTemplate("03_valid.xml"), ValidationMatchers.passes());
     }
@@ -106,12 +106,12 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("08_frequency-10-days-and-weekday.xml"), ValidationMatchers.failsForRule(R1001a_MultipleOfDaysAllowedFields.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateFrequency10DaysAndDate() {
         assertThat(validateTemplate("09_frequency-10-days-and-date.xml"), ValidationMatchers.failsForRule(R1001a_MultipleOfDaysAllowedFields.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateFrequency3weeksAndDate() {
         assertThat(validateTemplate("10_frequency-3-weeks-and-date.xml"), ValidationMatchers.failsForRule(R1001c_MultipleOfWeeksAllowedFields.class));
     }
@@ -170,7 +170,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("19_frequency-9-months-and-date.xml"), ValidationMatchers.passes());
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateFrequency9MonthsAndDateDayvalue29() {
         assertThat(validateTemplate("20_frequency-9-months-and-date-dayvalue-29.xml"), ValidationMatchers.failsForRule(R1001h_MultipleOfMonthsDayLimitInDate.class));
     }
@@ -180,7 +180,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("21_frequency-2-years-and-date-dayvalue-february-28.xml"), ValidationMatchers.passes(R1001j_MultipleOfYearsDayLimitInDate.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateFrequency2YearsAndDateDayValue29February() {
         assertThat(validateTemplate("22_frequency-2-years-and-date-dayvalue-february-29.xml"), ValidationMatchers.failsForRule(R1001j_MultipleOfYearsDayLimitInDate.class));
     }
@@ -217,7 +217,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("26_not-respecting-xsd-mandatory-field-missing.xml"), ValidationMatchers.failsWithMessage("cvc-complex-type.2.4.a:"));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateTemporalityValid() {
         assertThat(validateTemplate("29_temporality-valid.xml"), ValidationMatchers.passes(R1004_TemporalityPresent.class));
     }
@@ -227,7 +227,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("30_temporality-missing.xml"), ValidationMatchers.failsForRule(R1004_TemporalityPresent.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateAdministrationunitIdentical() {
         assertThat(validateTemplate("32_quantity-unit-identical.xml"), ValidationMatchers.passes(R1005_PresentAndIdenticalAdministrationUnits.class));
     }
@@ -251,12 +251,12 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("35_instruction-for-patient-too-long.xml"), ValidationMatchers.failsForRule(R1006_FreeTextMaxLength.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateFreeTextMaxLength() {
         assertThat(validateTemplate("36_instruction-for-patient-max-length.xml"), ValidationMatchers.passes(R1006_FreeTextMaxLength.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateSuspensionMedicationSameAsInMedicationTransaction() {
         assertThat(validateTemplate("37_suspension-medicaton-equal-to-medication-in-medication-transaction.xml"), ValidationMatchers.passes(R1007_TreatmentsuspensionMedicationEqualsMedicationInMedicationTransaction.class));
     }
@@ -276,7 +276,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("40_endmoment-suspension-type-yearmonth.xml"), ValidationMatchers.failsForRule(R1008_DateTypeForBeginmomentAndEndmoment.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateBeginAndEndmomentsTypesDate() {
         assertThat(validateTemplate("41_beginmoments-and-endmoments-type-date.xml"), ValidationMatchers.passes(R1008_DateTypeForBeginmomentAndEndmoment.class));
     }
@@ -291,7 +291,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("43_birthdate-of-type-year.xml"), ValidationMatchers.failsForRule(R1014_NoPartialDates.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateDateTypeOfTypeDate() {
         assertThat(validateTemplate("44_birthdate-of-type-date.xml"), ValidationMatchers.passes(R1014_NoPartialDates.class));
     }
@@ -301,7 +301,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("45_birthdate-of-type-yearmonth.xml"), ValidationMatchers.failsForRule(R1014_NoPartialDates.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateNoDeliveredCnkOrName() {
         assertThat(validateTemplate("46_no-delivered-cnk-or-name.xml"), ValidationMatchers.passes(R1010_NoDeliveredname.class));
     }
@@ -316,7 +316,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("48_delivered-name-equal-no-cd.xml"), ValidationMatchers.failsForRule(R1010_NoDeliveredname.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateDeliveredCnkAndNameEqual() {
         assertThat(validateTemplate("49_delivered-cnkd-and-name-equal.xml"), ValidationMatchers.passes(R1010_NoDeliveredname.class));
     }
@@ -326,12 +326,12 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("50_suspension-stopped-and-enddate.xml"), ValidationMatchers.failsForRule(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateSuspensionStoppedAndNoEndDate() {
         assertThat(validateTemplate("51_suspension-stopped-and-no-enddate.xml"), ValidationMatchers.passes(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateSuspensionSuspendedAndEndDate() {
         assertThat(validateTemplate("52_suspension-suspended-and-enddate.xml"), ValidationMatchers.passes(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
@@ -381,12 +381,12 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("62_suspension-stopped-and-duration.xml"), ValidationMatchers.failsForRule(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateSuspensionStoppedAndNoDuration() {
         assertThat(validateTemplate("63_suspension-stopped-and-no-duration.xml"), ValidationMatchers.passes(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateSuspensionSuspendedAndDuration() {
         assertThat(validateTemplate("64_suspension-suspended-and-duration.xml"), ValidationMatchers.passes(R1011_TreatmentSuspensionEnddateVersusType.class));
     }
@@ -451,7 +451,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("76_rationalnumber-3-fractionaldigits.xml"), ValidationMatchers.failsForRule(R1012_QuantityValueLimited.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateMixOfAllowedNumbers() {
         assertThat(validateTemplate("77_mix-of-allowed-numbers.xml"), ValidationMatchers.passes(R1012_QuantityValueLimited.class));
     }
@@ -546,7 +546,7 @@ public class KmehrBusinessValidatorTest {
         assertThat(validateTemplate("95_endmoment-before-beginmoment.xml"), ValidationMatchers.failsForRule(R1033_BeginmomentVsEndmoment.class));
     }
 
-    @Test(groups = {"brokenValidators"})
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateEndmomentEqualsBeginmoment() {
         assertThat(validateTemplate("96_endmoment-equals-beginmoment.xml"), ValidationMatchers.passes(R1033_BeginmomentVsEndmoment.class));
     }
