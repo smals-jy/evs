@@ -11,6 +11,7 @@ import org.imec.ivlab.core.authentication.AuthenticationConfigReader;
 import org.imec.ivlab.core.authentication.model.AuthenticationConfig;
 import org.imec.ivlab.core.exceptions.VitalinkException;
 import org.imec.ivlab.core.kmehr.KmehrHelper;
+import org.imec.ivlab.core.kmehr.model.util.RegimenUtil;
 import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
 import org.imec.ivlab.core.model.evsref.extractor.impl.MSEVSRefExtractor;
 import org.imec.ivlab.core.model.upload.msentrylist.MSEntry;
@@ -350,15 +351,12 @@ public class MSUploaderImpl implements Uploader, MSUploader {
                     );
                 }
 
-                /* 
-                TODO Understand & fix that as it isn't clear for me
-                List<Calendar> dates = RegimenUtil.getDates(medicationItem.getRegimen());
-
+                List<java.util.Calendar> dates = RegimenUtil.getDates(medicationItem.getRegimen());
                 if (dates != null) {
-                    for (Calendar date : dates) {
-                        date.add(Calendar.DATE, daysDiff.intValue());
+                    for (java.util.Calendar date : dates) {
+                        date.add(java.util.Calendar.DATE, daysDiff);
                     }
-                }*/
+                }
 
             }
 
