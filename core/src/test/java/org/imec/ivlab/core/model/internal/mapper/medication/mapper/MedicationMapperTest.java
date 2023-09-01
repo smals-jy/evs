@@ -35,7 +35,8 @@ public class MedicationMapperTest {
 
         Assert.assertEquals(medicationEntry.getBeginCondition(), "innemen bij rugpijn 140");
         Assert.assertEquals(medicationEntry.getEndCondition(), "stoppen bij irritatie 140");
-        Assert.assertEquals(medicationEntry.getBeginDate(), new LocalDate(2020, 1, 1));
+        Assert.assertTrue(new LocalDate(2020, 1, 1).isEqual(medicationEntry.getBeginDate()));
+        //Assert.assertEquals(medicationEntry.getBeginDate(), new LocalDate(2020, 1, 1));
         Assert.assertEquals(medicationEntry.getEndDate(), null);
         Assert.assertEquals(medicationEntry.getFrequencyCode(), FrequencyCode.W);
         Assert.assertEquals(medicationEntry.getInstructionForPatient(), "140");
@@ -66,8 +67,10 @@ public class MedicationMapperTest {
         Assert.assertEquals(medicationEntry.getSuspensions().size(), 1);
 
         Assert.assertEquals(medicationEntry.getSuspensions().get(0).getReason(), "Wegens interactie met andere medicatie. tijdelijk.");
-        Assert.assertEquals(medicationEntry.getSuspensions().get(0).getBeginDate(), new LocalDate(2020, 6, 1));
-        Assert.assertEquals(medicationEntry.getSuspensions().get(0).getEndDate(), new LocalDate(2020, 12, 31));
+        Assert.assertTrue(new LocalDate(2020, 6, 1).isEqual(medicationEntry.getSuspensions().get(0).getBeginDate()));
+        Assert.assertTrue(new LocalDate(2020, 12, 31).isEqual(medicationEntry.getSuspensions().get(0).getEndDate()));
+        //Assert.assertEquals(medicationEntry.getSuspensions().get(0).getBeginDate(), new LocalDate(2020, 6, 1));
+        //Assert.assertEquals(medicationEntry.getSuspensions().get(0).getEndDate(), new LocalDate(2020, 12, 31));
 
     }
 

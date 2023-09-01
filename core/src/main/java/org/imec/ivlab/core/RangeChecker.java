@@ -15,6 +15,8 @@ import org.imec.ivlab.core.model.internal.mapper.medication.Weekday;
 import org.imec.ivlab.core.util.CollectionsUtil;
 
 import java.math.BigInteger;
+import java.time.DayOfWeek;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Days;
@@ -300,7 +302,17 @@ public class RangeChecker {
             return false;
         } else if (Frequency.WEEK.equals(frequencyCode.getFrequency())) {
 
-            LocalDate firstMedicationIntake = medicationBeginDate.plusDays(7);
+            int weekDayOfMedicationBeginDate = medicationBeginDate.getDayOfWeek();
+            int weekDayOfFirstMedicationIntake = DayOfWeek.valueOf(weekday.name()).getValue();
+            int daysUntilFirstMedicationIntake = 0;
+
+            if (weekDayOfMedicationBeginDate < weekDayOfFirstMedicationIntake) {
+                daysUntilFirstMedicationIntake = weekDayOfFirstMedicationIntake - weekDayOfMedicationBeginDate;
+            } else if (weekDayOfFirstMedicationIntake < weekDayOfMedicationBeginDate) {
+                daysUntilFirstMedicationIntake = 7 - (weekDayOfMedicationBeginDate - weekDayOfFirstMedicationIntake);
+            }
+
+            LocalDate firstMedicationIntake = medicationBeginDate.plusDays(daysUntilFirstMedicationIntake);
 
             if (schemeDate.isBefore(firstMedicationIntake)) {
                 return false;

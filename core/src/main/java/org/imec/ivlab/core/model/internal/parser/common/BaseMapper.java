@@ -151,7 +151,9 @@ public class BaseMapper {
   public static Patient toPatient(PersonType personType) {
     Patient patient = new Patient();
     toPerson(personType, patient);
-    patient.setRecordDateTime(personType.getRecorddatetime().toLocalDateTime());
+    if (personType.getRecorddatetime() != null) {
+        patient.setRecordDateTime(personType.getRecorddatetime().toLocalDateTime());
+    }
     return patient;
   }
 
