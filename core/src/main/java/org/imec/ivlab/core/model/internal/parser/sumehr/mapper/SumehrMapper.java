@@ -392,7 +392,9 @@ public class SumehrMapper extends BaseMapper {
         medicationEntrySumehr.setCdcontents(ItemUtil.collectContentTypeCds(itemType));
         clearContentTypeCds(clone);
 
-        medicationEntrySumehr.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        if (itemType.getRecorddatetime() != null) {
+            medicationEntrySumehr.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+        }
         clone.setRecorddatetime(null);
 
         medicationEntrySumehr.setUnparsed(clone);

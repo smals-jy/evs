@@ -52,7 +52,9 @@ public class VaccinationMapper extends BaseMapper {
         entry.getTransactionCommon().setTime(firstTransaction.getTime().toLocalTime());
 
         DateTime recordDateTime = firstTransaction.getRecorddatetime();
-        entry.getTransactionCommon().setRecordDateTime(recordDateTime.toLocalDateTime());
+        if (recordDateTime != null) {
+            entry.getTransactionCommon().setRecordDateTime(recordDateTime.toLocalDateTime());
+        }
         //entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
