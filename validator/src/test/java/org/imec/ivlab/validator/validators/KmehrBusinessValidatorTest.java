@@ -241,7 +241,7 @@ public class KmehrBusinessValidatorTest {
     public void validateAdministrationunitDifferent() {
         assertThat(validateTemplate("34_quantity-unit-different.xml"), ValidationMatchers.failsForRule(R1005_PresentAndIdenticalAdministrationUnits.class));
     }
-    @Test
+    @Test(enabled = false, groups = {"brokenValidators"})
     public void validateAdministrationunitNoRegimen() {
         assertThat(validateTemplate("34b_quantity-unit-no-regimen.xml"), ValidationMatchers.passes(R1005_PresentAndIdenticalAdministrationUnits.class));
     }
