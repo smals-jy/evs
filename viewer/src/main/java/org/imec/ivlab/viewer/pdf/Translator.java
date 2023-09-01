@@ -516,6 +516,16 @@ public class Translator {
 
     }
 
+    protected static String formatAsTime(java.time.LocalTime localTime) {
+        if (localTime == null) {
+            return "";
+        }
+
+        return localTime.format(
+            java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")
+        );
+    }
+
     protected static String formatAsDate(LocalDate date) {
         if (date == null) {
             return "";

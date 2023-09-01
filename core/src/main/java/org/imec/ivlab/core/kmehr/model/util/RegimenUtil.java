@@ -137,7 +137,7 @@ public class RegimenUtil {
                 continue;
             }
 
-            // TODO not quite sure it happens
+            // TODO not quite sure why it is needed
             if (DateTime.class.isInstance(jaxbElement.getValue())) {
                 DateTime dateTime = ( (DateTime) jaxbElement.getValue());
                 regimenEntry.setDate(dateTime.toDate());

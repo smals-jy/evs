@@ -23,6 +23,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.RouteType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import java.math.BigInteger;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +65,6 @@ import org.imec.ivlab.core.model.internal.mapper.medication.TimeUnit;
 import org.imec.ivlab.core.model.internal.mapper.medication.Weekday;
 import org.imec.ivlab.core.model.internal.parser.sumehr.MedicationEntrySumehr;
 import org.imec.ivlab.core.util.CollectionsUtil;
-import org.imec.ivlab.core.util.DateUtils;
 import org.w3c.dom.Node;
 
 
@@ -263,8 +263,14 @@ public class MedicationMapper {
                 regimenEntryOut.setDayperiodOrTime(regimenDayperiod);
             } else if (regimenEntry.getDaytime() != null && regimenEntry.getDaytime().getTime() != null) {
                 RegimenTime regimenTime = new RegimenTime();
+                DateTime time = regimenEntry.getDaytime().getTime();
+                // TODO maybe one day we can use the same type as eHealth
                 regimenTime.setTime(
-                    regimenEntry.getDaytime().getTime().toLocalTime()
+                    java.time.LocalTime.of(
+                        time.getHourOfDay(),
+                        time.getMinuteOfHour(),
+                        time.getSecondOfMinute()
+                    )
                 );
                 //regimenTime.setTime(LocalTime.of(regimenEntry.getDaytime().getTime().get(Calendar.HOUR_OF_DAY), regimenEntry.getDaytime().getTime().get(Calendar.MINUTE), regimenEntry.getDaytime().getTime().get(Calendar.SECOND)));
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
