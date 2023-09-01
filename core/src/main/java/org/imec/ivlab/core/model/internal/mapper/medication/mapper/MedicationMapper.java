@@ -265,7 +265,7 @@ public class MedicationMapper {
                 RegimenTime regimenTime = new RegimenTime();
                 DateTime time = regimenEntry.getDaytime().getTime();
                 // TODO bug is here
-                regimenTime.setTime(time.toLocalTime());
+                regimenTime.setTime(time);
                 //regimenTime.setTime(LocalTime.of(regimenEntry.getDaytime().getTime().get(Calendar.HOUR_OF_DAY), regimenEntry.getDaytime().getTime().get(Calendar.MINUTE), regimenEntry.getDaytime().getTime().get(Calendar.SECOND)));
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
             }

@@ -17,6 +17,8 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 import com.itextpdf.text.Chunk;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -514,6 +516,14 @@ public class Translator {
 
         return DateTimeFormat.forPattern("HH:mm:ss").print(localTime);
 
+    }
+
+    protected static String formatAsTime(DateTime localTime) {
+        if (localTime == null) {
+            return "";
+        }
+
+        return DateTimeFormat.forPattern("HH:mm:ss").print(localTime);
     }
 
     protected static String formatAsTime(java.time.LocalTime localTime) {

@@ -51,6 +51,10 @@ public class TakeTimeManager {
         return String.format(StringUtils.joinWith("u", org.joda.time.format.DateTimeFormat.fullTime().print(localTime)));
     }
 
+    public String toTakeTimeString(org.joda.time.DateTime localTime) {
+        return String.format(StringUtils.joinWith("u", org.joda.time.format.DateTimeFormat.fullTime().print(localTime)));
+    }
+
     public Set<String> getTakeTimes() {
         return takeTimes;
     }
