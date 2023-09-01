@@ -2,15 +2,16 @@ package org.imec.ivlab.core.model.internal.mapper.medication;
 
 import java.io.Serializable;
 
-//import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import be.ehealth.technicalconnector.adapter.XmlTimeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-//import org.imec.ivlab.core.xml.LocalTimeAdapter;
 import org.joda.time.DateTime;
-//import java.time.LocalTime;
+
+// Inspired by what eHealth did for HeaderType time issue
 
 public class RegimenTime extends DayperiodOrTime implements Serializable {
 
-    //@XmlJavaTypeAdapter(LocalTimeAdapter.class)
+    @XmlJavaTypeAdapter(XmlTimeAdapter.class)
     private DateTime time;
 
     public DateTime getTime() {
