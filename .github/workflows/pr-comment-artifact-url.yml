@@ -1,8 +1,5 @@
-# pr-comment-artifact-url.yml
----
-name: Comment Artifact URL on PR
-
 # Credits to https://github.com/orgs/community/discussions/51403#discussioncomment-5515349
+name: Comment Artifact URL on PR
 
 on:
   workflow_run:
@@ -14,6 +11,8 @@ on:
 jobs:
   comment-on-pr:
     if: github.event.workflow_run.conclusion == 'success'
+    permissions: 
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
 
