@@ -9,7 +9,7 @@ on:
     create_artifacts:
       description: "Produce temporary artifacts"
       required: false
-      default: false
+      default: true
       type: boolean
     create_release:
       description: "Produce the release artifacts"
