@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: EVS-build
-          path: "EVS-${{ env.EVS_VERSION }}.zip"
+          path: "${{ env.artifacts_path }}/EVS-${{ env.EVS_VERSION }}.zip"
           if-no-files-found: error
           retention-days: 1
       - uses: ncipollo/release-action@v1.13.0
