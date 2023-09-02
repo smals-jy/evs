@@ -68,7 +68,7 @@ jobs:
         name: 🤖 Create release on Github
         if: github.event.inputs.create_release && contains(github.ref, 'main')
         with:
-          artifacts: "EVS-${{ env.EVS_VERSION }}.zip"
+          artifacts: "${{ env.artifacts_path }}/EVS-${{ env.EVS_VERSION }}.zip"
           allowUpdates: "true"
           tag: "${{ env.EVS_VERSION }}"
           commit: "main"
