@@ -55,7 +55,7 @@ jobs:
       - name: 🧰 Create release zip
         run: | 
           find ${{ env.artifacts_path }} -type f \( -name ".gitignore" -o -name ".gitkeep" \) -exec rm -f {} \;  
-          zip -r -q -j EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
+          zip -r -q -j EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}/*
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v3
         with:
