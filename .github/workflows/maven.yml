@@ -55,14 +55,12 @@ jobs:
       - name: 🧰 Create release zip
         run: | 
           find ${{ env.artifacts_path }} -type f \( -name ".gitignore" -o -name ".gitkeep" \) -exec rm -f {} \;  
-          zip -r -q EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
+          zip -r -q -j EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v3
         with:
           name: EVS-build
-# I don't want the double-zip issue in artifact
-# https://github.com/actions/upload-artifact#zipped-artifact-downloads 
-          path: "${{ env.artifacts_path }}"
+          path: "EVS-${{ env.EVS_VERSION }}.zip"
           if-no-files-found: error
           retention-days: 1
       - uses: ncipollo/release-action@v1.13.0
