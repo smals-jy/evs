@@ -54,8 +54,9 @@ jobs:
           echo "artifacts_path=$(realpath ../builds/${{ env.EVS_VERSION }})" >> $GITHUB_ENV
       - name: 🧰 Create release zip
         run: | 
-          find ${{ env.artifacts_path }} -type f \( -name ".gitignore" -o -name ".gitkeep" \) -exec rm -f {} \;  
-          zip -r -q EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
+          cd ${{ env.artifacts_path }}  
+          find . -type f \( -name ".gitignore" -o -name ".gitkeep" \) -exec rm -f {} \;  
+          zip -r -q EVS-${{ env.EVS_VERSION }}.zip .
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v3
         with:
