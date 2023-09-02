@@ -117,7 +117,7 @@ public class Translator {
                 String pattern = DateTimeFormat.forPattern("d MMMM").print(regimenDate.getDate());
                 return " - " + pattern;
             } else {
-                String pattern = DateTimeFormat.forPattern("dd/MM/uuuu").print(regimenDate.getDate());
+                String pattern = DateTimeFormat.forPattern("dd/MM/yyyy").print(regimenDate.getDate());
                 return " - " + pattern;
             }
         }
