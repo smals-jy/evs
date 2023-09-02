@@ -6,11 +6,6 @@ on:
     evs_version:
       description: "Overwrite EVS version (default to the one in release/version_input.txt)"
       required: false
-    create_artifacts:
-      description: "Produce temporary artifacts"
-      required: false
-      default: true
-      type: boolean
     create_release:
       description: "Produce the release artifacts"
       required: false
@@ -58,11 +53,9 @@ jobs:
         run: |
           echo "artifacts_path=$(realpath ../builds/${{ env.EVS_VERSION }})" >> $GITHUB_ENV
       - name: 🧰 Create release zip
-        if: github.event.inputs.create_artifacts || github.event.inputs.create_release
         run: zip -r -q EVS-${{ env.EVS_VERSION }}.zip ${{ env.artifacts_path }}
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v3
-        if: github.event.inputs.create_artifacts
         with:
           name: EVS-build
           path: ${{ env.artifacts_path }}
