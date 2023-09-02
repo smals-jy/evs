@@ -21,6 +21,10 @@ public class RegimenUtil {
 
     public static List<BigInteger> getDayNumbers(Regimen regimen) {
 
+        if (regimen == null) {
+            return new ArrayList<BigInteger>();
+        }
+
         return regimen
             .getDaynumbersAndQuantitiesAndDates()
             .stream()
@@ -31,6 +35,10 @@ public class RegimenUtil {
     }
 
     public static List<Calendar> getDates(Regimen regimen) {
+
+        if (regimen == null) {
+            return new ArrayList<Calendar>();
+        }
 
         return regimen
             .getDaynumbersAndQuantitiesAndDates()
@@ -43,6 +51,10 @@ public class RegimenUtil {
 
     public static List<WeekdayType> getWeekdays(Regimen regimen) {
 
+        if (regimen == null) {
+            return new ArrayList<WeekdayType>();
+        }
+
         return regimen
             .getDaynumbersAndQuantitiesAndDates()
             .stream()
@@ -54,6 +66,10 @@ public class RegimenUtil {
 
     public static List<Daytime> getDaytimes(Regimen regimen) {
 
+        if (regimen == null) {
+            return new ArrayList<Daytime>();
+        }
+
         return regimen
             .getDaynumbersAndQuantitiesAndDates()
             .stream()
@@ -64,6 +80,10 @@ public class RegimenUtil {
     }
 
     public static List<AdministrationquantityType> getQuantities(Regimen regimen) {
+
+        if (regimen == null) {
+            return new ArrayList<AdministrationquantityType>();
+        }
 
         return regimen
             .getDaynumbersAndQuantitiesAndDates()
