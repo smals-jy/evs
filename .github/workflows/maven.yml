@@ -60,8 +60,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: EVS-build
-          path: "EVS-${{ env.EVS_VERSION }}.zip"
+# I don't want the double-zip issue in artifact
+# https://github.com/actions/upload-artifact#zipped-artifact-downloads 
+          path: "${{ env.artifacts_path }}"
           if-no-files-found: error
+          retention-days: 1
       - uses: ncipollo/release-action@v1.13.0
         name: 🤖 Create release on Github
         if: github.event.inputs.create_release && contains(github.ref, 'main')
