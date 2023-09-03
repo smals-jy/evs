@@ -264,7 +264,7 @@ public class SessionManager {
         String[] pathArray = paths.toArray(new String[0]);
         String commonPath = PathUtils.commonParent(pathArray);
         if (commonPath == null) {
-            throw new InvalidConfigurationException("All certificates must be located under the same root. The configuration contains certificate configurations with different roots: " + StringUtils.joinWith(", ", pathArray));
+            throw new InvalidConfigurationException("All certificates must be located under the same root. The configuration contains certificate configurations with different roots: " + StringUtils.joinWith(", ", (Object[]) pathArray));
         }
 
         return commonPath;
