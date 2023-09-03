@@ -30,6 +30,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class TransactionWriter extends AbstractWriter implements Writer<GetTrans
         File outputFile = createOutputFile(outputDirectory, filename, extension);
 
         try {
-            FileUtils.writeStringToFile(outputFile, getExportContent(getTransactionResponse));
+            FileUtils.writeStringToFile(outputFile, getExportContent(getTransactionResponse), Charset.defaultCharset());
             LOG.info("Exported to: " + outputFile);
             return new ExportResult<>(getTransactionResponse, outputFile);
         } catch (IOException e) {
