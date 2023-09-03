@@ -325,17 +325,19 @@ public class SessionManager {
             return samlToken;
         }
 
+        /*
         public void setSamlToken(SAMLToken samlToken) {
             this.samlToken = samlToken;
-        }
+        }*/
 
         public String getEncryptionPassword() {
             return encryptionPassword;
         }
 
+        /*
         public void setEncryptionPassword(String encryptionPassword) {
             this.encryptionPassword = encryptionPassword;
-        }
+        }*/
     }
 
 }
