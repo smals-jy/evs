@@ -162,11 +162,12 @@ public class RegimenUtil {
             }
 
             // TODO not quite sure why it is needed
+            /*
             if (DateTime.class.isInstance(jaxbElement.getValue())) {
                 DateTime dateTime = ( (DateTime) jaxbElement.getValue());
                 regimenEntry.setDate(dateTime.toDate());
                 continue;
-            }
+            }*/
 
             throw new RuntimeException("Regimen entry field of type " + jaxbElement.getValue().getClass() + " cannot be used to create a regimen entry");
 
