@@ -85,6 +85,7 @@ public class ScannedFileHandlerImpl implements ScannedFileHandler {
 
 
 
+    @SuppressWarnings({ "rawtypes", "unchecked"})
     private Instruction<?> instructionFromFile(File rootFolder, File file) throws InvalidActionException, NoQueueingNeededException, InvalidFolderStructureException, InvalidPatientException {
 
         Path filePath = file.toPath();
