@@ -199,7 +199,9 @@ public class TransactionWriter extends AbstractWriter implements Writer<GetTrans
                 HcParty = hubHcParty;
             }
 
-            String author = org.imec.ivlab.core.util.StringUtils.joinWith("-", HcParty.getFirstname(), HcParty.getFamilyname(), HcParty.getName());
+            String author = (HcParty != null) 
+                ? org.imec.ivlab.core.util.StringUtils.joinWith("-", HcParty.getFirstname(), HcParty.getFamilyname(), HcParty.getName())
+                : "";
             if (StringUtils.isNotBlank(author)) {
                 if (sb.length() > 0) {
                     sb.append("-");

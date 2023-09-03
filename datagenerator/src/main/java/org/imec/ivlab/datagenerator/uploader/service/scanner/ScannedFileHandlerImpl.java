@@ -85,7 +85,7 @@ public class ScannedFileHandlerImpl implements ScannedFileHandler {
 
 
 
-    private Instruction instructionFromFile(File rootFolder, File file) throws InvalidActionException, NoQueueingNeededException, InvalidFolderStructureException, InvalidPatientException {
+    private Instruction<?> instructionFromFile(File rootFolder, File file) throws InvalidActionException, NoQueueingNeededException, InvalidFolderStructureException, InvalidPatientException {
 
         Path filePath = file.toPath();
         Path rootPath = rootFolder.toPath();
@@ -168,7 +168,7 @@ public class ScannedFileHandlerImpl implements ScannedFileHandler {
     @Override
     public void process(File rootFolder, File file) {
 
-        Instruction instruction = null;
+        Instruction<?> instruction = null;
         try {
             instruction = instructionFromFile(rootFolder, file);
 
@@ -219,7 +219,7 @@ public class ScannedFileHandlerImpl implements ScannedFileHandler {
 
     }
 
-    private AbstractInstruction initiateInstruction(TransactionType transactionType) {
+    private AbstractInstruction<?> initiateInstruction(TransactionType transactionType) {
 
         switch (transactionType) {
             case MEDICATION_SCHEME:

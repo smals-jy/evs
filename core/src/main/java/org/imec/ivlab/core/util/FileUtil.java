@@ -23,19 +23,10 @@ public class FileUtil {
             destFile.createNewFile();
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
-        } finally {
-            if (source != null) {
-                source.close();
-            }
-            if (destination != null) {
-                destination.close();
+        try(FileInputStream source = new FileInputStream(sourceFile)) {
+            try(FileOutputStream destination = new FileOutputStream(destFile)) {
+                FileChannel sourceChannel = source.getChannel();
+                destination.getChannel().transferFrom(sourceChannel, 0, sourceChannel.size());
             }
         }
     }
