@@ -93,7 +93,7 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-business-dicsv4</artifactId>
+            <artifactId>connector-business-dicsv5</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
@@ -273,7 +273,7 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-utilities-dicsv4</artifactId>
+            <artifactId>connector-utilities-dicsv5</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
