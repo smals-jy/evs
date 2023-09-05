@@ -8,7 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.core.kmehr.model.localid.URI;
 import org.imec.ivlab.core.kmehr.model.localid.URIType;
 import org.imec.ivlab.core.model.upload.TransactionType;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 public class URIBuilder {
 

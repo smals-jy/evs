@@ -1,7 +1,7 @@
 package org.imec.ivlab.core.vaccination;
 
 import java.util.List;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.TestCase;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 

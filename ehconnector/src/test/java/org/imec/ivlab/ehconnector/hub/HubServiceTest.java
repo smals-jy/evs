@@ -21,9 +21,10 @@ import be.fgov.ehealth.standards.kmehr.id.v1.IDKMEHRschemes;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDPATIENT;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDPATIENTschemes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
+
 import javax.xml.bind.JAXBException;
-import junit.framework.TestCase;
 import lombok.extern.log4j.Log4j2;
+
 import org.imec.ivlab.core.authentication.AuthenticationConfigReader;
 import org.imec.ivlab.core.config.EVSConfig;
 import org.imec.ivlab.core.config.EVSProperties;
@@ -37,6 +38,8 @@ import org.imec.ivlab.ehconnector.business.HubHelper;
 import org.imec.ivlab.ehconnector.hub.exception.GatewaySpecificErrorException;
 import org.imec.ivlab.ehconnector.hub.exception.incurable.InvalidConfigurationException;
 import org.imec.ivlab.ehconnector.hub.session.SessionManager;
+
+import org.junit.jupiter.api.TestCase;
 
 import java.util.stream.IntStream;
 @Log4j2
