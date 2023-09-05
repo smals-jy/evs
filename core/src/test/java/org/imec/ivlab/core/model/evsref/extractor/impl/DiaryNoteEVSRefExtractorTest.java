@@ -11,7 +11,6 @@ import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
 import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
 import org.imec.ivlab.core.model.evsref.EVSREF;
 import org.imec.ivlab.core.model.upload.KmehrWithReference;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -28,15 +27,10 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 public class DiaryNoteEVSRefExtractorTest extends TestCase {
 
   private EVSREF evsref = new EVSREF("TESTREF");
-  private KmehrWithReference kmehr;
-
-  @BeforeMethod
-  private void init() {
-    this.kmehr = initKmehr();
-  }
 
   @Test
   public void addEvsRefToNewTextWithLayoutIfNoTextFieldExists() {
+    KmehrWithReference kmehr = initKmehr();
     new DiaryNoteEVSRefExtractor().putEvsReference(kmehr, evsref);
 
     List<TextWithLayoutType> textWithLayoutTypes = TransactionUtil.getTextWithLayout(kmehr.getIdentifiableTransaction());
@@ -47,6 +41,7 @@ public class DiaryNoteEVSRefExtractorTest extends TestCase {
 
   @Test
   public void addEvsRefToExistingTextIfExists() {
+    KmehrWithReference kmehr = initKmehr();
     TextType textType = new TextType();
     textType.setValue("existing content");
     kmehr.getIdentifiableTransaction().getText().add(textType);
