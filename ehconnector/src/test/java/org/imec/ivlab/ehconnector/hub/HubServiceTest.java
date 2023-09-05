@@ -39,11 +39,9 @@ import org.imec.ivlab.ehconnector.hub.exception.GatewaySpecificErrorException;
 import org.imec.ivlab.ehconnector.hub.exception.incurable.InvalidConfigurationException;
 import org.imec.ivlab.ehconnector.hub.session.SessionManager;
 
-import org.junit.jupiter.api.TestCase;
-
 import java.util.stream.IntStream;
 @Log4j2
-public class HubServiceTest extends TestCase {
+public class HubServiceTest {
 
   public static final String actor = AuthenticationConfigReader.GP_EXAMPLE;
   public static final String SUMEHR_LOCAL_ID = "";

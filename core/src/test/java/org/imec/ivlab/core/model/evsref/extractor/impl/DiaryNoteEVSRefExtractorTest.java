@@ -22,10 +22,8 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.TextWithLayoutType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 //import lombok.extern.log4j.Log4j2;
 
-import org.junit.jupiter.api.TestCase;
-
 //@Log4j2
-public class DiaryNoteEVSRefExtractorTest extends TestCase {
+public class DiaryNoteEVSRefExtractorTest {
 
   private EVSREF evsref = new EVSREF("TESTREF");
 
