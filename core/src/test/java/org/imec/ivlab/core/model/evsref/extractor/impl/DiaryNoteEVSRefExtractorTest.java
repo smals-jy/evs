@@ -24,7 +24,6 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.TextWithLayoutType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 //import lombok.extern.log4j.Log4j2;
 
-@Test
 //@Log4j2
 public class DiaryNoteEVSRefExtractorTest extends TestCase {
 
