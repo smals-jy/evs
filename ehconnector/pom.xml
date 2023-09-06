@@ -39,7 +39,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
+            <version>1.16.0</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -497,7 +497,7 @@
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
