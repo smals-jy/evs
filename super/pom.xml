@@ -228,14 +228,5 @@
             </releases>
         </repository>
 
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-            <id>my-local-repo</id>
-            <url>file:${project.basedir}${file.separator}..${file.separator}local-maven-repo</url>
-        </repository>
-
     </repositories>
 </project>
