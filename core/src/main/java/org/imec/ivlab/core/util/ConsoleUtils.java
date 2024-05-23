@@ -11,6 +11,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ConsoleUtils {
 
@@ -29,14 +32,21 @@ public class ConsoleUtils {
         return builder.toString();
     }
 
+    private static String repeat(String str, int length) {
+        IntFunction<String> repeater = (l) -> IntStream.range(0, l)
+                .mapToObj(i -> str)
+                .collect(Collectors.joining());
+        return repeater.apply(length);
+    }
+    
     private static String center(String text, int length) {
         int paddingSize = (length - text.length()) / 2;
-        String padding = " ".repeat(Math.max(0, paddingSize));
+        String padding = repeat(" ", Math.max(0, paddingSize));
         return "|" + padding + text + padding + (text.length() % 2 == 0 ? padding : padding + " ") + "|";
     }
 
     private static String createBorder(int length) {
-        return "+" + "-".repeat(length) + "+";
+        return "+" + repeat("-",length) + "+";
     }
 
     public static String createAsciiMessage(String message) {
