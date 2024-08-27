@@ -40,8 +40,10 @@ public class VaultExporterFromIde {
         arguments.setGenerateGatewayMedicationScheme(true);
         arguments.setDailyMedicationSchemeDate(LocalDate.now().plusYears(4));
         arguments.setFilterOutTransactionsHavingPatientAccessNo(false);
-
-        arguments.setHub(Hub.RSB);
+        
+        arguments.setLogCommunicationType(LogCommunicationType.WITHOUT_SECURITY);
+        
+        arguments.setHub(Hub.VITALINK);
         arguments.setSearchType(SearchType.LOCAL);
 
 //        arguments.setBreakTheGlassIfTRMissing(true);
