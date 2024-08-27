@@ -306,6 +306,13 @@ public class SumehrMapper extends BaseMapper {
         return pb;
     }
 
+    private static boolean hasNullFlavor(ItemType itemType) {
+        return CDItemUtil
+            .getCDItems(itemType.getCds(), CDITEMschemes.CD_ITEM)
+            .stream()
+            .anyMatch(cdItem -> org.apache.commons.lang3.StringUtils.equalsIgnoreCase(cdItem.getNullFlavor(), "NA"));
+    }
+
     public static PatientWill toPatientWill(ItemType itemType) {
         PatientWill patientWill = new PatientWill();
 
