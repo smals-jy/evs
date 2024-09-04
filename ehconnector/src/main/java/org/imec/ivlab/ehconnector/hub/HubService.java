@@ -56,6 +56,7 @@ import org.imec.ivlab.ehconnector.hub.exception.incurable.NoDataIsAvailableForPr
 import org.imec.ivlab.ehconnector.hub.exception.incurable.NoNodeFoundMatchingTheURI;
 import org.imec.ivlab.ehconnector.hub.exception.incurable.RemoveNotAllowedIfDataEntryAlreadyDeleted;
 import org.imec.ivlab.ehconnector.hub.exception.incurable.SubjectWithSSINUnknownException;
+import org.imec.ivlab.ehconnector.hub.logging.Kind;
 import org.imec.ivlab.ehconnector.hub.logging.MessageWriter;
 
 public class HubService {
