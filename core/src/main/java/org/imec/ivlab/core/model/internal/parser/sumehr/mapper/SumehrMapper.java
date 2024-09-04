@@ -268,6 +268,8 @@ public class SumehrMapper extends BaseMapper {
 
         toItem(itemType, tm);
 
+        tm.setNoKnownTreatment(hasNullFlavor(itemType));
+
         if (itemType.getBeginmoment() != null) {
             tm.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
             tm.getUnparsed().getBeginmoment().setDate(null);
@@ -285,6 +287,8 @@ public class SumehrMapper extends BaseMapper {
         Problem pb = new Problem();
 
         toItem(itemType, pb);
+
+        pb.setNoKnownTreatment(hasNullFlavor(itemType));
 
         if (itemType.getBeginmoment() != null) {
             pb.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
