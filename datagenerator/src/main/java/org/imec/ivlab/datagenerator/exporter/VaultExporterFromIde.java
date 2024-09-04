@@ -8,6 +8,7 @@ import java.util.List;
 import org.imec.ivlab.core.authentication.AuthenticationConfigReader;
 import org.imec.ivlab.core.data.PatientKey;
 import org.imec.ivlab.core.model.hub.Hub;
+import org.imec.ivlab.core.model.hub.LogCommunicationType;
 import org.imec.ivlab.core.model.hub.SearchType;
 import org.imec.ivlab.core.model.upload.TransactionType;
 
