@@ -32,7 +32,7 @@ public class MessageWriter {
         String exportDir = rootLocation + File.separator + ".." + File.separator + "logs" + File.separator + "communication";
         FileUtil.createDirectoriesRecursively(exportDir);
         LocalDateTime localDateTime = LocalDateTime.now();
-        String fileName = exportDir + File.separator + localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS")) + "_" + kind.name() + "_" + operation + ".xml";
+        String fileName = exportDir + File.separator + localDateTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd_HH-mm-ss-SSS")) + "_" + kind.name() + "_" + operation + ".xml";
 
         try {
             FileUtils.writeStringToFile(new File(fileName), message, "UTF-8");
