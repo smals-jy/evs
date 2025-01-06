@@ -88,9 +88,15 @@ public class ResourceResolver {
                 while (entries.hasMoreElements()) {
                     JarEntry jarEntry = entries.nextElement();
                     log.trace("Checking if: " + jarEntry.getName() + " starts with " + startsWith);
-                    if (org.apache.commons.lang3.StringUtils.startsWithIgnoreCase(jarEntry.getName(), startsWith)) {
-                        jarEntries.add(jarEntry.getName());
-                        log.trace("Found jar entry: " + jarEntry.getName());
+                    String entryName = jarEntry.getName();
+                    if (org.apache.commons.lang3.StringUtils.startsWithIgnoreCase(entryName, startsWith)) {
+                        // Validate the entry name to prevent directory traversal
+                        File entryFile = new File(entryName);
+                        if (!entryFile.toPath().normalize().startsWith(new File(startsWith).toPath().normalize())) {
+                            throw new IOException("Invalid jar entry: " + entryName);
+                        }
+                        jarEntries.add(entryName);
+                        log.trace("Found jar entry: " + entryName);
                     }
                 }
             }
