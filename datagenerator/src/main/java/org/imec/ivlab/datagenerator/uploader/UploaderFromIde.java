@@ -37,6 +37,7 @@ public class UploaderFromIde {
         arguments.setFilterOutTransactionsHavingPatientAccessNo(false);
 
         arguments.setLogCommunicationType(LogCommunicationType.WITHOUT_SECURITY);
+        arguments.setEnableEVSREF(true);
 
         arguments.setStartTransactionId("100");
 

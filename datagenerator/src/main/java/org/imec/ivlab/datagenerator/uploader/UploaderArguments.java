@@ -84,5 +84,7 @@ public class UploaderArguments {
 
     @Parameter(names = "-logCommunicationType", description = "What kind communication to log", converter = LogCommunicationTypeConverter.class)
     private LogCommunicationType logCommunicationType = LogCommunicationType.WITHOUT_SECURITY;
-    
+
+    @Parameter(names = "-enableEVSREF", description = "Write the content with EVSREF references", arity = 1)
+    private boolean enableEVSREF = true;
 }
