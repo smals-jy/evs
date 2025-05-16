@@ -4,6 +4,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.imec.ivlab.core.config.EVSConfig;
+import org.imec.ivlab.core.config.EVSProperties;
 import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
 import org.imec.ivlab.core.model.evsref.EVSREF;
 import org.imec.ivlab.core.model.evsref.Identifiable;
@@ -113,6 +115,13 @@ public abstract class AbstractRefExtractor implements RefExtractor {
 
     @Override
     public void generateEVSRefsIfMissing(ListOfIdentifiables listOfIdentifiables, ListOfIdentifiables listOfIdentifiablesWithAlreadyTakenRefs) {
+
+        String enableEVSREF = EVSConfig.getInstance().getProperty(EVSProperties.ENABLE_EVSREF);
+
+        // Don't add EVSREF if the property is not set to true
+        if (!Boolean.parseBoolean(enableEVSREF)) {
+            return;
+        }
 
         if (CollectionsUtil.emptyOrNull(listOfIdentifiables.getIdentifiables())) {
             return;
