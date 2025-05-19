@@ -1,0 +1,48 @@
+name: Update Connector Config from Artifactory
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Runs daily at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-connector-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y unzip
+
+      - name: Get latest version zip URL
+        id: get_latest
+        run: |
+          html=$(curl -s 'https://repo.ehealth.fgov.be/artifactory/maven2/be/fgov/ehealth/connector/connector-packaging-generic/')
+          latest_ver=$(echo "$html" | grep -oP '(?<=href=")[^"/]+(?=/")' | grep -v 'maven-metadata.xml' | tail -1)
+          zip_url="https://repo.ehealth.fgov.be/artifactory/maven2/be/fgov/ehealth/connector/connector-packaging-generic/${latest_ver}/connector-packaging-generic-${latest_ver}-java.zip"
+          echo "zip_url=$zip_url" >> "$GITHUB_OUTPUT"
+          echo "latest_ver=$latest_ver" >> "$GITHUB_OUTPUT"
+
+      - name: Download latest zip
+        run: curl -L "${{ steps.get_latest.outputs.zip_url }}" -o connector-packaging-generic.zip
+
+      - name: Unzip config/P12 contents
+        run: |
+          rm -rf ehconnector/src/main/resources/config/P12
+          unzip -o connector-packaging-generic.zip "config/P12/*" -d tmp-unzip
+          mkdir -p ehconnector/src/main/resources/config/
+          mv tmp-unzip/config/P12 ehconnector/src/main/resources/config/
+          rm -rf tmp-unzip
+
+      - name: Delete downloaded zip
+        run: rm -f connector-packaging-generic.zip
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7.0.8
+        with:
+          commit-message: "chore: Update config/P12 from connector-packaging-generic version ${{ steps.get_latest.outputs.latest_ver }}"
+          branch: update/connector-config
+          title: "Update config/P12 from connector-packaging-generic version ${{ steps.get_latest.outputs.latest_ver }}"
+          body: "Automated update of config/P12 from connector-packaging-generic-${{ steps.get_latest.outputs.latest_ver }}-java.zip"
