@@ -179,7 +179,9 @@ public class KmehrHelper {
         }
 
         if (linkedSuspensionsCount < suspensionTransactions.size()) {
-            throw new RuntimeException("Some treatment suspension transactions don't link correctly to a medication scheme element transaction and can therefore not be linked. Please review the kmehr content");
+            // As this issue is possible in production environnements, EVS should not prevent this (to help integrators to reproduce this situation in acceptance) - only warn
+            int diffCount = suspensionTransactions.size() - linkedSuspensionsCount;
+            LOG.warn("{} treatment suspension transactions don't link correctly to a medication scheme element transaction and can therefore not be linked. Please review the kmehr content", diffCount);
         }
 
         return medicationAndLinkedSuspensions;
