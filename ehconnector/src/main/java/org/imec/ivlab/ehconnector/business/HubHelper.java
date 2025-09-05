@@ -67,6 +67,8 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.SexType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.StandardType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TelecomType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+import org.imec.ivlab.core.config.EVSConfig;
+import org.imec.ivlab.core.config.EVSProperties;
 import org.imec.ivlab.core.kmehr.KmehrMarshaller;
 import org.imec.ivlab.core.kmehr.modifier.impl.PatientDataModifier;
 import org.imec.ivlab.core.util.JAXBUtils;
@@ -99,7 +101,8 @@ public class HubHelper {
     
     public HubHelper() {
         this.testPatient = null;
-        this.testFilesLocation = "vitalink";
+        // "vitalink", "rsw", "rsb"
+        this.testFilesLocation = EVSConfig.getInstance().getProperty(EVSProperties.CHOSEN_HUB).toLowerCase();
     }
 
     public String expectedResponse(String scenarioName) {
