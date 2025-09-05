@@ -39,7 +39,7 @@
             <sex>
                 <cd S="CD-SEX" SV="1.0">male</cd>
             </sex>
-            <usuallanguage>nl-BE</usuallanguage>
+            <usuallanguage>fr-BE</usuallanguage>
        </patient>
 		<!-- Information about the complete medicationscheme -->
 		<transaction>
