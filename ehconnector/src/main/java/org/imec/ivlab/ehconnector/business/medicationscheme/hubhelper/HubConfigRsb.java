@@ -12,7 +12,7 @@ public class HubConfigRsb {
     public static void initConfig() throws TechnicalConnectorException {
         ConfigFactory.getConfigValidator().getConfig().setProperty(PROP_ENDPOINT_INTRAHUB, "https://acchub.abrumet.be/hubservices/intrahub/v3/intrahub.asmx");
         ConfigFactory.getConfigValidator().getConfig().setProperty(PROP_HUBID, "1990000728");
-        ConfigFactory.getConfigValidator().getConfig().setProperty(PROP_HUBAPPID, "RSB");
+        ConfigFactory.getConfigValidator().getConfig().setProperty(PROP_HUBAPPID, null);
     }
 
 }
