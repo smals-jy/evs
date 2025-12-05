@@ -27,6 +27,10 @@ https://github.com/smals-jy/evs/wiki
 Made by IMEC vzw for Vlaamse Agentschap Zorg & Gezondheid / Vitalink.  
 Updated by [Jacques Yakoub](https://github.com/jy95) to support mandatory eHealth changes in October 2023, scripts to automate the release process ,...
 
+## Disclaimer
+This project is maintained by volunteers. All work is undertaken freely and out of personal dedication.
+No formal support, warranty, or guarantee of future maintenance is provided. Use this software "as is."
+
 ## Terms & Conditions
 The EVS source code is licensed as open source software under the terms of the GNU Affero General Public License v3 ([AGPLv3](https://www.gnu.org/licenses/agpl-3.0.txt)).
 
