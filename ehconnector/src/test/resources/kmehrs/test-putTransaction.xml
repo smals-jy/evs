@@ -44,7 +44,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
         <patient>
-            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -54,7 +54,7 @@
         </patient>
         <transaction>
             <id S="ID-KMEHR" SV="1.0">1</id>
-            <id S="LOCAL" SV="1.0" SL="vitalinkuri">/subject/XXXXXXXXXXX/sumehr/81617/new/2</id>
+            <id S="LOCAL" SV="1.0" SL="vitalinkuri">/subject/12345678901/sumehr/81617/new/2</id>
             <cd S="CD-TRANSACTION" SV="1.0">sumehr</cd>
             <date>2021-02-09</date>
             <time>14:32:16</time>

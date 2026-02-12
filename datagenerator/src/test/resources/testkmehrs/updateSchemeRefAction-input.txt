@@ -9,7 +9,7 @@ sv-2841_nv-2834_20171206-131458_steven_size-10_5WQ4FPFN_updatedby-JOHN-DOE
 
 URI
 --------------------
-/subject/XXXXXXXXXXX/medication-scheme/18489/2
+/subject/12345678901/medication-scheme/18489/2
 
 MetaData
 --------------------
@@ -17,10 +17,10 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHYSICIAN
 creationTime=2017-12-06T13:14:58+01:00
-patientID=XXXXXXXXXXX
+patientID=12345678901
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=XXXXXXXXXXX
+authorPersonSSIN=12345678901
 authorPersonNIHII=12345678901
 authorPersonFamilyName=DOE
 size=6900
@@ -59,7 +59,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -167,7 +167,7 @@ BusinessData
 
 URI
 --------------------
-/subject/XXXXXXXXXXX/medication-scheme/00556/1
+/subject/12345678901/medication-scheme/00556/1
 
 MetaData
 --------------------
@@ -175,10 +175,10 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHYSICIAN
 creationTime=2017-12-06T12:58:16+01:00
-patientID=XXXXXXXXXXX
+patientID=12345678901
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=XXXXXXXXXXX
+authorPersonSSIN=12345678901
 authorPersonNIHII=12345678901
 authorPersonFamilyName=DOE
 size=6792
@@ -217,7 +217,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -324,7 +324,7 @@ BusinessData
 
 URI
 --------------------
-/subject/XXXXXXXXXXX/medication-scheme/48165/1
+/subject/12345678901/medication-scheme/48165/1
 
 MetaData
 --------------------
@@ -332,10 +332,10 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHYSICIAN
 creationTime=2017-12-06T12:58:16+01:00
-patientID=XXXXXXXXXXX
+patientID=12345678901
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=XXXXXXXXXXX
+authorPersonSSIN=12345678901
 authorPersonNIHII=12345678901
 authorPersonFamilyName=DOE
 size=6660
@@ -374,7 +374,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
