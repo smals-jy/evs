@@ -36,7 +36,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -46,7 +46,7 @@
        </patient>
         <transaction>
             <id S="ID-KMEHR" SV="1.0">1</id>
-            <id S="LOCAL" SL="vitalinkuri" SV="1.0">/subject/90010100101/vaccination/B7DED837B32744F49C537460C9E7E14B/1</id>
+            <id S="LOCAL" SL="vitalinkuri" SV="1.0">/subject/12345678901/vaccination/B7DED837B32744F49C537460C9E7E14B/1</id>
             <cd S="CD-TRANSACTION" SV="1.0">vaccination</cd>
             <date>2016-01-13</date>
             <time>14:24:30</time>

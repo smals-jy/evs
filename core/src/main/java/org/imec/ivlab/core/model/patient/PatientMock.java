@@ -9,7 +9,7 @@ public class PatientMock {
 
     public static Patient getPatient() {
 
-        Patient patient = new Patient("90010100101", "John", "Doe", Gender.MALE, new LocalDate(1990, 1, 1));
+        Patient patient = new Patient("12345678901", "John", "Doe", Gender.MALE, new LocalDate(1990, 1, 1));
         return patient;
 
     }

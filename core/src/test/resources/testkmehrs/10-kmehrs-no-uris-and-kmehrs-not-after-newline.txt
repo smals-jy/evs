@@ -35,7 +35,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -150,7 +150,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -256,7 +256,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -380,7 +380,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -478,7 +478,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -576,7 +576,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -675,7 +675,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -774,7 +774,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -873,7 +873,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -972,7 +972,7 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">12345678901</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
