@@ -4,7 +4,7 @@
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/61165/1
+/subject/XXXXXXXXXXX/medication-scheme/61165/1
 
 MetaData
 --------------------
@@ -12,12 +12,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=7280
 authorPersonFirstName=JOHN
@@ -65,7 +65,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -158,7 +158,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/56301/1
+/subject/XXXXXXXXXXX/medication-scheme/56301/1
 
 MetaData
 --------------------
@@ -166,12 +166,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5932
 authorPersonFirstName=JOHN
@@ -209,7 +209,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -294,7 +294,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/44183/1
+/subject/XXXXXXXXXXX/medication-scheme/44183/1
 
 MetaData
 --------------------
@@ -302,12 +302,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=6684
 authorPersonFirstName=JOHN
@@ -345,7 +345,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -444,7 +444,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/59642/1
+/subject/XXXXXXXXXXX/medication-scheme/59642/1
 
 MetaData
 --------------------
@@ -452,12 +452,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5312
 authorPersonFirstName=JOHN
@@ -495,7 +495,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -569,7 +569,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/54519/1
+/subject/XXXXXXXXXXX/medication-scheme/54519/1
 
 MetaData
 --------------------
@@ -577,12 +577,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5304
 authorPersonFirstName=JOHN
@@ -620,7 +620,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -694,7 +694,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/45083/1
+/subject/XXXXXXXXXXX/medication-scheme/45083/1
 
 MetaData
 --------------------
@@ -702,12 +702,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5308
 authorPersonFirstName=JOHN
@@ -745,7 +745,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -819,7 +819,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/14385/1
+/subject/XXXXXXXXXXX/medication-scheme/14385/1
 
 MetaData
 --------------------
@@ -827,12 +827,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5296
 authorPersonFirstName=JOHN
@@ -870,7 +870,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -944,7 +944,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/21604/1
+/subject/XXXXXXXXXXX/medication-scheme/21604/1
 
 MetaData
 --------------------
@@ -952,12 +952,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5296
 authorPersonFirstName=JOHN
@@ -995,7 +995,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -1069,7 +1069,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/93981/1
+/subject/XXXXXXXXXXX/medication-scheme/93981/1
 
 MetaData
 --------------------
@@ -1077,12 +1077,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5300
 authorPersonFirstName=JOHN
@@ -1120,7 +1120,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>
@@ -1194,7 +1194,7 @@ BusinessData
 
 URI
 --------------------
-/subject/90010100101/medication-scheme/48272/1
+/subject/XXXXXXXXXXX/medication-scheme/48272/1
 
 MetaData
 --------------------
@@ -1202,12 +1202,12 @@ encryptionFlag=encrypted
 formatCode=KMEHR_20120401
 authorRole=PHARMACIST
 creationTime=2017-06-22T15:59:38+02:00
-patientID=90010100101
+patientID=XXXXXXXXXXX
 authorInstitutionNIHII=12345678
 authorInstitutionRole=PHARMACIST
 mimeType=text/xml
 languageCode=nl-BE
-authorPersonSSIN=90010100101
+authorPersonSSIN=XXXXXXXXXXX
 authorPersonFamilyName=DOE
 size=5312
 authorPersonFirstName=JOHN
@@ -1245,7 +1245,7 @@ BusinessData
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
        <patient>
-            <id S="ID-PATIENT" SV="1.0">90010100101</id>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
             <firstname>John</firstname>
             <familyname>Doe</familyname>
             <sex>

@@ -16,12 +16,12 @@
         <recipient>
             <hcparty>
                 <id S="ID-HCPARTY" SV="1.0">15690541004</id>
-                <id S="INSS" SV="1.0">81032425568</id>
+                <id S="INSS" SV="1.0">XXXXXXXXXXX</id>
                 <id S="ID-ENCRYPTION-ACTOR" SV="1.0">15690541</id>
                 <cd S="CD-HCPARTY" SV="1.1">persphysician</cd>
                 <cd S="CD-ENCRYPTION-ACTOR" SV="1.0">NIHII</cd>
-                <firstname>Bert</firstname>
-                <familyname>Peters</familyname>
+                <firstname>Mickey</firstname>
+                <familyname>Better</familyname>
                 <address>
                     <cd S="CD-ADDRESS" SV="1.0"/>
                     <nis>24062</nis>
@@ -36,16 +36,16 @@
     <folder>
         <id S="ID-KMEHR" SV="1.0">1</id>
         <patient>
-            <id S="ID-PATIENT" SV="1.0">81032425568</id>
-            <firstname>Bert</firstname>
-            <familyname>Peters</familyname>
+            <id S="ID-PATIENT" SV="1.0">XXXXXXXXXXX</id>
+            <firstname>Mickey</firstname>
+            <familyname>Better</familyname>
             <sex>
                 <cd S="CD-SEX" SV="1.1">male</cd>
             </sex>
         </patient>
         <transaction>
             <id S="ID-KMEHR" SV="1.0">1</id>
-            <id S="LOCAL" SL="vitalinkuri" SV="1.0">/subject/81032425568/journal/51586/2</id>
+            <id S="LOCAL" SL="vitalinkuri" SV="1.0">/subject/XXXXXXXXXXX/journal/51586/2</id>
             <cd S="CD-TRANSACTION" SV="1.11">diarynote</cd>
             <cd S="CD-DIARY" SV="1.0">diabetes</cd>
             <cd S="CD-DIARY" SV="1.0">movement</cd>
