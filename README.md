@@ -1,4 +1,4 @@
-# EVS
+# EVS [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/smals-jy/evs)
 
 ## What is it?
 EVS (External Validation Service) is a Java-based software tool which is used as a Kmehr message validator. 
