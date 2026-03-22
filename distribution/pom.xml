@@ -13,7 +13,8 @@
     <version>4.0.0</version>
 
     <properties>
-        <izpack.version>5.2.5</izpack.version>
+        <!-- 5.2.5 requires Java 9, not possible atm, maybe when eHealth connector goes to v5 -->
+        <izpack.version>5.2.3</izpack.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
         <!-- SETTING PROPERTY TEMPORARILY for testing-->
 
