@@ -158,7 +158,7 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-business-mycarenetattestv2</artifactId>
+            <artifactId>connector-business-mycarenetattestv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
         <dependency>
