@@ -16,7 +16,7 @@ import org.imec.ivlab.validator.validators.model.ValidationResult;
 import org.imec.ivlab.validator.validators.xsd.XsdValidator;
 import org.imec.ivlab.validator.validators.xsd.handler.XsdValidationResult;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.List;
 
