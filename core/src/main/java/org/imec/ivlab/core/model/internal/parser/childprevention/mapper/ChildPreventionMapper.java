@@ -61,10 +61,10 @@ public class ChildPreventionMapper extends BaseMapper {
 
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime());
+        entry.getTransactionCommon().setDate(instantToLocalDate(firstTransaction.getDate()));
+        entry.getTransactionCommon().setTime(instantToDateTime(firstTransaction.getTime()));
         if (firstTransaction.getRecorddatetime() != null) {
-            entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
+            entry.getTransactionCommon().setRecordDateTime(instantToLocalDateTime(firstTransaction.getRecorddatetime()));
         }
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
