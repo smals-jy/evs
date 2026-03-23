@@ -1,6 +1,6 @@
 package org.imec.ivlab.core.util;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 public class ArrayUtil {
 
