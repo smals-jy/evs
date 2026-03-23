@@ -1,6 +1,5 @@
 package org.imec.ivlab.core.kmehr.modifier.impl;
 
-
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDSEX;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDPATIENT;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDPATIENTschemes;
@@ -9,6 +8,9 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.SexType;
+
+import java.time.Instant;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.core.kmehr.modifier.KmehrModification;
@@ -63,7 +65,8 @@ public class PatientDataModifier implements KmehrModification {
         person.getIds().add(IDPatient);
 
         DateType birDateType = new DateType();
-        birDateType.setDate(patient.getBirthDate().toDateTimeAtStartOfDay());
+        // DateType.setDate() now expects java.time.Instant (eHealth connector 5.x)
+        birDateType.setDate(Instant.ofEpochMilli(patient.getBirthDate().toDateTimeAtStartOfDay().getMillis()));
         person.setBirthdate(birDateType);
 
         person.setUsuallanguage(patient.getUsualLanguage());
