@@ -54,6 +54,19 @@
             <version>${ehealth.connector.version}</version>
         </dependency>
 
+        <!-- To support the migration from original JDK 8 to JDK 21 -->  
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.5</version>
+            <scope>runtime</scope>
+        </dependency>
+             
         <!-- Better than the old <artifactId>kmehr-model-1.34</artifactId> Vitalink used -->
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
