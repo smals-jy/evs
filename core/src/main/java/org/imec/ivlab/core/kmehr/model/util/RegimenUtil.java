@@ -10,7 +10,7 @@ import org.imec.ivlab.core.kmehr.model.RegimenEntry;
 import org.imec.ivlab.core.util.ArrayUtil;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
