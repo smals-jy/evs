@@ -17,7 +17,7 @@ import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.JAXBUtils;
 import org.imec.ivlab.core.util.RandomGenerator;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
