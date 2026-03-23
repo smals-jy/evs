@@ -79,8 +79,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.joda.time.format.ISODateTimeFormat;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,7 +99,7 @@ public class HubHelper {
 
     private String testFilesLocation;
     private Patient testPatient;
-    
+
     public HubHelper() {
         this.testPatient = null;
         // "vitalink", "rsw", "rsb"
@@ -111,10 +112,6 @@ public class HubHelper {
         return TemplateEngineUtils.generate(velocityContext, "/expected/" + testFilesLocation + "/" + scenarioName + " - response.xml");
     }
 
-
-    /**
-     * Create an IDPATIENT for Niss
-     */
     private IDPATIENT createIdPatientInss() {
         IDPATIENT idPatient = new IDPATIENT();
         idPatient.setS(IDPATIENTschemes.INSS);
@@ -131,9 +128,6 @@ public class HubHelper {
         return idPatient;
     }
 
-    /**
-     * Create an IDPATIENT for Niss
-     */
     private IDPATIENT createIdPatientCardno(String value) {
         IDPATIENT idPatient = new IDPATIENT();
         idPatient.setS(IDPATIENTschemes.EID_CARDNO);
@@ -142,9 +136,6 @@ public class HubHelper {
         return idPatient;
     }
 
-    /**
-     * Create an IDHCPARTY for Niss
-     */
     private IDHCPARTY createIdHcPartyNiss(String value) {
         IDHCPARTY idHcparty = new IDHCPARTY();
         idHcparty.setS(IDHCPARTYschemes.INSS);
@@ -153,9 +144,6 @@ public class HubHelper {
         return idHcparty;
     }
 
-    /**
-     * Create an IDHCPARTY for Nihii
-     */
     public IDHCPARTY createIdHcPartyNihii() throws TechnicalConnectorException {
         IDHCPARTY idHcparty = new IDHCPARTY();
         idHcparty.setS(IDHCPARTYschemes.ID_HCPARTY);
@@ -164,9 +152,6 @@ public class HubHelper {
         return idHcparty;
     }
 
-    /**
-     * Create an IDKMEHR with the specified value
-     */
     public IDKMEHR createMessageId(String value) {
         IDKMEHR id = new IDKMEHR();
         id.setS(IDKMEHRschemes.ID_KMEHR);
@@ -175,9 +160,6 @@ public class HubHelper {
         return id;
     }
 
-    /**
-     * Create a HcPartyId with the informations of the professional
-     */
     public HCPartyIdType createHcPartyIdProfessional() throws TechnicalConnectorException {
         HCPartyIdType hcParty = new HCPartyIdType();
         IDHCPARTY idHcparty = createIdHcPartyNihii();
@@ -187,9 +169,6 @@ public class HubHelper {
         return hcParty;
     }
 
-    /**
-     * Create the professional HcParty
-     */
     private HcpartyType createHcPartyProfessional() {
         HcpartyType hcParty = new HcpartyType();
         hcParty.setFamilyname(HubConfigCommon.PROF_LASTNAME);
@@ -201,9 +180,6 @@ public class HubHelper {
         return hcParty;
     }
 
-    /**
-     * Create a PatientIdType Used by createConsentType
-     */
     public PatientIdType createPatientIdType() {
         PatientIdType patient = new PatientIdType();
         IDPATIENT idPatient = createIdPatientInss();
@@ -237,9 +213,6 @@ public class HubHelper {
         return patient;
     }
 
-    /**
-     * Create a cd with the profession in it Used by createHcPartyProfessional
-     */
     public CDHCPARTY createCdHcPartyProfession() {
         CDHCPARTY cdHcParty = new CDHCPARTY();
         cdHcParty.setS(CDHCPARTYschemes.CD_HCPARTY);
@@ -248,9 +221,6 @@ public class HubHelper {
         return cdHcParty;
     }
 
-    /**
-     * Create the header of the transaction
-     */
     public HeaderType createHeader(String standardDate) throws Exception {
         HeaderType header = new HeaderType();
 
@@ -263,7 +233,8 @@ public class HubHelper {
 
         header.setStandard(standard);
         header.getIds().add(createMessageId(SessionUtil.getNihii11() + "." + IdGeneratorFactory.getIdGenerator().generateId()));
-        DateTime now = DateTime.now();
+        // setDate/setTime now expect java.time.Instant in eHealth connector 5.x
+        Instant now = Instant.now();
         header.setDate(now);
         header.setTime(now);
         header.getRecipients().add(createHubRecipient());
@@ -271,9 +242,6 @@ public class HubHelper {
         return header;
     }
 
-    /**
-     * Create the author of the operation
-     */
     private SenderType createSender() throws TechnicalConnectorException {
         HcpartyType hcParty = new HcpartyType();
 
@@ -306,9 +274,6 @@ public class HubHelper {
         return sender;
     }
 
-    /**
-     * Create the author of the operation
-     */
     public AuthorType createAuthor() {
         AuthorType author = new AuthorType();
         HcpartyType hcParty = createHcPartyProfessional();
@@ -316,9 +281,6 @@ public class HubHelper {
         return author;
     }
 
-    /**
-     * Create the Hub of the operation
-     */
     private RecipientType createHubRecipient() {
         HcpartyType hub = new HcpartyType();
 
@@ -340,9 +302,6 @@ public class HubHelper {
         return recipient;
     }
 
-    /**
-     * Create a consentType used for consent operations
-     */
     public ConsentType createConsentType() {
         ConsentType consent = new ConsentType();
 
@@ -354,14 +313,12 @@ public class HubHelper {
 
         consent.setAuthor(createAuthor());
         consent.setPatient(createPatientIdType());
-        consent.setSigndate(new DateTime());
+        // setSigndate now expects java.time.Instant
+        consent.setSigndate(Instant.now());
 
         return consent;
     }
 
-    /**
-     * Create a TherapeuticLinkType used for ther link operations
-     */
     public TherapeuticLinkType createTherapeuticLinkType() throws TechnicalConnectorException {
         TherapeuticLinkType therapeuticLink = new TherapeuticLinkType();
 
@@ -373,14 +330,12 @@ public class HubHelper {
 
         therapeuticLink.setHcparty(createHcPartyIdProfessional());
         therapeuticLink.setPatient(createPatientIdType());
-        therapeuticLink.setStartdate(new DateTime());
+        // setStartdate now expects java.time.Instant
+        therapeuticLink.setStartdate(Instant.now());
         return therapeuticLink;
     }
 
-    /**
-     * Create the transaction id with the specified value
-     */
-    public IDKMEHR createIdKmehr(String sl, String sv, String value,IDKMEHRschemes s) {
+    public IDKMEHR createIdKmehr(String sl, String sv, String value, IDKMEHRschemes s) {
         IDKMEHR id = new IDKMEHR();
         id.setS(s);
         id.setSL(sl);
@@ -406,9 +361,6 @@ public class HubHelper {
         return idKmehr;
     }
 
-    /**
-     * Create the testPatient needed for some transaction
-     */
     public PersonType createPatientForTransaction() {
         PersonType patient = new PersonType();
 
@@ -431,18 +383,17 @@ public class HubHelper {
         return patient;
     }
 
-    /**
-     * Create the testPatient needed for the putPatient operation
-     */
     public PersonType createPatient() {
         PersonType person = new PersonType();
         person.getFirstnames().add(testPatient.getFirstName());
         person.setFamilyname(testPatient.getLastName());
-        person.setRecorddatetime(DateTime.now());
+        // setRecorddatetime now expects java.time.Instant
+        person.setRecorddatetime(Instant.now());
         person.setUsuallanguage("fr");
 
         DateType dateType = new DateType();
-        dateType.setDate(new DateTime(1991, 12, 12, 0, 0));
+        // setDate now expects java.time.Instant
+        dateType.setDate(Instant.ofEpochMilli(new DateTime(1991, 12, 12, 0, 0).getMillis()));
         person.setBirthdate(dateType);
 
         Nationality nationality = new Nationality();
@@ -473,7 +424,8 @@ public class HubHelper {
         hcParty.getCds().add(cdHcParty);
         IDHCPARTY idHcpartyNihii = createIdHcPartyNihii();
         hcParty.getIds().add(idHcpartyNihii);
-        hcParty.setRecorddatetime(new org.joda.time.DateTime());
+        // setRecorddatetime now expects java.time.Instant
+        hcParty.setRecorddatetime(Instant.now());
         hcParty.getAddresses().add(createAddress());
         hcParty.getTelecoms().add(createTelecom());
         IDHCPARTY idHcpartyNiss = createIdHcPartyNiss(HubConfigCommon.PROF_NISS);
@@ -481,9 +433,6 @@ public class HubHelper {
         return hcParty;
     }
 
-    /**
-     * Create a selectGetPatientConsentType used for consent operations
-     */
     public SelectGetPatientConsentType createSelectGetPatientConsentType() {
         SelectGetPatientConsentType patientConsent = new SelectGetPatientConsentType();
 
@@ -499,9 +448,6 @@ public class HubHelper {
         return patientConsent;
     }
 
-    /**
-     * Create a SelectGetHCPartyPatientConsentType used for ther link operations
-     */
     public SelectGetHCPartyPatientConsentType createSelectGetHCPartyPatientConsentType() throws TechnicalConnectorException {
         SelectGetHCPartyPatientConsentType selectConsent = new SelectGetHCPartyPatientConsentType();
 
@@ -513,8 +459,9 @@ public class HubHelper {
 
         selectConsent.getPatientsAndHcparties().add(createPatientIdType());
         selectConsent.getPatientsAndHcparties().add(createHcPartyIdProfessional());
-        selectConsent.setBegindate(new DateTime());
-        selectConsent.setEnddate(new DateTime());
+        // setBegindate/setEnddate now expect java.time.Instant
+        selectConsent.setBegindate(Instant.now());
+        selectConsent.setEnddate(Instant.now());
 
         return selectConsent;
     }
@@ -546,7 +493,7 @@ public class HubHelper {
                         IdGeneratorFactory.UUID).generateId(),
                 "<transaction xmlns='http://www.ehealth.fgov.be/standards/kmehr/schema/v1'><cd S='CD-TRANSACTION' SV='1.4'>sumehr</cd><date>2013-07-17</date><time>10:01:51+01:00</time><iscomplete>true</iscomplete><isvalidated>true</isvalidated><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>risk</cd><content><text L='fr'>travail sur écran</text></content><beginmoment><date>2013-06-21</date><time>14:51:24+01:00</time></beginmoment><recorddatetime>2013-06-21T14:53:28+02:00</recorddatetime></item><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>adr</cd><content><text L='fr'>Ticlopidine</text></content><beginmoment><date>2013-06-21</date><time>14:51:24+01:00</time></beginmoment><recorddatetime>2013-06-21T14:52:34+02:00</recorddatetime></item><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>medication</cd><content><cd S='CD-ATC' SV='1.0'>B01AC05</cd></content><content><text L='fr'>Ticlid (c) 250mg - 30 compr. enrobé(s)</text></content><content><medicinalproduct><intendedcd S='CD-DRUG-CNK' SV='2.0'>0857995</intendedcd><intendedname>Ticlid (c) 250mg - 30 compr. enrobé(s)</intendedname></medicinalproduct></content><beginmoment><date>2013-06-21</date></beginmoment><lifecycle><cd S='CD-LIFECYCLE' SV='1.3'>prescribed</cd></lifecycle><isrelevant>true</isrelevant><temporality><cd S='CD-TEMPORALITY' SV='1.0'>chronic</cd></temporality><quantity><decimal>1</decimal><unit><cd S='CD-UNIT' SV='1.3'>pkg</cd></unit></quantity><instructionforpatient L='fr'>1 compr. enrobé(s) 1 x / jour</instructionforpatient><recorddatetime>2013-06-21T14:51:24+02:00</recorddatetime></item><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>medication</cd><content><cd S='CD-ATC' SV='1.0'>C10AA07</cd></content><content><text L='fr'>rosuvastatine 40 mg - 98 compr. pelliculé(s)</text></content><content><medicinalproduct><intendedcd S='CD-DRUG-CNK' SV='2.0'>2055176</intendedcd><intendedname>rosuvastatine 40 mg - 98 compr. pelliculé(s)</intendedname></medicinalproduct></content><beginmoment><date>2013-06-21</date></beginmoment><endmoment><date>2013-09-27</date></endmoment><lifecycle><cd S='CD-LIFECYCLE' SV='1.3'>prescribed</cd></lifecycle><isrelevant>true</isrelevant><temporality><cd S='CD-TEMPORALITY' SV='1.0'>acute</cd></temporality><quantity><decimal>1</decimal><unit><cd S='CD-UNIT' SV='1.3'>pkg</cd></unit></quantity><instructionforpatient L='fr'>1 compr. 1 x / jour</instructionforpatient><recorddatetime>2013-06-21T14:51:24+02:00</recorddatetime></item><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>vaccine</cd><content><cd S='CD-VACCINEINDICATION' SV='1.0'>diphteria</cd><cd S='CD-VACCINEINDICATION' SV='1.0'>tetanus</cd><cd S='CD-ATC' SV='1.0'>J07AM51</cd></content><content><medicinalproduct><intendedcd S='CD-DRUG-CNK' SV='2.0'>1077593</intendedcd><intendedname>Tedivax pro adulto (c)</intendedname></medicinalproduct></content><beginmoment><date>2013-05-28</date></beginmoment><lifecycle><cd S='CD-LIFECYCLE' SV='1.3'>administrated</cd></lifecycle><recorddatetime>2013-06-21T14:53:34+02:00</recorddatetime></item><item><id S='ID-KMEHR' SV='1.0'>99999999.99999999<cd S='CD-ITEM' SV='1.4'>vaccine</cd><content><cd S='CD-VACCINEINDICATION' SV='1.0'>diphteria</cd><cd S='CD-VACCINEINDICATION' SV='1.0'>tetanus</cd><cd S='CD-VACCINEINDICATION' SV='1.0'>pertussis</cd><cd S='CD-VACCINEINDICATION' SV='1.0'>poliomyelitis</cd><cd S='CD-ATC' SV='1.0'>J07CA02</cd></content><content><medicinalproduct><intendedcd S='CD-DRUG-CNK' SV='2.0'>64429</intendedcd><intendedname>Boostrix Polio (c)</intendedname></medicinalproduct></content><beginmoment><date>2013-05-28</date></beginmoment><lifecycle><cd S='CD-LIFECYCLE' SV='1.3'>administrated</cd></lifecycle><recorddatetime>2013-06-21T14:53:34+02:00</recorddatetime></item></transaction>");
         folder.getTransactions().add(transaction);
-        
+
         return transaction;
     }
 
@@ -562,17 +509,15 @@ public class HubHelper {
         kmehrmessage.setHeader(createHeader("20110701"));
     }
 
-
     public Kmehrmessage createTransactionSetMessage(org.imec.ivlab.core.model.patient.model.Patient patient, String startTransactionId) throws Exception {
         Map<String, Object> velocityContext = new HashMap<String, Object>();
 
         velocityContext.put("today", DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime()));
-        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now())); //
+        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now()));
         velocityContext.put("idToday", DateTimeFormat.forPattern("yyyyMMdd").print(new DateTime()));
         velocityContext.put("startTransactionId", startTransactionId);
 
-
-        String kmehr =  TemplateEngineUtils.generate(velocityContext , "/config/requests/" + testFilesLocation + "/" + TEMPLATE_FILE_PUT_TRANSACTION_SET);
+        String kmehr = TemplateEngineUtils.generate(velocityContext, "/config/requests/" + testFilesLocation + "/" + TEMPLATE_FILE_PUT_TRANSACTION_SET);
         Kmehrmessage kmehrmessage = KmehrMarshaller.fromString(kmehr);
 
         PatientDataModifier modifier = new PatientDataModifier(patient);
@@ -585,11 +530,10 @@ public class HubHelper {
         Map<String, Object> velocityContext = new HashMap<String, Object>();
 
         velocityContext.put("today", DateTimeFormat.forPattern("yyyy-MM-dd").print(new DateTime()));
-        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now())); //
+        velocityContext.put("timenow", ISODateTimeFormat.time().print(LocalDateTime.now()));
         velocityContext.put("idToday", DateTimeFormat.forPattern("yyyyMMdd").print(new DateTime()));
 
-
-        String kmehr =  TemplateEngineUtils.generate(velocityContext , "/config/requests/" + testFilesLocation + "/" + TEMPLATE_FILE_PUT_TRANSACTION);
+        String kmehr = TemplateEngineUtils.generate(velocityContext, "/config/requests/" + testFilesLocation + "/" + TEMPLATE_FILE_PUT_TRANSACTION);
         Kmehrmessage kmehrmessage = KmehrMarshaller.fromString(kmehr);
 
         kmehrmessage.getFolders().clear();
@@ -601,9 +545,6 @@ public class HubHelper {
         return kmehrmessage;
     }
 
-    /**
-     * Create a transaction type needed for transaction operations
-     */
     private TransactionType createTransactionType(String transactionId, String xml) throws Exception {
         TransactionType transaction = new MarshallerHelper<TransactionType, TransactionType>(TransactionType.class, TransactionType.class).toObject(xml);
         AuthorType author = new AuthorType();
@@ -614,22 +555,6 @@ public class HubHelper {
         return transaction;
     }
 
-    /**
-     * Create a transaction type needed for transaction operations, with a LOCAL id
-     */
-    /*
-    private TransactionType createTransactionTypeWithLocalId(String transactionId, String xml) throws Exception {
-        TransactionType transaction = createTransactionType(transactionId, xml);
-        transaction.getIds().add(createIdKmehr("EHBASICSOFT", "1.0", IdGeneratorFactory.getIdGenerator(
-                IdGeneratorFactory.UUID).generateId(), IDKMEHRschemes.LOCAL));
-
-        return transaction;
-    }*/
-
-
-    /**
-     * Create a transactionWithPeriod type for transaction operations
-     */
     public TransactionWithPeriodType createTransactionWithPeriodType(org.imec.ivlab.core.model.upload.TransactionType firstTransactionType, org.imec.ivlab.core.model.upload.TransactionType... otherTransactionTypes) {
 
         TransactionWithPeriodType transaction = new TransactionWithPeriodType();
@@ -639,8 +564,6 @@ public class HubHelper {
                 transaction.getCds().add(getCdtransaction("1.6", transactionType.getTransactionTypeValueForGetTransactionList()));
             }
         }
-//        transaction.setBegindate(new DateTime().minusDays(0));
-//        transaction.setEnddate(new DateTime().plusDays(1));
         return transaction;
     }
 
@@ -660,9 +583,6 @@ public class HubHelper {
         return cdtransactionMedicationScheme;
     }
 
-    /**
-     * Create a transaction base type for transaction operations
-     */
     public TransactionBaseType createTransactionBaseType(IDKMEHR idkmehr, HcpartyType authorHcParty) {
         TransactionBaseType transaction = new TransactionBaseType();
         transaction.setId(idkmehr);
