@@ -1,6 +1,6 @@
 package org.imec.ivlab.core.xml;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.joda.time.LocalDate;
 
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
