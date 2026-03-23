@@ -21,14 +21,14 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.Substanceproduct;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Takes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RouteType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
-import java.math.BigInteger;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import java.math.BigInteger;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,6 +65,8 @@ import org.imec.ivlab.core.model.internal.mapper.medication.TimeUnit;
 import org.imec.ivlab.core.model.internal.mapper.medication.Weekday;
 import org.imec.ivlab.core.model.internal.parser.sumehr.MedicationEntrySumehr;
 import org.imec.ivlab.core.util.CollectionsUtil;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.w3c.dom.Node;
 
 
@@ -72,6 +74,15 @@ public class MedicationMapper {
 
     private final static Logger LOG = LogManager.getLogger(MedicationMapper.class);
 
+    // ── Conversion helpers ────────────────────────────────────────────────────
+    private static LocalDate instantToLocalDate(Instant instant) {
+        return instant == null ? null : new LocalDate(instant.toEpochMilli());
+    }
+
+    private static DateTime instantToDateTime(Instant instant) {
+        return instant == null ? null : new DateTime(instant.toEpochMilli());
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     public static MedicationEntry transactionToMedicationEntry(TransactionType medicationTransaction) {
         return transactionToMedicationEntry(medicationTransaction, new ArrayList<>());
@@ -82,7 +93,6 @@ public class MedicationMapper {
         medicationEntry.setIdentifier(getMedicationIdentifier(medicationItem.getContents(), medicationItem.getTexts()));
 
         medicationEntry.setCompoundPrescription(getCompoundPrescription(medicationItem.getContents()));
-
 
         if (medicationItem.getInstructionforpatient() != null) {
             medicationEntry.setInstructionForPatient(medicationItem.getInstructionforpatient().getValue());
@@ -97,13 +107,11 @@ public class MedicationMapper {
         }
 
         if (medicationItem.getBeginmoment() != null) {
-            medicationEntry.setBeginDate(medicationItem.getBeginmoment().getDate().toLocalDate());
-            //medicationEntry.setBeginDate(DateUtils.toLocalDate(medicationItem.getBeginmoment().getDate()));
+            medicationEntry.setBeginDate(instantToLocalDate(medicationItem.getBeginmoment().getDate()));
         }
 
         if (medicationItem.getEndmoment() != null) {
-            medicationEntry.setEndDate(medicationItem.getEndmoment().getDate().toLocalDate());
-            //medicationEntry.setEndDate(DateUtils.toLocalDate(medicationItem.getEndmoment().getDate()));
+            medicationEntry.setEndDate(instantToLocalDate(medicationItem.getEndmoment().getDate()));
         }
 
         if (medicationItem.getFrequency() != null && medicationItem.getFrequency().getPeriodicity() != null && medicationItem.getFrequency().getPeriodicity().getCd() != null) {
@@ -136,7 +144,6 @@ public class MedicationMapper {
 
     public static MedicationEntry transactionToMedicationEntry(TransactionType medicationTransaction, List<TransactionType> suspensionTransactions) {
 
-
         ItemType medicationItem = TransactionUtil.getItem(medicationTransaction, CDITEMvalues.MEDICATION);
         MedicationEntry entry = itemTypeToMedicationEntry(medicationItem, new MedicationEntry());
 
@@ -162,8 +169,8 @@ public class MedicationMapper {
         }
 
         entry.setSuspensions(getSuspensions(suspensionTransactions));
-        entry.setCreatedDate(medicationTransaction.getDate().toLocalDate());
-        entry.setCreatedTime(medicationTransaction.getTime());
+        entry.setCreatedDate(instantToLocalDate(medicationTransaction.getDate()));
+        entry.setCreatedTime(instantToDateTime(medicationTransaction.getTime()));
         entry.setLocalId(getLocalId(medicationTransaction));
 
         return entry;
@@ -307,7 +314,6 @@ public class MedicationMapper {
 
     private static List<Suspension> getSuspensions(List<TransactionType> suspensionTransactions) {
 
-
         ArrayList<Suspension> suspensions = new ArrayList<>();
 
         if (CollectionsUtil.emptyOrNull(suspensionTransactions)) {
@@ -332,21 +338,20 @@ public class MedicationMapper {
                 suspension.setAuthors(suspensionTransaction.getAuthor().getHcparties());
             }
 
-            suspension.setCreatedDate(suspensionTransaction.getDate().toLocalDate());
+            suspension.setCreatedDate(instantToLocalDate(suspensionTransaction.getDate()));
             if (suspensionTransaction.getTime() != null) {
-                suspension.setCreatedTime(suspensionTransaction.getTime());
+                suspension.setCreatedTime(instantToDateTime(suspensionTransaction.getTime()));
             }
 
             if (medicationItem.getBeginmoment() != null) {
-                suspension.setBeginDate(medicationItem.getBeginmoment().getDate().toLocalDate());
+                suspension.setBeginDate(instantToLocalDate(medicationItem.getBeginmoment().getDate()));
             }
 
             if (medicationItem.getEndmoment() != null) {
-                suspension.setEndDate(medicationItem.getEndmoment().getDate().toLocalDate());
+                suspension.setEndDate(instantToLocalDate(medicationItem.getEndmoment().getDate()));
             }
 
             suspension.setLifecycle(KmehrMapper.toLifeCycleValues(medicationItem.getLifecycle()));
-
 
             suspension.setDuration(convertDuration(medicationItem.getDuration()));
 
@@ -354,19 +359,15 @@ public class MedicationMapper {
 
         }
 
-
         return suspensions;
 
     }
 
     private static String getRouteValue(RouteType routeType) {
-
         if (routeType != null && routeType.getCd() != null) {
             return routeType.getCd().getValue();
         }
-
         return null;
-
     }
 
     private static String getTextContents(ItemType itemType) {
@@ -441,7 +442,6 @@ public class MedicationMapper {
         return null;
 
     }
-
 
     private static Identifier findMedicationName(ContentType contentType) {
 
