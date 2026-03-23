@@ -1,6 +1,6 @@
 package org.imec.ivlab.core.authentication.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="samlAttribute")
 public class SamlAttribute {
