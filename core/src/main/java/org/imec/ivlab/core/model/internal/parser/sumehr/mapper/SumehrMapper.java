@@ -48,7 +48,7 @@ import org.imec.ivlab.core.model.upload.extractor.SumehrListExtractor;
 import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.StringUtils;
 
-`@Log4j2`
+@Log4j2
 public class SumehrMapper extends BaseMapper {
 
     public static Sumehr kmehrToSumehr(Kmehrmessage kmehrmessage) {
