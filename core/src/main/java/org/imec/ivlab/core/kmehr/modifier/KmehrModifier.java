@@ -6,7 +6,7 @@ import org.imec.ivlab.core.model.upload.kmehrentrylist.BusinessData;
 import org.imec.ivlab.core.model.upload.kmehrentrylist.KmehrEntry;
 import org.imec.ivlab.core.kmehr.KmehrMarshaller;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
