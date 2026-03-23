@@ -269,7 +269,7 @@ public class MedicationMapper {
                 regimenEntryOut.setDayperiodOrTime(regimenDayperiod);
             } else if (regimenEntry.getDaytime() != null && regimenEntry.getDaytime().getTime() != null) {
                 RegimenTime regimenTime = new RegimenTime();
-                DateTime time = regimenEntry.getDaytime().getTime();
+                DateTime time = instantToDateTime(regimenEntry.getDaytime().getTime());
                 regimenTime.setTime(time);
                 regimenEntryOut.setDayperiodOrTime(regimenTime);
             }
