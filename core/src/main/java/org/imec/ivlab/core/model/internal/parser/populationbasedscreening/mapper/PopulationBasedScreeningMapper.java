@@ -11,13 +11,17 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+
 import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.imec.ivlab.core.kmehr.model.util.ContentUtil;
@@ -71,10 +75,10 @@ public class PopulationBasedScreeningMapper extends BaseMapper {
 
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime());
+        entry.getTransactionCommon().setDate(instantToLocalDate(firstTransaction.getDate()));
+        entry.getTransactionCommon().setTime(instantToDateTime(firstTransaction.getTime()));
         if (firstTransaction.getRecorddatetime() != null) {
-            entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
+            entry.getTransactionCommon().setRecordDateTime(instantToLocalDateTime(firstTransaction.getRecorddatetime()));
         }
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
@@ -194,6 +198,7 @@ public class PopulationBasedScreeningMapper extends BaseMapper {
             return null;
         }
     }
+
     private static DateItem toDateContentAndRemove(ItemType itemType) {
         Optional<ContentType> maybeContentType = itemType
             .getContents()
@@ -204,7 +209,10 @@ public class PopulationBasedScreeningMapper extends BaseMapper {
             ContentType contentType = maybeContentType.get();
             itemType.getContents().remove(contentType);
 
-            LocalDate date = Optional.ofNullable(contentType.getDate()).map(s -> s.toLocalDate()).orElse(null);
+            // contentType.getDate() now returns java.time.Instant (eHealth connector 5.x)
+            LocalDate date = Optional.ofNullable(contentType.getDate())
+                .map(s -> new LocalDate(s.toEpochMilli()))
+                .orElse(null);
 
             DateItem dateItem;
             if (date != null) {
