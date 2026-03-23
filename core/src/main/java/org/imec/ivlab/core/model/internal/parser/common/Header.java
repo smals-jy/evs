@@ -8,7 +8,7 @@ import be.ehealth.technicalconnector.adapter.XmlTimeNoTzAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.imec.ivlab.core.model.internal.parser.sumehr.Recipient;
 import org.imec.ivlab.core.model.internal.parser.sumehr.Sender;
