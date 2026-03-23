@@ -2,7 +2,7 @@ package org.imec.ivlab.core.model.patient.adapter;
 
 import org.imec.ivlab.core.model.patient.model.Gender;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class GenderAdapter extends XmlAdapter<String, Gender> {
     public Gender unmarshal(String v) throws Exception {
