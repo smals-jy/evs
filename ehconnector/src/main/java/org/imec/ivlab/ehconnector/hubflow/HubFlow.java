@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -279,7 +279,6 @@ public class HubFlow {
 
     public GetLatestUpdateResponse getLatestUpdate(String patientId, TransactionType transactionType) throws VitalinkException, GatewaySpecificErrorException {
 
-//        LOG.debug("Started getLatestUpdate");
         String transactiontypeString = transactionType.getTransactionTypeValueForGetLatestUpdate();
 
         try {
@@ -292,13 +291,9 @@ public class HubFlow {
             throw new LatestUpdateNotFoundException("No latestupdate found for patient " + patientId + " and transactiontype: " + transactiontypeString);
         }
 
-//        LOG.debug("Completed getLatestUpdate");
-
     }
 
     public GetTransactionListResponse getTransactionList(String patientId, TransactionType transactionType) throws VitalinkException, GatewaySpecificErrorException {
-
-//        LOG.debug("Started getTransactionList");
 
         PatientIdType patientIdType = helper.createPatientIdType(patientId);
         TransactionWithPeriodType transactionWithPeriodType = helper.createTransactionWithPeriodType(transactionType);
@@ -313,10 +308,6 @@ public class HubFlow {
         } catch (NoDataIsAvailableForProfileOrCriteria | SubjectWithSSINUnknownException | NoNodeFoundMatchingTheURI e) {
             throw new TransactionNotFoundException("No transaction " + transactionType.getTransactionTypeValueForGetTransactionList() + " found for patient " + patientId + " using filters: " + objectsToString(patientId, localSearchType, transactionWithPeriodType));
         }
-
-//        LOG.debug("Completed getTransactionList");
-
-
 
     }
 
