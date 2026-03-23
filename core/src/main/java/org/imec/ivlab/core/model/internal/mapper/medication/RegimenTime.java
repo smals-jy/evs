@@ -3,7 +3,7 @@ package org.imec.ivlab.core.model.internal.mapper.medication;
 import java.io.Serializable;
 
 import be.ehealth.technicalconnector.adapter.XmlTimeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.DateTime;
 
