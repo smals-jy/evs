@@ -51,10 +51,15 @@ public abstract class AbstractWriter {
 
         StringBuffer sb = new StringBuffer();
         if (transactionType.getDate() != null) {
-            String dateString = DateUtils.toLocalDate(transactionType.getDate()).format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String dateString = java.time.ZonedDateTime
+                .ofInstant(transactionType.getDate(), java.time.ZoneId.systemDefault())
+                .toLocalDate()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
             sb.append(dateString);
             if (transactionType.getTime() != null) {
-                String timeString = DateTimeFormat.forPattern("HHmmss").print(transactionType.getTime());
+                String timeString = java.time.LocalTime
+                    .ofInstant(transactionType.getTime(), java.time.ZoneId.systemDefault())
+                    .format(java.time.format.DateTimeFormatter.ofPattern("HHmmss"));
                 sb.append("_");
                 sb.append(timeString);
             }
