@@ -34,6 +34,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public class MSUploaderImpl implements Uploader, MSUploader {
 
@@ -343,12 +344,12 @@ public class MSUploaderImpl implements Uploader, MSUploader {
 
                 if (medicationItem.getBeginmoment() != null) {
                     medicationItem.getBeginmoment().setDate(
-                        medicationItem.getBeginmoment().getDate().plusDays(daysDiff)
+                        medicationItem.getBeginmoment().getDate().plus(daysDiff, ChronoUnit.DAYS)
                     );
                 }
                 if (medicationItem.getEndmoment() != null) {
                     medicationItem.getEndmoment().setDate(
-                        medicationItem.getEndmoment().getDate().plusDays(daysDiff)
+                        medicationItem.getEndmoment().getDate().plus(daysDiff, ChronoUnit.DAYS)
                     );
                 }
 
