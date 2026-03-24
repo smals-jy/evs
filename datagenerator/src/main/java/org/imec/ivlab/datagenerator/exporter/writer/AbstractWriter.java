@@ -16,8 +16,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.xml.sax.SAXException;
 
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.parsers.ParserConfigurationException;
-import jakarta.xml.transform.TransformerException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 
 public abstract class AbstractWriter {
