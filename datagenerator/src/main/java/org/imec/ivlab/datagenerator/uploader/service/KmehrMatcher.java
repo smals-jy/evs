@@ -23,8 +23,8 @@ import org.joda.time.DateTime;
 import org.xml.sax.SAXException;
 
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.parsers.ParserConfigurationException;
-import jakarta.xml.transform.TransformerException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
