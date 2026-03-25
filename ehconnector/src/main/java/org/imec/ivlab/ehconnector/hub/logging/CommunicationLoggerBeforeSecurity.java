@@ -7,16 +7,15 @@ import be.ehealth.technicalconnector.handler.AbstractSOAPHandler;
 import be.ehealth.technicalconnector.utils.ConnectorXmlUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.imec.ivlab.core.config.EVSConfig;
 import org.imec.ivlab.core.config.EVSProperties;
 import org.imec.ivlab.core.model.hub.LogCommunicationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
+import jakarta.xml.ws.handler.soap.SOAPMessageContext;
 
 public class CommunicationLoggerBeforeSecurity extends AbstractSOAPHandler {
 

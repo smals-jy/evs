@@ -1,7 +1,7 @@
 package org.imec.ivlab.core.kmehr;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.logging.log4j.LogManager;

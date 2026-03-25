@@ -26,10 +26,14 @@ public class SchemeHelper {
             globalScheme.setAuthors(getAuthors(kmehrmessage));
             globalScheme.setVersion(getMSTransaction(kmehrmessage).getVersion());
             if (getMSTransaction(kmehrmessage).getDate() != null) {
-                globalScheme.setLastModifiedDate(getMSTransaction(kmehrmessage).getDate().toLocalDate());
+                globalScheme.setLastModifiedDate(
+                    new org.joda.time.LocalDate(getMSTransaction(kmehrmessage).getDate().toEpochMilli())
+                );
             }
             if (getMSTransaction(kmehrmessage).getTime() != null) {
-                globalScheme.setLastModifiedTime(getMSTransaction(kmehrmessage).getTime().toLocalTime());
+                globalScheme.setLastModifiedTime(
+                    new org.joda.time.LocalTime(getMSTransaction(kmehrmessage).getTime().toEpochMilli())
+                );
             }
         }
 
@@ -66,10 +70,14 @@ public class SchemeHelper {
             dailyScheme.setAuthors(getAuthors(kmehrmessage));
             dailyScheme.setVersion(getMSTransaction(kmehrmessage).getVersion());
             if (getMSTransaction(kmehrmessage).getDate() != null) {
-                dailyScheme.setLastModifiedDate(getMSTransaction(kmehrmessage).getDate().toLocalDate());
+                dailyScheme.setLastModifiedDate(
+                    new org.joda.time.LocalDate(getMSTransaction(kmehrmessage).getDate().toEpochMilli())
+                );
             }
             if (getMSTransaction(kmehrmessage).getTime() != null) {
-                dailyScheme.setLastModifiedTime(getMSTransaction(kmehrmessage).getDate().toLocalTime());
+                dailyScheme.setLastModifiedTime(
+                    new org.joda.time.LocalTime(getMSTransaction(kmehrmessage).getTime().toEpochMilli())
+                );
             }
         }
         dailyScheme.setSchemeDate(medicationSchemeDate);

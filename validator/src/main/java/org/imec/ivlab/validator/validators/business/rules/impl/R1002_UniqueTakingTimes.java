@@ -68,13 +68,8 @@ public class R1002_UniqueTakingTimes extends BaseMSEntryRule {
                 String dateDaynumberWeekday = getDateDaynumberWeekdayOrEmptyString(regimenEntry, frequencyCode) + "-";
 
                 if (regimenEntry.getDaytime().getTime() != null) {
-                    DateTime regimenTime = regimenEntry.getDaytime().getTime();
-                    LocalTime localTime = new LocalTime(
-                        regimenTime.getHourOfDay(),
-                        regimenTime.getMinuteOfHour(),
-                        regimenTime.getSecondOfMinute()
-                    );
-                    //LocalTime localTime = regimenEntry.getDaytime().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+                    // getTime() returns java.time.Instant in connector 5.x
+                    LocalTime localTime = new LocalTime(regimenEntry.getDaytime().getTime().toEpochMilli());
 
                     String timeString = dateDaynumberWeekday + StringUtils.joinWith(":", localTime.getHourOfDay(), localTime.getMinuteOfHour());
                     if (times.contains(timeString)) {

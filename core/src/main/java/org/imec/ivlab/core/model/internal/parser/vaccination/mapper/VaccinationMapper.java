@@ -8,11 +8,13 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.QuantityType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.UnitType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.imec.ivlab.core.kmehr.mapper.KmehrMapper;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
@@ -22,7 +24,6 @@ import org.imec.ivlab.core.model.internal.parser.vaccination.EncounterLocation;
 import org.imec.ivlab.core.model.internal.parser.vaccination.Vaccination;
 import org.imec.ivlab.core.model.internal.parser.vaccination.VaccinationItem;
 import org.imec.ivlab.core.util.CollectionsUtil;
-import org.joda.time.DateTime;
 
 
 public class VaccinationMapper extends BaseMapper {
@@ -47,14 +48,13 @@ public class VaccinationMapper extends BaseMapper {
         entry.getTransactionCommon().setPerson(toPatient(folderType.getPatient()));
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime());
+        entry.getTransactionCommon().setDate(instantToLocalDate(firstTransaction.getDate()));
+        entry.getTransactionCommon().setTime(instantToDateTime(firstTransaction.getTime()));
 
-        DateTime recordDateTime = firstTransaction.getRecorddatetime();
-        if (recordDateTime != null) {
-            entry.getTransactionCommon().setRecordDateTime(recordDateTime.toLocalDateTime());
+        // getRecorddatetime() now returns java.time.Instant
+        if (firstTransaction.getRecorddatetime() != null) {
+            entry.getTransactionCommon().setRecordDateTime(instantToLocalDateTime(firstTransaction.getRecorddatetime()));
         }
-        //entry.getTransactionCommon().setRecordDateTime(DateUtils.toLocalDateTime(firstTransaction.getRecorddatetime()));
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
@@ -114,7 +114,7 @@ public class VaccinationMapper extends BaseMapper {
         clearCds(clone);
 
         if (itemType.getBeginmoment() != null) {
-            vaccination.setBeginMoment(itemType.getBeginmoment().getDate().toLocalDate());
+            vaccination.setBeginMoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             clone.getBeginmoment().setDate(null);
         }
 

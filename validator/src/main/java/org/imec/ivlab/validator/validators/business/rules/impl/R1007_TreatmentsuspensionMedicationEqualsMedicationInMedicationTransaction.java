@@ -14,7 +14,7 @@ import org.imec.ivlab.validator.validators.business.rules.BaseMSEntryRule;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.util.List;
 
 

@@ -47,6 +47,7 @@ public class TransactionHelper {
   }
 
   public static Optional<TransactionSummaryType> findLatestTransaction(GetTransactionListResponse transactionListResponse, TransactionType transactionType) {
+    // getRecorddatetime() now returns java.time.Instant — Comparable<Instant>, so Comparator.comparing() works unchanged
     Comparator<TransactionSummaryType> compareByRecordDateTime = Comparator.comparing(TransactionSummaryType::getRecorddatetime);
 
     List<TransactionSummaryType> transactionSummaries = Optional.ofNullable(transactionListResponse)
@@ -76,7 +77,8 @@ public class TransactionHelper {
     String author = transactionSummaryType.getAuthor().getHcparties().stream()
         .map(hcpartyType -> StringUtils.joinWith(" ", hcpartyType.getName(), hcpartyType.getFirstname(), hcpartyType.getFamilyname()))
         .collect(Collectors.joining(" - "));
-    String recordDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(transactionSummaryType.getRecorddatetime());
+    // getRecorddatetime() now returns java.time.Instant — use toEpochMilli() for Joda's print(long) overload
+    String recordDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(transactionSummaryType.getRecorddatetime().toEpochMilli());
     return recordDateTime + " " + author;
   }
 }

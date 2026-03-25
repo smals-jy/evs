@@ -11,11 +11,14 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.RecipientType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.SenderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.imec.ivlab.core.model.internal.parser.sumehr.AbstractPerson;
 import org.imec.ivlab.core.model.internal.parser.sumehr.ContactPerson;
@@ -24,121 +27,148 @@ import org.imec.ivlab.core.model.internal.parser.sumehr.Patient;
 import org.imec.ivlab.core.model.internal.parser.sumehr.Recipient;
 import org.imec.ivlab.core.model.internal.parser.sumehr.Sender;
 import org.imec.ivlab.core.util.CollectionsUtil;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 public class BaseMapper {
 
+  // ── Joda-Time ↔ java.time.Instant conversion helpers ──────────────────────
+
+  protected static LocalDate instantToLocalDate(Instant instant) {
+    return instant == null ? null : new LocalDate(instant.toEpochMilli());
+  }
+
+  protected static DateTime instantToDateTime(Instant instant) {
+    return instant == null ? null : new DateTime(instant.toEpochMilli());
+  }
+
+  protected static LocalDateTime instantToLocalDateTime(Instant instant) {
+    return instant == null ? null : new LocalDateTime(instant.toEpochMilli());
+  }
+
+  protected static Instant dateTimeToInstant(DateTime dateTime) {
+    return dateTime == null ? null : Instant.ofEpochMilli(dateTime.getMillis());
+  }
+
+  protected static Instant localDateToInstant(LocalDate localDate) {
+    return localDate == null ? null : Instant.ofEpochMilli(localDate.toDateTimeAtStartOfDay().getMillis());
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+
   protected static void markKmehrLevelFieldsAsProcessed(Kmehrmessage cloneKmehr) {
-      cloneKmehr.setBase64EncryptedData(null);
-      cloneKmehr.setConfidentiality(null);
-      cloneKmehr.setEncryptedData(null);
-      cloneKmehr.setSignature(null);
+    cloneKmehr.setBase64EncryptedData(null);
+    cloneKmehr.setConfidentiality(null);
+    cloneKmehr.setEncryptedData(null);
+    cloneKmehr.setSignature(null);
   }
 
   protected static void clearIds(TransactionType transactionType) {
-      if (CollectionsUtil.notEmptyOrNull(transactionType.getIds())) {
-          transactionType.getIds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(transactionType.getIds())) {
+      transactionType.getIds().clear();
+    }
   }
 
   protected static void clearCds(TransactionType transactionType) {
-      if (CollectionsUtil.notEmptyOrNull(transactionType.getCds())) {
-          transactionType.getCds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(transactionType.getCds())) {
+      transactionType.getCds().clear();
+    }
   }
 
   protected static void clearIds(PersonType personType) {
-      if (CollectionsUtil.notEmptyOrNull(personType.getIds())) {
-          personType.getIds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(personType.getIds())) {
+      personType.getIds().clear();
+    }
   }
 
   protected static void clearIds(FolderType folderType) {
-      if (CollectionsUtil.notEmptyOrNull(folderType.getIds())) {
-          folderType.getIds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(folderType.getIds())) {
+      folderType.getIds().clear();
+    }
   }
 
   protected static void clearIds(HcpartyType hcpartyType) {
-      if (CollectionsUtil.notEmptyOrNull(hcpartyType.getIds())) {
-          hcpartyType.getIds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(hcpartyType.getIds())) {
+      hcpartyType.getIds().clear();
+    }
   }
 
   protected static void clearIds(ItemType itemType) {
-      if (CollectionsUtil.notEmptyOrNull(itemType.getIds())) {
-          itemType.getIds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(itemType.getIds())) {
+      itemType.getIds().clear();
+    }
   }
 
   protected static void clearCds(ItemType clone) {
-      if (CollectionsUtil.notEmptyOrNull(clone.getCds())) {
-          clone.getCds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(clone.getCds())) {
+      clone.getCds().clear();
+    }
   }
 
   protected static void clearCds(HcpartyType clone) {
-      if (CollectionsUtil.notEmptyOrNull(clone.getCds())) {
-          clone.getCds().clear();
-      }
+    if (CollectionsUtil.notEmptyOrNull(clone.getCds())) {
+      clone.getCds().clear();
+    }
   }
 
   protected static void markFolderLevelFieldsAsProcessed(FolderType cloneFolder) {
-      cloneFolder.setPatient(null);
-      clearIds(cloneFolder);
+    cloneFolder.setPatient(null);
+    clearIds(cloneFolder);
   }
 
   protected static Recipient toRecipient(RecipientType recipientType) {
-      Recipient recipient = new Recipient();
-      List<HcParty> hcParties =
-          Optional.ofNullable(recipientType)
-              .map(RecipientType::getHcparties)
+    Recipient recipient = new Recipient();
+    List<HcParty> hcParties =
+        Optional.ofNullable(recipientType)
+            .map(RecipientType::getHcparties)
+            .orElse(new ArrayList<>())
+            .stream()
+            .map(BaseMapper::toHcParty)
+            .collect(Collectors.toList());
+    recipient.setHcParties(hcParties);
+    return recipient;
+  }
+
+  protected static Header mapHeaderFields(HeaderType headerType) {
+    Header header = new Header();
+    if (headerType != null) {
+      header.setDate(instantToLocalDate(headerType.getDate()));
+      header.setTime(instantToDateTime(headerType.getTime()));
+      List<HcParty> senderHcParties =
+          Optional.ofNullable(headerType.getSender())
+              .map(SenderType::getHcparties)
               .orElse(new ArrayList<>())
               .stream()
               .map(BaseMapper::toHcParty)
               .collect(Collectors.toList());
-      recipient.setHcParties(hcParties);
-      return recipient;
-  }
+      Sender sender = new Sender();
+      sender.setHcParties(senderHcParties);
+      header.setSender(sender);
 
-  protected static Header mapHeaderFields(HeaderType headerType) {
-      Header header = new Header();
-      if (headerType != null) {
-          header.setDate(headerType.getDate().toLocalDate());
-          header.setTime(headerType.getTime());
-          List<HcParty> senderHcParties =
-              Optional.ofNullable(headerType.getSender())
-                  .map(SenderType::getHcparties)
-                  .orElse(new ArrayList<>())
-                  .stream()
-                  .map(BaseMapper::toHcParty)
-                  .collect(Collectors.toList());
-          Sender sender = new Sender();
-          sender.setHcParties(senderHcParties);
-          header.setSender(sender);
-
-          List<Recipient> recipients = headerType.getRecipients().stream().map(BaseMapper::toRecipient).collect(Collectors.toList());
-          header.setRecipients(recipients);
-      }
-      return header;
+      List<Recipient> recipients = headerType.getRecipients().stream().map(BaseMapper::toRecipient).collect(Collectors.toList());
+      header.setRecipients(recipients);
+    }
+    return header;
   }
 
   protected static List<HcParty> mapHcPartyFields(AuthorType authorType) {
-      return Optional.ofNullable(authorType)
-          .map(AuthorType::getHcparties)
-          .orElse(Collections.emptyList())
-          .stream()
-          .map(BaseMapper::toHcParty)
-          .collect(Collectors.toList());
+    return Optional.ofNullable(authorType)
+        .map(AuthorType::getHcparties)
+        .orElse(Collections.emptyList())
+        .stream()
+        .map(BaseMapper::toHcParty)
+        .collect(Collectors.toList());
   }
 
   protected static void markTransactionAsProcessed(TransactionType firstTransaction) {
-      firstTransaction.setAuthor(null);
-      firstTransaction.setRedactor(null);
-      firstTransaction.setRecorddatetime(null);
-      firstTransaction.setTime(null);
-      firstTransaction.setDate(null);
-      clearIds(firstTransaction);
-      clearCds(firstTransaction);
+    firstTransaction.setAuthor(null);
+    firstTransaction.setRedactor(null);
+    firstTransaction.setRecorddatetime(null);
+    firstTransaction.setTime(null);
+    firstTransaction.setDate(null);
+    clearIds(firstTransaction);
+    clearCds(firstTransaction);
   }
 
   public static ContactPerson toContactPerson(PersonType personType) {
@@ -151,99 +181,98 @@ public class BaseMapper {
     Patient patient = new Patient();
     toPerson(personType, patient);
     if (personType.getRecorddatetime() != null) {
-        patient.setRecordDateTime(personType.getRecorddatetime().toLocalDateTime());
+      patient.setRecordDateTime(instantToLocalDateTime(personType.getRecorddatetime()));
     }
     return patient;
   }
 
   private static <T extends AbstractPerson> T toPerson(PersonType personType, T person) {
 
-      if (personType == null) {
-          return null;
-      }
+    if (personType == null) {
+      return null;
+    }
 
-      PersonType clone = SerializationUtils.clone(personType);
+    PersonType clone = SerializationUtils.clone(personType);
 
     clone.setRecorddatetime(null);
 
     person.setIds(personType.getIds());
-      clearIds(clone);
+    clearIds(clone);
 
-      if (personType.getBirthdate() != null) {
-          person.setBirthdate(personType.getBirthdate().getDate().toLocalDate());
-          clone.setBirthdate(null);
-      }
-      if (personType.getDeathdate() != null) {
-          person.setDeathdate(personType.getDeathdate().getDate().toLocalDate());
-          clone.setDeathdate(null);
-      }
+    if (personType.getBirthdate() != null) {
+      person.setBirthdate(instantToLocalDate(personType.getBirthdate().getDate()));
+      clone.setBirthdate(null);
+    }
+    if (personType.getDeathdate() != null) {
+      person.setDeathdate(instantToLocalDate(personType.getDeathdate().getDate()));
+      clone.setDeathdate(null);
+    }
 
-      person.setFamilyname(personType.getFamilyname());
-      clone.setFamilyname(null);
+    person.setFamilyname(personType.getFamilyname());
+    clone.setFamilyname(null);
 
-      person.setFirstnames(personType.getFirstnames());
-      if (person.getFirstnames() != null) {
-          clone.getFirstnames().clear();
-      }
+    person.setFirstnames(personType.getFirstnames());
+    if (person.getFirstnames() != null) {
+      clone.getFirstnames().clear();
+    }
 
-      person.setUsuallanguage(personType.getUsuallanguage());
-      clone.setUsuallanguage(null);
+    person.setUsuallanguage(personType.getUsuallanguage());
+    clone.setUsuallanguage(null);
 
-      person.setTelecoms(personType.getTelecoms());
-      if (person.getTelecoms() != null) {
-          clone.getTelecoms().clear();
-      }
+    person.setTelecoms(personType.getTelecoms());
+    if (person.getTelecoms() != null) {
+      clone.getTelecoms().clear();
+    }
 
-      person.setAddresses(personType.getAddresses());
-      if (person.getAddresses() != null) {
-          clone.getAddresses().clear();
-      }
+    person.setAddresses(personType.getAddresses());
+    if (person.getAddresses() != null) {
+      clone.getAddresses().clear();
+    }
 
-      if (personType.getSex() != null && personType.getSex().getCd() != null) {
-          person.setSex(personType.getSex().getCd().getValue());
-          clone.setSex(null);
-      }
+    if (personType.getSex() != null && personType.getSex().getCd() != null) {
+      person.setSex(personType.getSex().getCd().getValue());
+      clone.setSex(null);
+    }
 
-      person.setUnparsed(clone);
+    person.setUnparsed(clone);
 
-      return person;
+    return person;
   }
 
   public static HcParty toHcParty(HcpartyType hcpartyType) {
 
-      HcpartyType clone = SerializationUtils.clone(hcpartyType);
+    HcpartyType clone = SerializationUtils.clone(hcpartyType);
 
+    HcParty hcParty = new HcParty();
 
-      HcParty hcParty = new HcParty();
+    hcParty.setAddresses(hcpartyType.getAddresses());
+    if (hcpartyType.getAddresses() != null) {
+      clone.getAddresses().clear();
+    }
 
-      hcParty.setAddresses(hcpartyType.getAddresses());
-      if (hcpartyType.getAddresses() != null) {
-          clone.getAddresses().clear();
-      }
+    hcParty.setCds(hcpartyType.getCds());
+    clearCds(clone);
 
-      hcParty.setCds(hcpartyType.getCds());
-      clearCds(clone);
+    hcParty.setFamilyname(hcpartyType.getFamilyname());
+    clone.setFamilyname(null);
 
-      hcParty.setFamilyname(hcpartyType.getFamilyname());
-      clone.setFamilyname(null);
+    hcParty.setFirstname(hcpartyType.getFirstname());
+    clone.setFirstname(null);
 
-      hcParty.setFirstname(hcpartyType.getFirstname());
-      clone.setFirstname(null);
+    hcParty.setIds(hcpartyType.getIds());
+    clearIds(clone);
 
-      hcParty.setIds(hcpartyType.getIds());
-      clearIds(clone);
+    hcParty.setName(hcpartyType.getName());
+    clone.setName(null);
 
-      hcParty.setName(hcpartyType.getName());
-      clone.setName(null);
+    hcParty.setTelecoms(hcpartyType.getTelecoms());
+    if (hcpartyType.getTelecoms() != null) {
+      clone.getTelecoms().clear();
+    }
 
-      hcParty.setTelecoms(hcpartyType.getTelecoms());
-      if (hcpartyType.getTelecoms() != null) {
-          clone.getTelecoms().clear();
-      }
+    hcParty.setUnparsed(clone);
 
-      hcParty.setUnparsed(clone);
-
-      return hcParty;
+    return hcParty;
   }
 
   protected static void markKmehrHeaderLevelFieldsAsProcessed(HeaderType header) {
@@ -261,14 +290,14 @@ public class BaseMapper {
   }
 
   protected static void clearContentTypeTextTypes(ItemType clone) {
-      if (clone.getContents() != null) {
-          for (ContentType contentType : clone.getContents()) {
-              if (contentType == null || contentType.getTexts() == null) {
-                  continue;
-              }
-              contentType.getTexts().clear();
-          }
+    if (clone.getContents() != null) {
+      for (ContentType contentType : clone.getContents()) {
+        if (contentType == null || contentType.getTexts() == null) {
+          continue;
+        }
+        contentType.getTexts().clear();
       }
+    }
   }
 
   protected static void clearTextTypes(ItemType clone) {
@@ -278,24 +307,24 @@ public class BaseMapper {
   }
 
   protected static void clearContentTypeCds(ItemType clone) {
-      if (clone.getContents() != null) {
-          for (ContentType contentType : clone.getContents()) {
-              if (contentType.getCds() == null) {
-                  continue;
-              }
-              contentType.getCds().clear();
-          }
+    if (clone.getContents() != null) {
+      for (ContentType contentType : clone.getContents()) {
+        if (contentType.getCds() == null) {
+          continue;
+        }
+        contentType.getCds().clear();
       }
+    }
   }
 
   protected static void clearContentTypeAllMedicationRelatedInfo(ItemType clone) {
-      if (clone.getContents() != null) {
-          for (ContentType contentType : clone.getContents()) {
-              contentType.setMedicinalproduct(null);
-              contentType.setCompoundprescription(null);
-              contentType.setSubstanceproduct(null);
-          }
+    if (clone.getContents() != null) {
+      for (ContentType contentType : clone.getContents()) {
+        contentType.setMedicinalproduct(null);
+        contentType.setCompoundprescription(null);
+        contentType.setSubstanceproduct(null);
       }
+    }
   }
 
   protected static void clearMedicinalProductAndSubstanceProduct(ItemType clone) {

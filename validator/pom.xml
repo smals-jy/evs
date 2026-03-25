@@ -11,7 +11,7 @@
     </parent>
     <artifactId>validator</artifactId>
     <dependencies>
-
+             
         <dependency>
             <groupId>org.imec.ivlab.ehealth.automation</groupId>
             <artifactId>core</artifactId>

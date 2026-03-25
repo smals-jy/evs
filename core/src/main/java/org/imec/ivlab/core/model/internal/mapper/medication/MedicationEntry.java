@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import java.util.List;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import lombok.Getter;
 import lombok.Setter;

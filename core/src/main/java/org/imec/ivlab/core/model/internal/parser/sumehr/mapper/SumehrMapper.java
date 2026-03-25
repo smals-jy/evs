@@ -11,11 +11,13 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.SerializationUtils;
 import org.imec.ivlab.core.kmehr.mapper.KmehrMapper;
@@ -68,8 +70,8 @@ public class SumehrMapper extends BaseMapper {
         entry.getTransactionCommon().setPerson(toPatient(folderType.getPatient()));
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime());
+        entry.getTransactionCommon().setDate(instantToLocalDate(firstTransaction.getDate()));
+        entry.getTransactionCommon().setTime(instantToDateTime(firstTransaction.getTime()));
         entry.getTransactionCommon().setCdtransactions(new ArrayList<>(firstTransaction.getCds()));
 
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
@@ -143,7 +145,6 @@ public class SumehrMapper extends BaseMapper {
                     if (CollectionsUtil.notEmptyOrNull(cdItems)) {
                         contactPerson.setRelation(cdItems.get(0).getValue());
                     }
-                    // TODO: marked item cd's that were not parsed as unparsed
                     contactPersons.add(contactPerson);
                 }
             }
@@ -221,7 +222,6 @@ public class SumehrMapper extends BaseMapper {
         return risks;
     }
 
-
     private static List<Treatment> toTreatments(List<ItemType> items) {
         return Optional.ofNullable(items).orElse(Collections.emptyList()).stream().map(SumehrMapper::toTreatment).collect(Collectors.toList());
     }
@@ -237,7 +237,7 @@ public class SumehrMapper extends BaseMapper {
         toItem(itemType, risk);
 
         if (itemType.getBeginmoment() != null) {
-            risk.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
+            risk.setBeginmoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             risk.getUnparsed().getBeginmoment().setDate(null);
         }
 
@@ -251,11 +251,11 @@ public class SumehrMapper extends BaseMapper {
         toItem(itemType, hce);
 
         if (itemType.getBeginmoment() != null) {
-            hce.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
+            hce.setBeginmoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             hce.getUnparsed().getBeginmoment().setDate(null);
         }
         if (itemType.getEndmoment() != null) {
-            hce.setEndmoment(itemType.getEndmoment().getDate().toLocalDate());
+            hce.setEndmoment(instantToLocalDate(itemType.getEndmoment().getDate()));
             hce.getUnparsed().getEndmoment().setDate(null);
         }
 
@@ -271,11 +271,11 @@ public class SumehrMapper extends BaseMapper {
         tm.setNoKnownTreatment(hasNullFlavor(itemType));
 
         if (itemType.getBeginmoment() != null) {
-            tm.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
+            tm.setBeginmoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             tm.getUnparsed().getBeginmoment().setDate(null);
         }
         if (itemType.getEndmoment() != null) {
-            tm.setEndmoment(itemType.getEndmoment().getDate().toLocalDate());
+            tm.setEndmoment(instantToLocalDate(itemType.getEndmoment().getDate()));
             tm.getUnparsed().getEndmoment().setDate(null);
         }
 
@@ -291,16 +291,16 @@ public class SumehrMapper extends BaseMapper {
         pb.setNoKnownTreatment(hasNullFlavor(itemType));
 
         if (itemType.getBeginmoment() != null) {
-            pb.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
+            pb.setBeginmoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             pb.getUnparsed().getBeginmoment().setDate(null);
         }
         if (itemType.getEndmoment() != null) {
-            pb.setEndmoment(itemType.getEndmoment().getDate().toLocalDate());
+            pb.setEndmoment(instantToLocalDate(itemType.getEndmoment().getDate()));
             pb.getUnparsed().getEndmoment().setDate(null);
         }
 
         if (itemType.getRecorddatetime() != null) {
-            pb.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+            pb.setRecordDateTime(instantToLocalDateTime(itemType.getRecorddatetime()));
         }
         pb.getUnparsed().setRecorddatetime(null);
 
@@ -332,7 +332,7 @@ public class SumehrMapper extends BaseMapper {
         clearContentTypeTextTypes(clone);
 
         if (itemType.getBeginmoment() != null) {
-            patientWill.setBeginmoment(itemType.getBeginmoment().getDate().toLocalDate());
+            patientWill.setBeginmoment(instantToLocalDate(itemType.getBeginmoment().getDate()));
             clone.getBeginmoment().setDate(null);
         }
 
@@ -346,7 +346,7 @@ public class SumehrMapper extends BaseMapper {
         clone.getTexts().clear();
 
         if (itemType.getRecorddatetime() != null) {
-            patientWill.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+            patientWill.setRecordDateTime(instantToLocalDateTime(itemType.getRecorddatetime()));
         }
         clone.setRecorddatetime(null);
 
@@ -401,7 +401,7 @@ public class SumehrMapper extends BaseMapper {
         clearContentTypeCds(clone);
 
         if (itemType.getRecorddatetime() != null) {
-            medicationEntrySumehr.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+            medicationEntrySumehr.setRecordDateTime(instantToLocalDateTime(itemType.getRecorddatetime()));
         }
         clone.setRecorddatetime(null);
 
@@ -420,11 +420,10 @@ public class SumehrMapper extends BaseMapper {
         clearCds(clone);
 
         if (itemType.getBeginmoment() != null) {
-            vaccination.setApplicationDate(itemType.getBeginmoment().getDate().toLocalDate());
+            vaccination.setApplicationDate(instantToLocalDate(itemType.getBeginmoment().getDate()));
             clone.getBeginmoment().setDate(null);
         }
 
-        //vaccination.setCommentText(ItemUtil.cp);
         vaccination.setCdcontents(ItemUtil.collectContentTypeCds(itemType));
         clearContentTypeCds(clone);
 
@@ -435,7 +434,7 @@ public class SumehrMapper extends BaseMapper {
         clearTextTypes(clone);
 
         if (itemType.getRecorddatetime() != null) {
-            vaccination.setRecordDateTime(itemType.getRecorddatetime().toLocalDateTime());
+            vaccination.setRecordDateTime(instantToLocalDateTime(itemType.getRecorddatetime()));
         }
         clone.setRecorddatetime(null);
 

@@ -64,7 +64,8 @@ public class R1001j_MultipleOfYearsDayLimitInDate extends BaseMSEntryRule implem
                     }
 
                 } else {
-                    LocalDate beginmomentDate = medicationItem.getBeginmoment().getDate().toLocalDate();
+                    // getDate() returns java.time.Instant in connector 5.x
+                    LocalDate beginmomentDate = new LocalDate(medicationItem.getBeginmoment().getDate().toEpochMilli());
                     if (beginmomentDate.getDayOfMonth() > 28 && beginmomentDate.getMonthOfYear() == 2) {
                         customMessage = ". Check the medication <beginmoment>";
                         return failRule(msEntry.getMseTransaction());

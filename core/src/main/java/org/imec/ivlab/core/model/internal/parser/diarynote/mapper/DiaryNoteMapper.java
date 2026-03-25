@@ -5,9 +5,11 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTIONschemes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.imec.ivlab.core.kmehr.model.util.KmehrMessageUtil;
 import org.imec.ivlab.core.kmehr.model.util.TransactionUtil;
@@ -39,10 +41,10 @@ public class DiaryNoteMapper extends BaseMapper {
         entry.getTransactionCommon().setPerson(toPatient(folderType.getPatient()));
         markFolderLevelFieldsAsProcessed(cloneFolder);
 
-        entry.getTransactionCommon().setDate(firstTransaction.getDate().toLocalDate());
-        entry.getTransactionCommon().setTime(firstTransaction.getTime());
+        entry.getTransactionCommon().setDate(instantToLocalDate(firstTransaction.getDate()));
+        entry.getTransactionCommon().setTime(instantToDateTime(firstTransaction.getTime()));
         if (firstTransaction.getRecorddatetime() != null) {
-            entry.getTransactionCommon().setRecordDateTime(firstTransaction.getRecorddatetime().toLocalDateTime());
+            entry.getTransactionCommon().setRecordDateTime(instantToLocalDateTime(firstTransaction.getRecorddatetime()));
         }
         entry.getTransactionCommon().setAuthor(mapHcPartyFields(firstTransaction.getAuthor()));
         entry.getTransactionCommon().setRedactor(mapHcPartyFields(firstTransaction.getRedactor()));

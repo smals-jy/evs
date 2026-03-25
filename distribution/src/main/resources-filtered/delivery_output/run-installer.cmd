@@ -15,10 +15,10 @@ goto END
 :CHECK_JAVA_VERSION
 PATH %JAVA_HOME%\bin\;%PATH%
 for /f tokens^=2-5^ delims^=.-_^" %%j in ('java -fullversion 2^>^&1') do set "jver=%%j%%k%%l%%m"
-if %jver% LSS 18000 (
+if %jver% LSS 210000 (
   echo java version is too low
   echo current java version: %jver%
-  echo at least 1.8 is needed
+  echo at least 21 is needed
   goto END
 )
 

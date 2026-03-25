@@ -3,8 +3,8 @@ package org.imec.ivlab.core.model.patient.model;
 import org.imec.ivlab.core.model.patient.adapter.GenderAdapter;
 import org.imec.ivlab.core.xml.LocalDateAdapter;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.joda.time.LocalDate;
 
 @XmlRootElement(name="patient")

@@ -22,14 +22,14 @@ import org.imec.ivlab.core.util.XmlFormatterUtil;
 import org.joda.time.DateTime;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
+import java.time.Instant;
 
 public class KmehrMatcher {
 
@@ -403,7 +403,7 @@ public class KmehrMatcher {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }*/
-        DateTime now = DateTime.now();
+        Instant now = Instant.now();
 
         for (TransactionType transactionType : transactions) {
             transactionType.setDate(now);

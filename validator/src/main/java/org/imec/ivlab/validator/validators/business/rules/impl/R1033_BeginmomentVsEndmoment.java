@@ -39,11 +39,12 @@ public class R1033_BeginmomentVsEndmoment extends BaseMSEntryRule {
         if (medicationItem.getBeginmoment() == null || medicationItem.getBeginmoment().getDate() == null) {
             return passRule();
         }
-        LocalDate medicationBeginMomentLocalDate = medicationItem.getBeginmoment().getDate().toLocalDate();
+        // getDate() returns java.time.Instant in connector 5.x
+        LocalDate medicationBeginMomentLocalDate = new LocalDate(medicationItem.getBeginmoment().getDate().toEpochMilli());
 
         LocalDate medicationEndMomentLocalDate = null;
         if (medicationItem.getEndmoment() != null && medicationItem.getEndmoment().getDate() != null) {
-            medicationEndMomentLocalDate = medicationItem.getEndmoment().getDate().toLocalDate();
+            medicationEndMomentLocalDate = new LocalDate(medicationItem.getEndmoment().getDate().toEpochMilli());
         }
 
         RangeChecker rangeChecker = new RangeChecker();
