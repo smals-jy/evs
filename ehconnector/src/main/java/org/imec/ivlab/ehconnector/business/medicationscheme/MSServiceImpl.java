@@ -48,6 +48,10 @@ public class MSServiceImpl extends AbstractService implements MSService {
     public MSServiceImpl() throws VitalinkException {
     }
 
+    MSServiceImpl(HubFlow hubFlow) throws VitalinkException {
+        this.hubFlow = hubFlow;
+    }
+
     @Override
     public MSEntryList getMedicationScheme(Patient patient) throws VitalinkException {
         GetTransactionSetResponse getTransactionSetResponse = null;
