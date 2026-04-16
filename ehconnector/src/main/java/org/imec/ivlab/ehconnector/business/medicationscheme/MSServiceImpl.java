@@ -116,7 +116,8 @@ public class MSServiceImpl extends AbstractService implements MSService {
         // In the past, RSW required version "0" for initial PutTransactionSetRequest
         // Vitalink worked with "" in that case.
         if (latestVersion == null) {
-            latestVersion = "1";
+            latestVersion = Optional.ofNullable(EVSConfig.getInstance().getPropertyOrNull(EVSProperties.INITIAL_MS_VERSION))
+                .orElse("1");
         }
 
         FolderType folderType = KmehrMessageUtil.getFolderType(kmehrmessageTemplate);

@@ -14,13 +14,21 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTIONvalues;
 import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
+import org.imec.ivlab.core.config.EVSConfig;
+import org.imec.ivlab.core.config.EVSProperties;
 import org.imec.ivlab.core.model.patient.model.Patient;
 import org.imec.ivlab.core.model.upload.msentrylist.MSEntryList;
 import org.imec.ivlab.ehconnector.hub.exception.incurable.TransactionNotFoundException;
 import org.imec.ivlab.ehconnector.hubflow.HubFlow;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class MSServiceImplTest {
+
+    @BeforeMethod
+    public void setUp() {
+        EVSConfig.getInstance().setProperty(EVSProperties.INITIAL_MS_VERSION, "1");
+    }
 
     @Test
     public void testPutMedicationSchemeUsesVersionOneWhenNoExistingSchemeFound() throws Exception {
