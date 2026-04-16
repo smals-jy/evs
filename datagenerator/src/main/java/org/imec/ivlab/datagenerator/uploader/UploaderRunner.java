@@ -48,6 +48,7 @@ public class UploaderRunner {
         EVSConfig.getInstance().setProperty(EVSProperties.AUTO_GENERATE_KMEHR_MS_TRANSACTION_AUTHOR, String.valueOf(arguments.isAutoGenerateMSTransactionAuthor()));
         EVSConfig.getInstance().setProperty(EVSProperties.FILTER_OUT_TRANSACTIONS_HAVING_PATIENT_ACCESS_NO, String.valueOf(arguments.isFilterOutTransactionsHavingPatientAccessNo()));
         EVSConfig.getInstance().setProperty(EVSProperties.ENABLE_EVSREF, String.valueOf(arguments.isEnableEVSREF()));
+        EVSConfig.getInstance().setProperty(EVSProperties.INITIAL_MS_VERSION, arguments.getInitialMSVersion());
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
