@@ -43,9 +43,10 @@ public class MSServiceImpl extends AbstractService implements MSService {
     private final static Logger log = LogManager.getLogger(MSServiceImpl.class);
 
     private static final TransactionType TRANSACTION_TYPE = TransactionType.MEDICATION_SCHEME;
-    private HubFlow hubFlow = new HubFlow();
+    private HubFlow hubFlow;
 
     public MSServiceImpl() throws VitalinkException {
+        this.hubFlow = new HubFlow();
     }
 
     MSServiceImpl(HubFlow hubFlow) throws VitalinkException {
