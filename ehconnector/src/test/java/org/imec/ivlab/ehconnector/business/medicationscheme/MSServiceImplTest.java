@@ -31,6 +31,38 @@ public class MSServiceImplTest {
     }
 
     @Test
+    public void testPutMedicationSchemeUsesVersionZeroWhenConfiguredAndNoExistingSchemeFound() throws Exception {
+        EVSConfig.getInstance().setProperty(EVSProperties.INITIAL_MS_VERSION, "0");
+
+        HubFlow mockHubFlow = createMock(HubFlow.class);
+
+        expect(mockHubFlow.getTransactionSet(anyString(), anyObject()))
+            .andThrow(new TransactionNotFoundException("No transaction found for patient"));
+
+        expect(mockHubFlow.getTransactionList(anyString(), anyObject()))
+            .andThrow(new TransactionNotFoundException("No transaction found for patient"));
+
+        expect(mockHubFlow.putTransactionSet(anyString(), anyObject(), anyObject()))
+            .andReturn(null);
+
+        replay(mockHubFlow);
+
+        MSServiceImpl msService = new MSServiceImpl(mockHubFlow);
+
+        Patient patient = new Patient();
+        patient.setId("12345678901");
+
+        Kmehrmessage kmehrmessage = buildKmehrmessageWithMSTransaction();
+
+        msService.putMedicationScheme(patient, kmehrmessage, new MSEntryList());
+
+        TransactionType msTransaction = getMSTransaction(kmehrmessage);
+        assertThat(msTransaction.getVersion()).isEqualTo("0");
+
+        verify(mockHubFlow);
+    }
+
+    @Test
     public void testPutMedicationSchemeUsesVersionOneWhenNoExistingSchemeFound() throws Exception {
         HubFlow mockHubFlow = createMock(HubFlow.class);
 
