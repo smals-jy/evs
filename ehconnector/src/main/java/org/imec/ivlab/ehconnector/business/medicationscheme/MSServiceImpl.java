@@ -43,9 +43,14 @@ public class MSServiceImpl extends AbstractService implements MSService {
     private final static Logger log = LogManager.getLogger(MSServiceImpl.class);
 
     private static final TransactionType TRANSACTION_TYPE = TransactionType.MEDICATION_SCHEME;
-    private HubFlow hubFlow = new HubFlow();
+    private HubFlow hubFlow;
 
     public MSServiceImpl() throws VitalinkException {
+        this.hubFlow = new HubFlow();
+    }
+
+    MSServiceImpl(HubFlow hubFlow) throws VitalinkException {
+        this.hubFlow = hubFlow;
     }
 
     @Override
@@ -109,11 +114,11 @@ public class MSServiceImpl extends AbstractService implements MSService {
 
         String latestVersion = getLatestVersion(patient);
 
-        // RSW requires version "0" for initial PutTransactionSetRequest
-        // Vitalink works with "" in that case.
-        // TODO: check if Vitalink also accepts "0" in that case.
+        // In the past, RSW required version "0" for initial PutTransactionSetRequest
+        // Vitalink worked with "" in that case.
         if (latestVersion == null) {
-            latestVersion = "0";
+            latestVersion = Optional.ofNullable(EVSConfig.getInstance().getPropertyOrNull(EVSProperties.INITIAL_MS_VERSION))
+                .orElse("1");
         }
 
         FolderType folderType = KmehrMessageUtil.getFolderType(kmehrmessageTemplate);

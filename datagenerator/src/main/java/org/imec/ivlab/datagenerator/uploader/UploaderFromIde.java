@@ -38,6 +38,7 @@ public class UploaderFromIde {
 
         arguments.setLogCommunicationType(LogCommunicationType.WITHOUT_SECURITY);
         arguments.setEnableEVSREF(true);
+        arguments.setInitialMSVersion("1");
 
         arguments.setStartTransactionId("100");
 

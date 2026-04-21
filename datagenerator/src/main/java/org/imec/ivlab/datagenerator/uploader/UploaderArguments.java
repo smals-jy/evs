@@ -87,4 +87,7 @@ public class UploaderArguments {
 
     @Parameter(names = "-enableEVSREF", description = "Write the content with EVSREF references", arity = 1)
     private boolean enableEVSREF = true;
+
+    @Parameter(names = "-initialMSVersion", description = "The version to use for the initial PutTransactionSetRequest when no existing medication scheme version is found")
+    private String initialMSVersion = "1";
 }
