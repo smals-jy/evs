@@ -225,17 +225,21 @@
     </build>
 
     <properties>
+         <!-- General -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <commons.cli.version>1.11.0</commons.cli.version>
+        <!-- Izpack -->
         <build.install.directory.parent>${project.basedir}${file.separator}..${file.separator}..${file.separator}builds${file.separator}${project.version}${file.separator}</build.install.directory.parent>
         <build.install.directory>${build.install.directory.parent}${file.separator}EVS${file.separator}</build.install.directory>
         <build.install.directory.installer>${build.install.directory.parent}${file.separator}EVS-installer${file.separator}</build.install.directory.installer>
         <build.install.jar.directory>${build.install.directory}${file.separator}system${file.separator}</build.install.jar.directory>
         <build.install.kmehrconfig.directory>${build.install.directory}${file.separator}system${file.separator}kmehr{file.separator}</build.install.kmehrconfig.directory>
-        <apache.poi.version>5.3.0</apache.poi.version>
+        <!-- Common dependancies across the project  -->
         <ehealth.connector.version>5.0.2</ehealth.connector.version>
+        <joda-time.version>2.14.2</joda-time.version>
+        <apache.poi.version>5.3.0</apache.poi.version>
+        <commons.cli.version>1.11.0</commons.cli.version>
     </properties>
 
     <repositories>
