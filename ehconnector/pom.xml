@@ -6,7 +6,6 @@
 
     <properties>
         <!-- Explicit versions for common libs -->
-        <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
         <commons-codec.version>1.22.0</commons-codec.version>
         <joda-time.version>2.14.2</joda-time.version>
@@ -40,12 +39,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-
         <!-- eHealth / Technical connector core (kept conservatively) -->
         <!-- These artifacts are provided by the eHealth Artifactory; keep core technical/business modules. -->
         <dependency>
