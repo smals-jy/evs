@@ -69,13 +69,11 @@
             <artifactId>connector-technical-signature</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
-         <!-- TODO turn off for the sake of seeing if code compile without it
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-technical-jca</artifactId>
+            <artifactId>connector-utilities-hubservicesv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
-        --> 
              
         <!-- Business / domain modules kept conservatively -->
         <dependency>
