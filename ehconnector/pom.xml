@@ -73,11 +73,22 @@
             <artifactId>connector-utilities-hubservicesv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>be.fgov.ehealth.connector</groupId>
+            <artifactId>connector-business-intrahubcommons</artifactId>
+            <version>${ehealth.connector.version}</version>
+        </dependency> 
              
         <!-- Business / domain modules kept conservatively -->
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-common</artifactId>
+            <version>${ehealth.connector.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.fgov.ehealth.connector</groupId>
+            <artifactId>connector-business-kmehrcommons</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
 
