@@ -73,7 +73,11 @@
             <artifactId>connector-utilities-hubservicesv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>be.fgov.ehealth.connector</groupId>
+            <artifactId>connector-business-intrahubv3</artifactId>
+            <version>${ehealth.connector.version}</version>
+        </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahubcommons</artifactId>
