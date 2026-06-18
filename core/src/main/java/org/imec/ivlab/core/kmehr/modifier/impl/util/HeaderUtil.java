@@ -15,7 +15,7 @@ public class HeaderUtil {
 
     public static HeaderType createHeader(LocalDateTime dateAndTime) throws TransformationException {
 
-        Map<String, Object> velocityContext = new HashMap<String, Object>();
+        Map<String, Object> velocityContext = new HashMap<>();
         DateTimeFormatter time = ISODateTimeFormat.time();
         DateTimeFormatter date = ISODateTimeFormat.date();
 
@@ -25,6 +25,5 @@ public class HeaderUtil {
         return JAXBUtils.unmarshal(HeaderType.class, headerText);
 
     }
-
 
 }
