@@ -63,12 +63,6 @@
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
-        <!-- Legacy collections kept in case older code relies on it -->
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.2</version>
-        </dependency>
 
         <!-- eHealth / Technical connector core (kept conservatively) -->
         <!-- These artifacts are provided by the eHealth Artifactory; keep core technical/business modules. -->
@@ -89,29 +83,21 @@
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-technical-jca</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-signature</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
-
+         <!-- TODO turn off for the sake of seeing if code compile without it
+        <dependency>
+            <groupId>be.fgov.ehealth.connector</groupId>
+            <artifactId>connector-technical-jca</artifactId>
+            <version>${ehealth.connector.version}</version>
+        </dependency>
+        --> 
+             
         <!-- Business / domain modules kept conservatively -->
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-common</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-business-ehboxdomainmodel</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-business-ehboxv3</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
 
@@ -158,12 +144,6 @@
 
         <!-- Utilities -->
         <dependency>
-            <groupId>org.jasypt</groupId>
-            <artifactId>jasypt</artifactId>
-            <version>1.9.3</version>
-        </dependency>
-
-        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
@@ -173,12 +153,6 @@
             <groupId>net.sf.jsignature.io-tools</groupId>
             <artifactId>easystream</artifactId>
             <version>1.2.15</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.xebia.extras</groupId>
-            <artifactId>selma</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <!-- Test dependencies -->
