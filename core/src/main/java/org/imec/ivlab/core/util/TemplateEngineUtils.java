@@ -8,6 +8,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
+import org.apache.velocity.runtime.resource.loader.ResourceReader;
 
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -68,6 +69,15 @@ public final class TemplateEngineUtils {
         @Override
         public InputStream getResourceStream(String source) throws ResourceNotFoundException {
             return IOUtils.getResourceAsStream(source);
+        }
+
+        @Override
+        public ResourceReader getResourceReader(String source, String encoding) throws ResourceNotFoundException {
+            InputStream inputStream = IOUtils.getResourceAsStream(source);
+            if (inputStream == null) {
+                throw new ResourceNotFoundException("Resource not found: " + source);
+            }
+            return new org.apache.velocity.runtime.resource.loader.InputStreamResourceReader(inputStream);
         }
 
         @Override
