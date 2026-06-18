@@ -1,6 +1,5 @@
 package org.imec.ivlab.core.util;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.Template;
@@ -12,9 +11,7 @@ import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public final class TemplateEngineUtils {
@@ -30,31 +27,31 @@ public final class TemplateEngineUtils {
 
     public static String generate(Map<String, Object> ctx, String templateLocation) {
         VelocityContext context = new VelocityContext();
-        Iterator<Map.Entry<String, Object>> template = ctx.entrySet().iterator();
-
-        while(template.hasNext()) {
-            Map.Entry<String, Object> writer = template.next();
-            context.put(writer.getKey(), writer.getValue());
-        }
+        
+        // Use forEach instead of Iterator for better readability
+        ctx.forEach((key, value) -> context.put(key, value));
 
         if (!templateCache.containsKey(templateLocation)) {
             templateCache.put(templateLocation, VELOCITY_ENGINE.getTemplate(templateLocation, "UTF-8"));
         }
 
-        Template template1 = templateCache.get(templateLocation);
+        Template template = templateCache.get(templateLocation);
 
-        StringWriter writer1 = new StringWriter();
-        template1.merge(context, writer1);
-        return writer1.toString();
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+        return writer.toString();
     }
 
     static {
         LOG.info("Init of TemplateEngineUtils");
         VELOCITY_ENGINE = new VelocityEngine();
-        VELOCITY_ENGINE.setProperty("resource.loader", "classpath");
-        VELOCITY_ENGINE.setProperty("classpath.resource.loader.class", TemplateEngineUtils.ClasspathResourceLoader.class.getName());
+        
+        // Updated property names for Velocity 2.4.1
+        VELOCITY_ENGINE.setProperty("resource.loaders", "classpath");
+        VELOCITY_ENGINE.setProperty("resource.loader.classpath.class", TemplateEngineUtils.ClasspathResourceLoader.class.getName());
         VELOCITY_ENGINE.setProperty("velocimacro.library", "templates/VM_connector_library.vm");
         VELOCITY_ENGINE.setProperty("resource.manager.logwhenfound", "true");
+        
         VELOCITY_ENGINE.init();
     }
 
@@ -63,19 +60,24 @@ public final class TemplateEngineUtils {
         public ClasspathResourceLoader() {
         }
 
-        public void init(ExtendedProperties configuration) {
+        @Override
+        public void init(java.util.Map<String, Object> configuration) {
+            // Configuration initialization for Velocity 2.4.1
         }
 
+        @Override
         public InputStream getResourceStream(String source) throws ResourceNotFoundException {
-                return IOUtils.getResourceAsStream(source);
+            return IOUtils.getResourceAsStream(source);
         }
 
+        @Override
         public boolean isSourceModified(Resource resource) {
             return false;
         }
 
+        @Override
         public long getLastModified(Resource resource) {
-            return (new Date()).getTime();
+            return System.currentTimeMillis();
         }
     }
 }
