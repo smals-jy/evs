@@ -31,45 +31,29 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 🔍 Run dependency analysis for all modules
+      - name: 🔍 Run global dependency analysis
         id: analyze
         run: |
           set +e
           
-          UNUSED_DEPS_FOUND=false
           REPORT_FILE="/tmp/dependency-report.txt"
           
-          echo "=== EVS Dependency Analysis Report ===" | tee "$REPORT_FILE"
+          echo "=== EVS Global Dependency Analysis Report ===" | tee "$REPORT_FILE"
           echo "Generated: $(date)" | tee -a "$REPORT_FILE"
           echo "" | tee -a "$REPORT_FILE"
           
-          # Array of all modules
-          MODULES=("super" "core" "validator" "ehconnector" "viewer" "datagenerator" "distribution")
+          # Run dependency analysis for the entire project
+          echo "🔎 Analyzing all dependencies in the project..." | tee -a "$REPORT_FILE"
+          ANALYSIS=$(mvn dependency:analyze -DoutputXML=false 2>&1)
+          echo "$ANALYSIS" | tee -a "$REPORT_FILE"
           
-          for module in "${MODULES[@]}"; do
-            if [ -d "$module" ] && [ -f "$module/pom.xml" ]; then
-              echo "====================================" | tee -a "$REPORT_FILE"
-              echo "Module: $module" | tee -a "$REPORT_FILE"
-              echo "====================================" | tee -a "$REPORT_FILE"
-              echo "" | tee -a "$REPORT_FILE"
-              
-              cd $module
-              
-              # Run dependency analysis with verbose output
-              echo "🔎 Analyzing dependencies..." | tee -a "$REPORT_FILE"
-              ANALYSIS=$(mvn dependency:analyze -DoutputXML=false 2>&1)
-              echo "$ANALYSIS" | tee -a "$REPORT_FILE"
-              
-              # Check for unused declared dependencies
-              if echo "$ANALYSIS" | grep -q "Unused declared dependencies"; then
-                UNUSED_DEPS_FOUND=true
-                echo "⚠️ WARNING: Unused dependencies detected in $module" | tee -a "$REPORT_FILE"
-              fi
-              
-              echo "" | tee -a "$REPORT_FILE"
-              cd ..
-            fi
-          done
+          # Check for unused declared dependencies
+          UNUSED_DEPS_FOUND=false
+          if echo "$ANALYSIS" | grep -q "Unused declared dependencies"; then
+            UNUSED_DEPS_FOUND=true
+            echo "" | tee -a "$REPORT_FILE"
+            echo "⚠️ WARNING: Unused dependencies detected across the project" | tee -a "$REPORT_FILE"
+          fi
           
           echo "unused_found=$UNUSED_DEPS_FOUND" >> $GITHUB_OUTPUT
           cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
@@ -77,7 +61,7 @@ jobs:
       - name: 📊 Generate summary report
         if: always()
         run: |
-          echo "## 📋 Maven Dependency Analysis Report" > $GITHUB_STEP_SUMMARY
+          echo "## 📋 Maven Global Dependency Analysis Report" > $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Analysis Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -89,14 +73,8 @@ jobs:
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Analyzed Modules" >> $GITHUB_STEP_SUMMARY
-          echo "- super (parent pom)" >> $GITHUB_STEP_SUMMARY
-          echo "- core" >> $GITHUB_STEP_SUMMARY
-          echo "- validator" >> $GITHUB_STEP_SUMMARY
-          echo "- ehconnector" >> $GITHUB_STEP_SUMMARY
-          echo "- viewer" >> $GITHUB_STEP_SUMMARY
-          echo "- datagenerator" >> $GITHUB_STEP_SUMMARY
-          echo "- distribution" >> $GITHUB_STEP_SUMMARY
+          echo "### Scope" >> $GITHUB_STEP_SUMMARY
+          echo "All modules analyzed as a unified project (super parent POM and all child modules)" >> $GITHUB_STEP_SUMMARY
 
       - name: 🚨 Fail on unused dependencies (if enabled)
         if: |
