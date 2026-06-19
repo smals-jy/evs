@@ -156,12 +156,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <version>3.4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
             <version>3.4.6</version>
