@@ -8,6 +8,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
+import org.apache.velocity.util.ExtProperties;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,17 +75,16 @@ public final class TemplateEngineUtils {
         }
 
         /**
-         * Velocity 2.x calls this with a Map (String as key, Object as values) extracted from
-         * the engine configuration.  No additional setup is required here.
+         * Velocity 2.x abstract method uses ExtProperties (org.apache.velocity.util.ExtProperties).
          */
         @Override
-        public void init(Map<String, Object> configuration) {
+        public void init(ExtProperties configuration) {
             // nothing to initialise
         }
 
         /**
-         * Returns a Readerfor the requested template resource.
-         * Velocity 2.x removed getResourceAsStream, this is the replacement.
+         * Returns a Reader for the requested template resource.
+         * Velocity 2.x replaced getResourceAsStream with this method.
          */
         @Override
         public Reader getResourceReader(String source, String encoding)
