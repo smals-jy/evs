@@ -36,43 +36,39 @@ jobs:
         run: |
           set +e
           
-          ANALYSIS_OUTPUT="dependency-analysis-output.txt"
           UNUSED_DEPS_FOUND=false
           
-          echo "=== EVS Dependency Analysis Report ===" > $ANALYSIS_OUTPUT
-          echo "Generated: $(date)" >> $ANALYSIS_OUTPUT
-          echo "" >> $ANALYSIS_OUTPUT
+          echo "=== EVS Dependency Analysis Report ===" 
+          echo "Generated: $(date)"
+          echo ""
           
           # Array of all modules
           MODULES=("super" "core" "validator" "ehconnector" "viewer" "datagenerator" "distribution")
           
           for module in "${MODULES[@]}"; do
             if [ -d "$module" ] && [ -f "$module/pom.xml" ]; then
-              echo "====================================" >> $ANALYSIS_OUTPUT
-              echo "Module: $module" >> $ANALYSIS_OUTPUT
-              echo "====================================" >> $ANALYSIS_OUTPUT
-              echo "" >> $ANALYSIS_OUTPUT
+              echo "====================================" 
+              echo "Module: $module" 
+              echo "====================================" 
+              echo ""
               
               cd $module
               
               # Run dependency analysis
               ANALYSIS=$(mvn dependency:analyze -DoutputXML=false 2>&1)
-              echo "$ANALYSIS" >> ../$ANALYSIS_OUTPUT
+              echo "$ANALYSIS"
               
               # Check for unused declared dependencies
               if echo "$ANALYSIS" | grep -q "Unused declared dependencies"; then
                 UNUSED_DEPS_FOUND=true
               fi
               
-              echo "" >> ../$ANALYSIS_OUTPUT
+              echo ""
               cd ..
             fi
           done
           
-          echo "output_file=$ANALYSIS_OUTPUT" >> $GITHUB_OUTPUT
           echo "unused_found=$UNUSED_DEPS_FOUND" >> $GITHUB_OUTPUT
-          
-          cat $ANALYSIS_OUTPUT
 
       - name: 📊 Generate summary report
         if: always()
@@ -97,16 +93,6 @@ jobs:
           echo "- viewer" >> $GITHUB_STEP_SUMMARY
           echo "- datagenerator" >> $GITHUB_STEP_SUMMARY
           echo "- distribution" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "For detailed analysis, download the artifact: **dependency-analysis-report**" >> $GITHUB_STEP_SUMMARY
-
-      - name: 📤 Upload analysis report
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: dependency-analysis-report
-          path: dependency-analysis-output.txt
-          retention-days: 1
 
       - name: 🚨 Fail on unused dependencies (if enabled)
         if: |
