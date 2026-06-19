@@ -40,17 +40,6 @@
             <artifactId>connector-technical-base</artifactId>
             <version>${ehealth.connector.version}</version>
         </dependency>
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-technical-bootstrap</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>be.fgov.ehealth.connector</groupId>
-            <artifactId>connector-technical-core</artifactId>
-            <version>${ehealth.connector.version}</version>
-        </dependency>
 
         <!-- To support the migration from original JDK 8 to JDK 21 -->
         <dependency>
