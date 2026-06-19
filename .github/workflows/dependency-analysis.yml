@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       fail_on_unused:
@@ -110,38 +107,6 @@ jobs:
           name: dependency-analysis-report
           path: dependency-analysis-output.txt
           retention-days: 1
-
-      - name: 💬 Comment on PR with analysis results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const unused_found = "${{ steps.analyze.outputs.unused_found }}" === "true";
-            
-            let comment_body = "## 🔍 Dependency Analysis Results\n\n";
-            
-            if (unused_found) {
-              comment_body += "⚠️ **Unused dependencies detected!**\n\n";
-              comment_body += "Maven found unused declared dependencies in your code.\n\n";
-              comment_body += "### Recommendations:\n";
-              comment_body += "1. Download the **dependency-analysis-report** artifact from the workflow run\n";
-              comment_body += "2. Review the detected unused dependencies\n";
-              comment_body += "3. Remove or verify the necessity of these dependencies\n";
-              comment_body += "4. Update `pom.xml` files accordingly\n\n";
-              comment_body += "**Note:** Some dependencies may be required for transitive exclusions or runtime functionality.\n";
-            } else {
-              comment_body += "✅ **No unused dependencies found!**\n\n";
-              comment_body += "All declared dependencies in the analyzed modules appear to be in use.\n";
-            }
-            
-            comment_body += "\n[View full report in workflow artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})";
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment_body
-            });
 
       - name: 🚨 Fail on unused dependencies (if enabled)
         if: |
