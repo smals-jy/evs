@@ -37,38 +37,42 @@ jobs:
           set +e
           
           UNUSED_DEPS_FOUND=false
+          REPORT_FILE="/tmp/dependency-report.txt"
           
-          echo "=== EVS Dependency Analysis Report ===" 
-          echo "Generated: $(date)"
-          echo ""
+          echo "=== EVS Dependency Analysis Report ===" | tee "$REPORT_FILE"
+          echo "Generated: $(date)" | tee -a "$REPORT_FILE"
+          echo "" | tee -a "$REPORT_FILE"
           
           # Array of all modules
           MODULES=("super" "core" "validator" "ehconnector" "viewer" "datagenerator" "distribution")
           
           for module in "${MODULES[@]}"; do
             if [ -d "$module" ] && [ -f "$module/pom.xml" ]; then
-              echo "====================================" 
-              echo "Module: $module" 
-              echo "====================================" 
-              echo ""
+              echo "====================================" | tee -a "$REPORT_FILE"
+              echo "Module: $module" | tee -a "$REPORT_FILE"
+              echo "====================================" | tee -a "$REPORT_FILE"
+              echo "" | tee -a "$REPORT_FILE"
               
               cd $module
               
-              # Run dependency analysis
+              # Run dependency analysis with verbose output
+              echo "🔎 Analyzing dependencies..." | tee -a "$REPORT_FILE"
               ANALYSIS=$(mvn dependency:analyze -DoutputXML=false 2>&1)
-              echo "$ANALYSIS"
+              echo "$ANALYSIS" | tee -a "$REPORT_FILE"
               
               # Check for unused declared dependencies
               if echo "$ANALYSIS" | grep -q "Unused declared dependencies"; then
                 UNUSED_DEPS_FOUND=true
+                echo "⚠️ WARNING: Unused dependencies detected in $module" | tee -a "$REPORT_FILE"
               fi
               
-              echo ""
+              echo "" | tee -a "$REPORT_FILE"
               cd ..
             fi
           done
           
           echo "unused_found=$UNUSED_DEPS_FOUND" >> $GITHUB_OUTPUT
+          cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
 
       - name: 📊 Generate summary report
         if: always()
