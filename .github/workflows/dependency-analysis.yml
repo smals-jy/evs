@@ -109,7 +109,7 @@ jobs:
         with:
           name: dependency-analysis-report
           path: dependency-analysis-output.txt
-          retention-days: 30
+          retention-days: 1
 
       - name: 💬 Comment on PR with analysis results
         if: github.event_name == 'pull_request' && always()
