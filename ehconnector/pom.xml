@@ -8,7 +8,7 @@
         <!-- Explicit versions for common libs -->
         <commons-codec.version>1.22.0</commons-codec.version>
         <joda-time.version>2.14.2</joda-time.version>
-        <log4j2.version>2.26.0</log4j2.version>
+        <log4j2.version>2.26.1</log4j2.version>
     </properties>
 
     <parent>
