@@ -2,6 +2,7 @@ package org.imec.ivlab.core.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class ResourceResolver {
                     JarEntry jarEntry = entries.nextElement();
                     log.trace("Checking if: " + jarEntry.getName() + " starts with " + startsWith);
                     String entryName = jarEntry.getName();
-                    if (org.apache.commons.lang3.StringUtils.startsWithIgnoreCase(entryName, startsWith)) {
+                    if (StringUtils.startsWithIgnoreCase(entryName, startsWith)) {
                         // Validate the entry name to prevent directory traversal
                         File entryFile = new File(entryName);
                         if (!entryFile.toPath().normalize().startsWith(new File(startsWith).toPath().normalize())) {
