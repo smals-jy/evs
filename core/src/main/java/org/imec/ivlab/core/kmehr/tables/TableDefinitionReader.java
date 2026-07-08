@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.lang.SecurityException;
-
 public class TableDefinitionReader {
 
     private static TableDefinitionReader instance;
@@ -272,10 +270,6 @@ public class TableDefinitionReader {
                     String tempFileName = TABLE_NAME_MARKER + StringUtils.substringAfterLast(matchingJarEntry, fileSeparatorInJarFile);
                     log.trace("Adding matching jar entry: " + matchingJarEntry + ". Name to be used for temp file: " + tempFileName);
                     File resourceAsFile = IOUtils.getResourceAsFile(fileSeparatorInJarFile + matchingJarEntry, tempFileName);
-                    // Validate the resource file path to prevent directory traversal
-                    if (!resourceAsFile.toPath().normalize().startsWith(new File(folderToScan).toPath().normalize())) {
-                        throw new SecurityException("Invalid resource file path: " + resourceAsFile.getAbsolutePath());
-                    }
                     log.trace("resource as file: " + resourceAsFile.getAbsolutePath());
                     files.add(resourceAsFile);
 
