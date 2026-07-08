@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import java.lang.SecurityException;
 
 public class ResourceResolver {
 
@@ -93,7 +94,7 @@ public class ResourceResolver {
                         // Validate the entry name to prevent directory traversal
                         File entryFile = new File(entryName);
                         if (!entryFile.toPath().normalize().startsWith(new File(startsWith).toPath().normalize())) {
-                            throw new IOException("Invalid jar entry: " + entryName);
+                            throw new SecurityException("Invalid jar entry: " + entryName);
                         }
                         jarEntries.add(entryName);
                         log.trace("Found jar entry: " + entryName);
