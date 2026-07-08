@@ -2,6 +2,7 @@ package org.imec.ivlab.core.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import java.lang.SecurityException;
 
 public class ResourceResolver {
 
@@ -88,9 +90,15 @@ public class ResourceResolver {
                 while (entries.hasMoreElements()) {
                     JarEntry jarEntry = entries.nextElement();
                     log.trace("Checking if: " + jarEntry.getName() + " starts with " + startsWith);
-                    if (org.apache.commons.lang3.StringUtils.startsWithIgnoreCase(jarEntry.getName(), startsWith)) {
-                        jarEntries.add(jarEntry.getName());
-                        log.trace("Found jar entry: " + jarEntry.getName());
+                    String entryName = jarEntry.getName();
+                    if (StringUtils.startsWithIgnoreCase(entryName, startsWith)) {
+                        // Validate the entry name to prevent directory traversal
+                        File entryFile = new File(entryName);
+                        if (!entryFile.toPath().normalize().startsWith(new File(startsWith).toPath().normalize())) {
+                            throw new SecurityException("Invalid jar entry: " + entryName);
+                        }
+                        jarEntries.add(entryName);
+                        log.trace("Found jar entry: " + entryName);
                     }
                 }
             }
