@@ -28,11 +28,19 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
         run: |
+          sanitize_env_value() {
+            printf '%s' "$1" | tr -d '\r\n'
+          }
+
           PREVIOUS_JOB_ID=$(jq -r '.id' <<< "$WORKFLOW_RUN_EVENT_OBJ")
+          PREVIOUS_JOB_ID="$(sanitize_env_value "$PREVIOUS_JOB_ID")"
+          [[ "$PREVIOUS_JOB_ID" =~ ^[0-9]+$ ]] || { echo "Invalid PREVIOUS_JOB_ID"; exit 1; }
           echo "Previous Job ID: $PREVIOUS_JOB_ID"
           echo "PREVIOUS_JOB_ID=$PREVIOUS_JOB_ID" >> "$GITHUB_ENV"
           
           SUITE_ID=$(jq -r '.check_suite_id' <<< "$WORKFLOW_RUN_EVENT_OBJ")
+          SUITE_ID="$(sanitize_env_value "$SUITE_ID")"
+          [[ "$SUITE_ID" =~ ^[0-9]+$ ]] || { echo "Invalid SUITE_ID"; exit 1; }
           echo "Previous Suite ID: $SUITE_ID"
           echo "SUITE_ID=$SUITE_ID" >> "$GITHUB_ENV"
           
@@ -41,18 +49,24 @@ jobs:
             select(.workflow_run.id==${PREVIOUS_JOB_ID}) |
             select(.expired==false) |
             .id")
+          ARTIFACT_ID="$(sanitize_env_value "$ARTIFACT_ID")"
+          [[ "$ARTIFACT_ID" =~ ^[0-9]+$ ]] || { echo "Invalid ARTIFACT_ID"; exit 1; }
           
           echo "Artifact ID: $ARTIFACT_ID"
           echo "ARTIFACT_ID=$ARTIFACT_ID" >> "$GITHUB_ENV"
           
           PR_NUMBER=$(jq -r '.pull_requests[0].number' \
             <<< "$WORKFLOW_RUN_EVENT_OBJ")
+          PR_NUMBER="$(sanitize_env_value "$PR_NUMBER")"
+          [[ "$PR_NUMBER" =~ ^[0-9]+$ ]] || { echo "Invalid PR_NUMBER"; exit 1; }
           
           echo "Pull request Number: $PR_NUMBER"
           echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
           
           HEAD_SHA=$(jq -r '.pull_requests[0].head.sha' \
             <<< "$WORKFLOW_RUN_EVENT_OBJ")
+          HEAD_SHA="$(sanitize_env_value "$HEAD_SHA")"
+          [[ "$HEAD_SHA" =~ ^[0-9a-fA-F]{40}$ ]] || { echo "Invalid HEAD_SHA"; exit 1; }
           
           echo "Head SHA: $HEAD_SHA"
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
