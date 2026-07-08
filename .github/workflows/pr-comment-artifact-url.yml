@@ -21,6 +21,7 @@ jobs:
           # Only return if PR is still open. (By default it returns PRs in any state.)
           filterOutClosed: true
       - name: Get Artifact URL & PR Info
+        id: artifact_info
         if: steps.PR.outputs.pr_found == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -36,13 +37,13 @@ jobs:
           PREVIOUS_JOB_ID="$(sanitize_env_value "$PREVIOUS_JOB_ID")"
           [[ "$PREVIOUS_JOB_ID" =~ ^[0-9]+$ ]] || { echo "Invalid PREVIOUS_JOB_ID"; exit 1; }
           echo "Previous Job ID: $PREVIOUS_JOB_ID"
-          echo "PREVIOUS_JOB_ID=$PREVIOUS_JOB_ID" >> "$GITHUB_ENV"
+          echo "previous_job_id=$PREVIOUS_JOB_ID" >> "$GITHUB_OUTPUT"
           
           SUITE_ID=$(jq -r '.check_suite_id' <<< "$WORKFLOW_RUN_EVENT_OBJ")
           SUITE_ID="$(sanitize_env_value "$SUITE_ID")"
           [[ "$SUITE_ID" =~ ^[0-9]+$ ]] || { echo "Invalid SUITE_ID"; exit 1; }
           echo "Previous Suite ID: $SUITE_ID"
-          echo "SUITE_ID=$SUITE_ID" >> "$GITHUB_ENV"
+          echo "suite_id=$SUITE_ID" >> "$GITHUB_OUTPUT"
           
           ARTIFACT_ID=$(gh api "/repos/$OWNER/$REPO/actions/artifacts" \
             --jq ".artifacts.[] |
@@ -53,7 +54,7 @@ jobs:
           [[ "$ARTIFACT_ID" =~ ^[0-9]+$ ]] || { echo "Invalid ARTIFACT_ID"; exit 1; }
           
           echo "Artifact ID: $ARTIFACT_ID"
-          echo "ARTIFACT_ID=$ARTIFACT_ID" >> "$GITHUB_ENV"
+          echo "artifact_id=$ARTIFACT_ID" >> "$GITHUB_OUTPUT"
           
           PR_NUMBER=$(jq -r '.pull_requests[0].number' \
             <<< "$WORKFLOW_RUN_EVENT_OBJ")
@@ -61,7 +62,7 @@ jobs:
           [[ "$PR_NUMBER" =~ ^[0-9]+$ ]] || { echo "Invalid PR_NUMBER"; exit 1; }
           
           echo "Pull request Number: $PR_NUMBER"
-          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           
           HEAD_SHA=$(jq -r '.pull_requests[0].head.sha' \
             <<< "$WORKFLOW_RUN_EVENT_OBJ")
@@ -69,16 +70,16 @@ jobs:
           [[ "$HEAD_SHA" =~ ^[0-9a-fA-F]{40}$ ]] || { echo "Invalid HEAD_SHA"; exit 1; }
           
           echo "Head SHA: $HEAD_SHA"
-          echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
       - name: Update Comment
         if: steps.PR.outputs.pr_found == 'true'
         env:
-          JOB_PATH: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ env.PREVIOUS_JOB_ID }}"
-          ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/suites/${{ env.SUITE_ID }}/artifacts/${{ env.ARTIFACT_ID }}"
-          HEAD_SHA: "${{ env.HEAD_SHA }}"
+          JOB_PATH: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ steps.artifact_info.outputs.previous_job_id }}"
+          ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/suites/${{ steps.artifact_info.outputs.suite_id }}/artifacts/${{ steps.artifact_info.outputs.artifact_id }}"
+          HEAD_SHA: "${{ steps.artifact_info.outputs.head_sha }}"
         uses: peter-evans/create-or-update-comment@v5
         with:
-          issue-number: ${{ env.PR_NUMBER }}
+          issue-number: ${{ steps.artifact_info.outputs.pr_number }}
           body: |-
             ![badge]
             
