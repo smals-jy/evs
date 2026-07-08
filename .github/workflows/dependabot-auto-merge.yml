@@ -1,0 +1,46 @@
+name: Dependabot Auto Merge
+
+on:
+  workflow_run:
+    workflows: ["Maven CI/CD"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  auto-merge-dependabot:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Get PR info
+        id: get-pr
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const pullRequests = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: '${{ github.event.workflow_run.head_commit.id }}',
+            });
+            
+            const pr = pullRequests.data.find(p => p.state === 'open' && p.user.login === 'dependabot[bot]');
+            
+            if (pr) {
+              core.setOutput('pr_number', pr.number);
+              core.setOutput('is_dependabot', 'true');
+            } else {
+              core.setOutput('is_dependabot', 'false');
+            }
+
+      - name: Auto merge Dependabot PR
+        if: steps.get-pr.outputs.is_dependabot == 'true'
+        uses: peter-evans/enable-pull-request-automerge@v3.0.0
+        with:
+          pull-request-number: ${{ steps.get-pr.outputs.pr_number }}
+          token: ${{ secrets.PAT }}
+          merge-method: squash
