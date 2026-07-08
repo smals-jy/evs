@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.lang.SecurityException;
 
 public class TableDefinitionReader {
 
@@ -273,7 +274,7 @@ public class TableDefinitionReader {
                     File resourceAsFile = IOUtils.getResourceAsFile(fileSeparatorInJarFile + matchingJarEntry, tempFileName);
                     // Validate the resource file path to prevent directory traversal
                     if (!resourceAsFile.toPath().normalize().startsWith(new File(folderToScan).toPath().normalize())) {
-                        throw new IOException("Invalid resource file path: " + resourceAsFile.getAbsolutePath());
+                        throw new SecurityException("Invalid resource file path: " + resourceAsFile.getAbsolutePath());
                     }
                     log.trace("resource as file: " + resourceAsFile.getAbsolutePath());
                     files.add(resourceAsFile);
