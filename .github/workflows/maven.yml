@@ -43,6 +43,9 @@ jobs:
       - name: 📨 Set wanted version
         run: |
           echo "${{ env.EVS_VERSION }}" > release/version_input.txt
+      - name: 👀 Spy BouncyCastle
+        run: |
+          cd builder && mvn dependency:tree | grep bouncycastle
       - name: 🔨 Build project with Maven
         shell: bash
         run: |
