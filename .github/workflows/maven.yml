@@ -45,7 +45,12 @@ jobs:
           echo "${{ env.EVS_VERSION }}" > release/version_input.txt
       - name: 👀 Spy BouncyCastle
         run: |
-          cd builder && mvn dependency:tree | grep bouncycastle
+          cd builder
+          dependency_tree="$(mktemp)"
+          trap 'rm -f "$dependency_tree"' EXIT
+          mvn dependency:tree > "$dependency_tree"
+          grep -i bouncycastle "$dependency_tree" || \
+            echo "No BouncyCastle dependencies found"
       - name: 🔨 Build project with Maven
         shell: bash
         run: |
