@@ -43,6 +43,10 @@ jobs:
       - name: 📨 Set wanted version
         run: |
           echo "${{ env.EVS_VERSION }}" > release/version_input.txt
+      - name: 🔨 Build project with Maven
+        shell: bash
+        run: |
+          cd builder && ./release.sh
       - name: 👀 Spy BouncyCastle
         run: |
           cd builder
@@ -51,10 +55,6 @@ jobs:
           mvn dependency:tree > "$dependency_tree"
           grep -i bouncycastle "$dependency_tree" || \
             echo "No BouncyCastle dependencies found"
-      - name: 🔨 Build project with Maven
-        shell: bash
-        run: |
-          cd builder && ./release.sh
       - name: 🚧 Workaround actions/upload-artifact#176
         run: |
           echo "artifacts_path=$(realpath ../builds/${{ env.EVS_VERSION }})" >> $GITHUB_ENV
