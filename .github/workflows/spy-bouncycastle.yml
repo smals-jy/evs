@@ -35,64 +35,65 @@ jobs:
           FULL_REPORT="${GITHUB_WORKSPACE}/full-dependency-tree.txt"
           BOUNCYCASTLE_REPORT="${GITHUB_WORKSPACE}/bouncycastle-dependency-tree.txt"
 
-          # Declare outputs before artifact upload.
           {
             echo "full_report=${FULL_REPORT}"
             echo "bouncycastle_report=${BOUNCYCASTLE_REPORT}"
           } >> "$GITHUB_OUTPUT"
 
-          # Ensure both artifact files exist even when no matching dependency is found.
+          # Clear previous files
           : > "$FULL_REPORT"
           : > "$BOUNCYCASTLE_REPORT"
 
-          # 1. Generate full tree, dropping verbose (buggy) and targeting the full test scope
-          echo "Generating dependency tree for the complete Maven reactor (including test/provided)..."
+          echo "Generating a highly detailed dependency tree with conflicts..."
+          # Running dependency:tree with verbose=true on the full project. 
+          # This forces Maven to write omitted, duplicate, and conflicted versions (like 1.64 vs 1.82) to the tree file.
           mvn --batch-mode --no-transfer-progress \
             --file "$REACTOR_POM" \
             org.apache.maven.plugins:maven-dependency-plugin:tree \
-            -Dscope=test \
-            -DoutputType=text \
+            -Dverbose=true \
             -DoutputFile="$FULL_REPORT" \
             -DappendOutput=true
 
-          # 2. Generate filtered tree using the exact wildcards
-          echo "Generating filtered org.bouncycastle dependency tree..."
-          mvn --batch-mode --no-transfer-progress \
-            --file "$REACTOR_POM" \
-            org.apache.maven.plugins:maven-dependency-plugin:tree \
-            -Dscope=test \
-            -Dincludes="*bouncycastle*" \
-            -DoutputType=text \
-            -DoutputFile="$BOUNCYCASTLE_REPORT" \
-            -DappendOutput=true
-
           echo "================================================================================"
-          # Check for matches. We use a relaxed grep that handles transitives.
-          if grep -qi "bouncycastle" "$BOUNCYCASTLE_REPORT"; then
-            echo "✅ BouncyCastle dependencies found in the Maven reactor:"
+          echo "🔍 TRACING THE PATHS RESPONSIBLE FOR BOUNCYCASTLE..."
+          echo "================================================================================"
+
+          # Run a custom parser on the generated full report to extract the dependency chain
+          # for both BouncyCastle 1.82 and 1.64.
+          perl -ne '
+            push @stack, $_;
+            # Count indent spaces to track hierarchy depth
+            $indent = length(($&)) if /^\s*([\|\\+-]+|\s+)/;
+            splice(@stack, 0, $#stack) if $indent == 0 && $_ =~ /^\[INFO\]\s+[a-zA-Z0-9]/;
+            
+            # If line matches bouncycastle, print the path leading up to it
+            if (/bouncycastle/i) {
+              print "\n🎯 Found BouncyCastle dependency path:\n";
+              # Print the saved hierarchy stack
+              for $line (@stack) {
+                # Only print lines that are less indented than our match
+                print $line;
+              }
+              print "--------------------------------------------------------------------------------\n";
+            }
+            # Keep stack sized appropriately
+            shift @stack while @stack > 30;
+          ' "$FULL_REPORT" > "$BOUNCYCASTLE_REPORT"
+
+          # Print the results to the logs
+          if [ -s "$BOUNCYCASTLE_REPORT" ]; then
             cat "$BOUNCYCASTLE_REPORT"
           else
-            echo "⚠️ No BouncyCastle found in standard tree. Running absolute deep list backup..."
-            
-            # Backup plan: Ask maven to dump a flat list of EVERY resolved artifact classpath item.
-            # This completely bypasses tree rendering and lists raw jar dependencies.
-            FLAT_LIST="${GITHUB_WORKSPACE}/flat-list.txt"
+            echo "⚠️  Maven's verbose tree was bypassed by a packaging plugin."
+            echo "Extracting the absolute classpath from 'dependency:list' instead..."
             mvn --batch-mode --no-transfer-progress \
               --file "$REACTOR_POM" \
               org.apache.maven.plugins:maven-dependency-plugin:list \
-              -DoutputFile="$FLAT_LIST" \
-              -DappendOutput=true > /dev/null 2>&1 || true
-
-            if grep -qi "bouncycastle" "$FLAT_LIST" 2>/dev/null; then
-              echo "✅ BouncyCastle detected inside deep classpath list scan!"
-              grep -i "bouncycastle" "$FLAT_LIST"
-              # Overwrite bouncycastle report with the flat list findings so it's archived
-              cp "$FLAT_LIST" "$BOUNCYCASTLE_REPORT"
-            else
-              echo "❌ No resolved org.bouncycastle dependencies were found even in deep classpath."
-              echo "Complete dependency tree follows for diagnostics:"
-              cat "$FULL_REPORT"
-            fi
+              -DoutputFile="$BOUNCYCASTLE_REPORT" \
+              -DappendOutput=true
+            
+            echo "Flat List Output:"
+            grep -i "bouncycastle" "$BOUNCYCASTLE_REPORT"
           fi
           echo "================================================================================"
 
