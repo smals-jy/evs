@@ -43,26 +43,26 @@ jobs:
       - name: 📨 Set wanted version
         run: |
           echo "${{ env.EVS_VERSION }}" > release/version_input.txt
-      - name: 🔨 Build project with Maven
-        shell: bash
-        run: |
-          cd builder && ./release.sh
       - name: 👀 Spy BouncyCastle
         run: |
-          cd builder
           dependency_tree="$(mktemp)"
           trap 'rm -f "$dependency_tree"' EXIT
           
-          # Resolve dependency tree into a file
-          mvn dependency:tree -DoutputFile="$dependency_tree"
+          # Run Maven from the root directory pointing to the builder POM.
+          # This correctly resolves relative module paths (../core, etc.)
+          mvn dependency:tree -f builder/pom.xml -DoutputFile="$dependency_tree"
           
-          # Check of BouncyCastle
+          # Analyze the combined output file
           if grep -qi "bouncycastle" "$dependency_tree"; then
             echo "✅ BouncyCastle dependencies found:"
             grep -i "bouncycastle" "$dependency_tree"
           else
             echo "❌ No BouncyCastle dependencies found"
           fi
+      - name: 🔨 Build project with Maven
+        shell: bash
+        run: |
+          cd builder && ./release.sh
       - name: 🚧 Workaround actions/upload-artifact#176
         run: |
           echo "artifacts_path=$(realpath ../builds/${{ env.EVS_VERSION }})" >> $GITHUB_ENV
