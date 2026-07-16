@@ -1,0 +1,120 @@
+name: Spy BouncyCastle
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spy_dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Checkout repository
+        uses: actions/checkout@v7
+
+      - name: ☕ Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: 👀 Analyse BouncyCastle dependencies
+        id: spy_step
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REACTOR_POM="${GITHUB_WORKSPACE}/builder/pom.xml"
+          FULL_REPORT="${GITHUB_WORKSPACE}/full-dependency-tree.txt"
+          BOUNCYCASTLE_REPORT="${GITHUB_WORKSPACE}/bouncycastle-dependency-tree.txt"
+
+          {
+            echo "full_report=${FULL_REPORT}"
+            echo "bouncycastle_report=${BOUNCYCASTLE_REPORT}"
+          } >> "$GITHUB_OUTPUT"
+
+          : > "$FULL_REPORT"
+          : > "$BOUNCYCASTLE_REPORT"
+
+          echo "================================================================================"
+          echo "Installing internal reactor artifacts into the local Maven repository..."
+          echo "================================================================================"
+
+          # `ehconnector`, `validator`, `viewer`, and `datagenerator` depend on
+          # sibling modules such as `core`. Installing them first prevents
+          # dependency resolution issues.
+          mvn --batch-mode --no-transfer-progress \
+            --file "$REACTOR_POM" \
+            --projects ':core,:ehconnector,:validator,:viewer,:datagenerator' \
+            --also-make \
+            install \
+            -Dmaven.test.skip=true \
+            -Dmdep.skip=true
+
+          echo "================================================================================"
+          echo "Generating complete dependency lists for every Maven module..."
+          echo "================================================================================"
+
+          POMS=(
+            "${GITHUB_WORKSPACE}/super/pom.xml"
+            "${GITHUB_WORKSPACE}/core/pom.xml"
+            "${GITHUB_WORKSPACE}/ehconnector/pom.xml"
+            "${GITHUB_WORKSPACE}/validator/pom.xml"
+            "${GITHUB_WORKSPACE}/viewer/pom.xml"
+            "${GITHUB_WORKSPACE}/datagenerator/pom.xml"
+            "${GITHUB_WORKSPACE}/distribution/pom.xml"
+          )
+
+          for pom in "${POMS[@]}"; do
+            module="$(basename "$(dirname "$pom")")"
+
+            {
+              echo
+              echo "################################################################################"
+              echo "# Module: ${module}"
+              echo "################################################################################"
+            } >> "$FULL_REPORT"
+
+            # Replaced 'tree' with 'list'. Added -Dsort=true for cleaner alphabetical sorting.
+            mvn --batch-mode --no-transfer-progress \
+              --file "$pom" \
+              org.apache.maven.plugins:maven-dependency-plugin:tree \
+              -Dsort=true \
+              -DoutputFile="$FULL_REPORT" \
+              -DappendOutput=true
+          done
+
+          # Filter the complete flat lists for BouncyCastle coordinates.
+          grep -E \
+            '(^|[[:space:]])org\.bouncycastle:[^[:space:]]+' \
+            "$FULL_REPORT" > "$BOUNCYCASTLE_REPORT" || true
+
+          echo "================================================================================"
+          if [[ -s "$BOUNCYCASTLE_REPORT" ]]; then
+            echo "BouncyCastle dependencies found:"
+            cat "$BOUNCYCASTLE_REPORT"
+            echo
+            echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
+          else
+            echo "No resolved org.bouncycastle dependencies were found."
+          fi
+          echo "================================================================================"
+
+      - name: 📁 Archive dependency trees
+        uses: actions/upload-artifact@v6
+        with:
+          name: EVS-dependency-tree
+          path: |
+            ${{ steps.spy_step.outputs.bouncycastle_report }}
+            ${{ steps.spy_step.outputs.full_report }}
+          if-no-files-found: error
+          retention-days: 1
