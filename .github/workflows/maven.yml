@@ -52,9 +52,17 @@ jobs:
           cd builder
           dependency_tree="$(mktemp)"
           trap 'rm -f "$dependency_tree"' EXIT
-          mvn dependency:tree > "$dependency_tree"
-          grep -i bouncycastle "$dependency_tree" || \
-            echo "No BouncyCastle dependencies found"
+          
+          # Resolve dependency tree into a file
+          mvn dependency:tree -DoutputFile="$dependency_tree"
+          
+          # Check of BouncyCastle
+          if grep -qi "bouncycastle" "$dependency_tree"; then
+            echo "✅ BouncyCastle dependencies found:"
+            grep -i "bouncycastle" "$dependency_tree"
+          else
+            echo "❌ No BouncyCastle dependencies found"
+          fi
       - name: 🚧 Workaround actions/upload-artifact#176
         run: |
           echo "artifacts_path=$(realpath ../builds/${{ env.EVS_VERSION }})" >> $GITHUB_ENV
