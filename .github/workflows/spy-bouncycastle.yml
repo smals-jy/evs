@@ -9,23 +9,25 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   spy_dependencies:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
     steps:
-      - name: 📂 Checkout Repository
+      - name: 📂 Checkout repository
         uses: actions/checkout@v7
 
       - name: ☕ Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'maven'
+          distribution: temurin
+          java-version: "21"
+          cache: maven
 
-      - name: 👀 Spy BouncyCastle
+      - name: 👀 Analyse BouncyCastle dependencies
         id: spy_step
         shell: bash
         run: |
@@ -40,60 +42,70 @@ jobs:
             echo "bouncycastle_report=${BOUNCYCASTLE_REPORT}"
           } >> "$GITHUB_OUTPUT"
 
-          # Clear previous files
           : > "$FULL_REPORT"
           : > "$BOUNCYCASTLE_REPORT"
 
-          echo "Generating a highly detailed dependency tree with conflicts..."
-          # Running dependency:tree with verbose=true on the full project. 
-          # This forces Maven to write omitted, duplicate, and conflicted versions (like 1.64 vs 1.82) to the tree file.
+          echo "================================================================================"
+          echo "Installing internal reactor artifacts into the local Maven repository..."
+          echo "================================================================================"
+
+          # `ehconnector`, `validator`, `viewer`, and `datagenerator` depend on
+          # sibling modules such as `core`. Installing them first prevents
+          # dependency resolution issues.
           mvn --batch-mode --no-transfer-progress \
             --file "$REACTOR_POM" \
-            org.apache.maven.plugins:maven-dependency-plugin:tree \
-            -Dverbose=true \
-            -DoutputFile="$FULL_REPORT" \
-            -DappendOutput=true
+            --projects ':core,:ehconnector,:validator,:viewer,:datagenerator' \
+            --also-make \
+            install \
+            -Dmaven.test.skip=true \
+            -Dmdep.skip=true
 
           echo "================================================================================"
-          echo "🔍 TRACING THE PATHS RESPONSIBLE FOR BOUNCYCASTLE..."
+          echo "Generating complete dependency lists for every Maven module..."
           echo "================================================================================"
 
-          # Run a custom parser on the generated full report to extract the dependency chain
-          # for both BouncyCastle 1.82 and 1.64.
-          perl -ne '
-            push @stack, $_;
-            # Count indent spaces to track hierarchy depth
-            $indent = length(($&)) if /^\s*([\|\\+-]+|\s+)/;
-            splice(@stack, 0, $#stack) if $indent == 0 && $_ =~ /^\[INFO\]\s+[a-zA-Z0-9]/;
-            
-            # If line matches bouncycastle, print the path leading up to it
-            if (/bouncycastle/i) {
-              print "\n🎯 Found BouncyCastle dependency path:\n";
-              # Print the saved hierarchy stack
-              for $line (@stack) {
-                # Only print lines that are less indented than our match
-                print $line;
-              }
-              print "--------------------------------------------------------------------------------\n";
-            }
-            # Keep stack sized appropriately
-            shift @stack while @stack > 30;
-          ' "$FULL_REPORT" > "$BOUNCYCASTLE_REPORT"
+          POMS=(
+            "${GITHUB_WORKSPACE}/super/pom.xml"
+            "${GITHUB_WORKSPACE}/core/pom.xml"
+            "${GITHUB_WORKSPACE}/ehconnector/pom.xml"
+            "${GITHUB_WORKSPACE}/validator/pom.xml"
+            "${GITHUB_WORKSPACE}/viewer/pom.xml"
+            "${GITHUB_WORKSPACE}/datagenerator/pom.xml"
+            "${GITHUB_WORKSPACE}/distribution/pom.xml"
+          )
 
-          # Print the results to the logs
-          if [ -s "$BOUNCYCASTLE_REPORT" ]; then
-            cat "$BOUNCYCASTLE_REPORT"
-          else
-            echo "⚠️  Maven's verbose tree was bypassed by a packaging plugin."
-            echo "Extracting the absolute classpath from 'dependency:list' instead..."
+          for pom in "${POMS[@]}"; do
+            module="$(basename "$(dirname "$pom")")"
+
+            {
+              echo
+              echo "################################################################################"
+              echo "# Module: ${module}"
+              echo "################################################################################"
+            } >> "$FULL_REPORT"
+
+            # Replaced 'tree' with 'list'. Added -Dsort=true for cleaner alphabetical sorting.
             mvn --batch-mode --no-transfer-progress \
-              --file "$REACTOR_POM" \
+              --file "$pom" \
               org.apache.maven.plugins:maven-dependency-plugin:list \
-              -DoutputFile="$BOUNCYCASTLE_REPORT" \
+              -Dsort=true \
+              -DoutputFile="$FULL_REPORT" \
               -DappendOutput=true
-            
-            echo "Flat List Output:"
-            grep -i "bouncycastle" "$BOUNCYCASTLE_REPORT"
+          done
+
+          # Filter the complete flat lists for BouncyCastle coordinates.
+          grep -E \
+            '(^|[[:space:]])org\.bouncycastle:[^[:space:]]+' \
+            "$FULL_REPORT" > "$BOUNCYCASTLE_REPORT" || true
+
+          echo "================================================================================"
+          if [[ -s "$BOUNCYCASTLE_REPORT" ]]; then
+            echo "BouncyCastle dependencies found:"
+            cat "$BOUNCYCASTLE_REPORT"
+            echo
+            echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
+          else
+            echo "No resolved org.bouncycastle dependencies were found."
           fi
           echo "================================================================================"
 
