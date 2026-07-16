@@ -1,0 +1,74 @@
+name: Spy BouncyCastle
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  spy_dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: 📂 Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: ☕ Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 👀 Spy BouncyCastle
+        id: spy_step
+        run: |
+          # 1. Define absolute paths at workspace root
+          FILTERED_PATH="${{ github.workspace }}/bouncycastle-tree.txt"
+          FULL_PATH="${{ github.workspace }}/full-dependency-tree.txt"
+          
+          # Set separate outputs for both files
+          echo "filtered_report=$FILTERED_PATH" >> "$GITHUB_OUTPUT"
+          echo "full_report=$FULL_PATH" >> "$GITHUB_OUTPUT"
+          
+          # Clean up
+          rm -f "$FILTERED_PATH" "$FULL_PATH"
+          
+          # 2. Always generate BOTH files
+          echo "Generating full dependency tree..."
+          mvn dependency:tree -f builder/pom.xml -DoutputFile="$FULL_PATH" -DappendOutput=true
+          
+          echo "Generating filtered BouncyCastle dependency tree..."
+          mvn dependency:tree -f builder/pom.xml \
+            -Dincludes=*bouncycastle* \
+            -DoutputFile="$FILTERED_PATH" \
+            -DappendOutput=true
+          
+          # 3. Analyze and print output to the logs
+          if grep -qE "(\\- |\\+ |\\| )" "$FILTERED_PATH" 2>/dev/null; then
+            echo "✅ BouncyCastle dependencies found!"
+            echo "================================================================================"
+            cat "$FILTERED_PATH"
+            echo "================================================================================"
+          else
+            echo "❌ No BouncyCastle dependencies found in filtered search."
+            echo "Printing the ENTIRE dependency tree for debugging:"
+            echo "================================================================================"
+            cat "$FULL_PATH"
+            echo "================================================================================"
+          fi
+
+      - name: 📁 Archive dependency trees
+        uses: actions/upload-artifact@v6
+        with:
+          name: EVS-dependency-tree
+          path: |
+            ${{ steps.spy_step.outputs.filtered_report }}
+            ${{ steps.spy_step.outputs.full_report }}
+          if-no-files-found: error
+          retention-days: 1
