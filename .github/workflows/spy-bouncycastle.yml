@@ -84,10 +84,10 @@ jobs:
               echo "################################################################################"
             } >> "$FULL_REPORT"
 
-            # Replaced 'tree' with 'list'. Added -Dsort=true for cleaner alphabetical sorting.
+            # Added -Dsort=true for cleaner alphabetical sorting.
             mvn --batch-mode --no-transfer-progress \
               --file "$pom" \
-              org.apache.maven.plugins:maven-dependency-plugin:tree \
+              dependency:tree \
               -Dsort=true \
               -DoutputFile="$FULL_REPORT" \
               -DappendOutput=true
@@ -100,8 +100,10 @@ jobs:
 
           echo "================================================================================"
           if [[ -s "$BOUNCYCASTLE_REPORT" ]]; then
-            echo "BouncyCastle dependencies found:"
-            cat "$BOUNCYCASTLE_REPORT"
+            echo "🕵️ BouncyCastle dependencies found:"
+            cat "$BOUNCYCASTLE_REPORT"  
+            echo "Full logs :"   
+            cat "$FULL_REPORT"  
             echo
             echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
           else
