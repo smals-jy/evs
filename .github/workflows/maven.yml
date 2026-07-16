@@ -58,6 +58,7 @@ jobs:
             grep -i "bouncycastle" "$dependency_tree"
           else
             echo "❌ No BouncyCastle dependencies found"
+            cat "$dependency_tree"
           fi
       - name: 🔨 Build project with Maven
         shell: bash
