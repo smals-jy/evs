@@ -27,48 +27,66 @@ jobs:
 
       - name: 👀 Spy BouncyCastle
         id: spy_step
+        shell: bash
         run: |
-          # 1. Define absolute paths at workspace root
-          FILTERED_PATH="${{ github.workspace }}/bouncycastle-tree.txt"
-          FULL_PATH="${{ github.workspace }}/full-dependency-tree.txt"
-          
-          # Set separate outputs for both files
-          echo "filtered_report=$FILTERED_PATH" >> "$GITHUB_OUTPUT"
-          echo "full_report=$FULL_PATH" >> "$GITHUB_OUTPUT"
-          
-          # Clean up
-          rm -f "$FILTERED_PATH" "$FULL_PATH"
-          
-          # 2. Always generate BOTH files
-          echo "Generating full dependency tree..."
-          mvn dependency:tree -f builder/pom.xml -DoutputFile="$FULL_PATH" -DappendOutput=true
-          
-          echo "Generating filtered BouncyCastle dependency tree..."
-          mvn dependency:tree -f builder/pom.xml \
-            -Dincludes=*bouncycastle* \
-            -DoutputFile="$FILTERED_PATH" \
+          set -euo pipefail
+
+          REACTOR_POM="${GITHUB_WORKSPACE}/builder/pom.xml"
+          FULL_REPORT="${GITHUB_WORKSPACE}/full-dependency-tree.txt"
+          BOUNCYCASTLE_REPORT="${GITHUB_WORKSPACE}/bouncycastle-dependency-tree.txt"
+
+          # Declare outputs before artifact upload.
+          {
+            echo "full_report=${FULL_REPORT}"
+            echo "bouncycastle_report=${BOUNCYCASTLE_REPORT}"
+          } >> "$GITHUB_OUTPUT"
+
+          # Ensure both artifact files exist even when no matching dependency is found.
+          : > "$FULL_REPORT"
+          : > "$BOUNCYCASTLE_REPORT"
+
+          # builder/pom.xml is the reactor aggregator. Maven executes dependency:tree
+          # for builder and every module declared in builder/pom.xml.
+          #
+          # appendOutput=true is required because every reactor module writes to the
+          # same workspace-level report. verbose=true also retains omitted/conflicted
+          # dependency nodes, which is useful for complete transitive diagnostics.
+          echo "Generating dependency tree for the complete Maven reactor..."
+          mvn --batch-mode --no-transfer-progress \
+            --file "$REACTOR_POM" \
+            org.apache.maven.plugins:maven-dependency-plugin:tree \
+            -Dverbose=true \
+            -DoutputType=text \
+            -DoutputFile="$FULL_REPORT" \
             -DappendOutput=true
-          
-          # 3. Analyze and print output to the logs
-          if grep -qE "(\\- |\\+ |\\| )" "$FILTERED_PATH" 2>/dev/null; then
-            echo "✅ BouncyCastle dependencies found!"
-            echo "================================================================================"
-            cat "$FILTERED_PATH"
-            echo "================================================================================"
+
+          echo "Generating filtered org.bouncycastle dependency tree..."
+          mvn --batch-mode --no-transfer-progress \
+            --file "$REACTOR_POM" \
+            org.apache.maven.plugins:maven-dependency-plugin:tree \
+            -Dverbose=true \
+            -Dincludes="org.bouncycastle:*" \
+            -DoutputType=text \
+            -DoutputFile="$BOUNCYCASTLE_REPORT" \
+            -DappendOutput=true
+
+          echo "================================================================================"
+          if grep -qE '(^|[[:space:]])org\.bouncycastle:' "$BOUNCYCASTLE_REPORT"; then
+            echo "BouncyCastle dependencies found in the Maven reactor:"
+            cat "$BOUNCYCASTLE_REPORT"
           else
-            echo "❌ No BouncyCastle dependencies found in filtered search."
-            echo "Printing the ENTIRE dependency tree for debugging:"
-            echo "================================================================================"
-            cat "$FULL_PATH"
-            echo "================================================================================"
+            echo "No resolved org.bouncycastle dependencies were found."
+            echo "Complete dependency tree follows for diagnostics:"
+            cat "$FULL_REPORT"
           fi
+          echo "================================================================================"
 
       - name: 📁 Archive dependency trees
         uses: actions/upload-artifact@v6
         with:
           name: EVS-dependency-tree
           path: |
-            ${{ steps.spy_step.outputs.filtered_report }}
+            ${{ steps.spy_step.outputs.bouncycastle_report }}
             ${{ steps.spy_step.outputs.full_report }}
           if-no-files-found: error
           retention-days: 1
