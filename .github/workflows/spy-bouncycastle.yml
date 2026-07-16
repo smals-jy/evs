@@ -87,7 +87,7 @@ jobs:
             # Replaced 'tree' with 'list'. Added -Dsort=true for cleaner alphabetical sorting.
             mvn --batch-mode --no-transfer-progress \
               --file "$pom" \
-              org.apache.maven.plugins:maven-dependency-plugin:list \
+              org.apache.maven.plugins:maven-dependency-plugin:tree \
               -Dsort=true \
               -DoutputFile="$FULL_REPORT" \
               -DappendOutput=true
