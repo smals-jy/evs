@@ -102,7 +102,7 @@ jobs:
           if [[ -s "$BOUNCYCASTLE_REPORT" ]]; then
             echo "🕵️ BouncyCastle dependencies found:"
             cat "$BOUNCYCASTLE_REPORT"  
-            cat "Full logs :"   
+            echo "Full logs :"   
             cat "$FULL_REPORT"  
             echo
             echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
