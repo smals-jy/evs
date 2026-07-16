@@ -15,16 +15,10 @@
     <properties>
         <izpack.version>5.2.6</izpack.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
-        <!-- SETTING PROPERTY TEMPORARILY for testing-->
-
-        <!-- fix to be able to run the result files under java 9 -->
-        <jaxb.version>2.3.1</jaxb.version>
-        <jaxws.version>2.3.1</jaxws.version>
-        <javax-annotation.version>1.3.2</javax-annotation.version>
         <evs.executable.filename>EVS-${project.version}.jar</evs.executable.filename>
     </properties>
 
-    <!-- TODO: enforce java version 8 when starting installation -->
+    <!-- TODO: enforce java version 21 when starting installation -->
 
     <dependencies>
         <dependency>
