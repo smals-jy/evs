@@ -50,7 +50,8 @@ jobs:
           
           # Run Maven from the root directory pointing to the builder POM.
           # This correctly resolves relative module paths (../core, etc.)
-          mvn dependency:tree -f builder/pom.xml -DoutputFile="$dependency_tree"
+          mvn dependency:tree -f builder/pom.xml -DoutputFile="$dependency_tree"  
+          cat "$dependency_tree"
           
           # Analyze the combined output file
           if grep -qi "bouncycastle" "$dependency_tree"; then
