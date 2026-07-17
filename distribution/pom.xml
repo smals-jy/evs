@@ -13,64 +13,24 @@
     <version>4.0.0</version>
 
     <properties>
-        <izpack.version>5.2.6</izpack.version>
-        <izpack.staging>${project.build.directory}/staging</izpack.staging>
+        <!-- IzPack removed -->
         <evs.executable.filename>EVS-${project.version}.jar</evs.executable.filename>
     </properties>
 
-    <!-- TODO: enforce java version 21 when starting installation -->
-
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.izpack</groupId>
-            <artifactId>izpack-maven-plugin</artifactId>
-            <version>${izpack.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.izpack</groupId>
-            <artifactId>izpack-api</artifactId>
-            <version>${izpack.version}</version>
-        </dependency>
-
+        <!-- IzPack dependencies removed on purpose -->
     </dependencies>
 
     <build>
 
         <plugins>
 
+            <!-- Keep only resource copy that produces the delivery output into the build.install.directory -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.5.0</version>
                 <executions>
-                    <!-- copy izpack resources into izpack staging area, expected by izpack.xml -->
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${izpack.staging}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/izpack</directory>
-                                    <includes>
-                                        <include>**/*</include>
-                                    </includes>
-                                    <filtering>true</filtering>
-                                </resource>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <includes>
-                                        <include>**/*</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <!-- Copy example config files : actors/patients/... -->
+                    <!-- Copy example config files : actors/patients/... -> now to build.install.directory (not installer) -->
                     <execution>
                         <id>copy-delivery-output</id>
                         <phase>install</phase>
@@ -78,7 +38,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${build.install.directory.installer}</outputDirectory>
+                            <outputDirectory>${build.install.directory}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/src/main/resources-filtered/delivery_output</directory>
@@ -91,53 +51,11 @@
                 </executions>
             </plugin>
 
-            <!-- copy EVS files into izpack staging area -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                   <execution>
-                      <id>create-staging-area</id>
-                      <phase>install</phase>
-                      <goals>
-                         <goal>run</goal>
-                      </goals>
-                      <configuration>
-                        <target>
-                            <copy todir="${izpack.staging}/EVS">
-                               <fileset dir="${build.install.directory}"/>
-                            </copy>
-                        </target>
-                      </configuration>
-                   </execution>
-                </executions>
-             </plugin>
+            <!-- Removed: maven-antrun-plugin that copied into izpack staging (not needed) -->
 
-            <plugin>
-                <groupId>org.codehaus.izpack</groupId>
-                <artifactId>izpack-maven-plugin</artifactId>
-                <version>${izpack.version}</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals><goal>izpack</goal></goals>
-                        <configuration>
-                            <!-- base for relative paths in izpack descriptor -->
-                            <baseDir>${izpack.staging}</baseDir>
-                            <installFile>${izpack.staging}/install.xml</installFile>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.izpack</groupId>
-                        <artifactId>izpack-panel</artifactId>
-                        <version>${izpack.version}</version>
-                    </dependency>
+            <!-- Removed: izpack-maven-plugin and its dependencies -->
 
-                </dependencies>
-            </plugin>
-
+            <!-- Copy the produced artifact (EVS jar) to the build.install.directory so that builds/.../EVS contains the runtime artifact -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -155,7 +73,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
-                                    <outputDirectory>${build.install.directory.installer}</outputDirectory>
+                                    <outputDirectory>${build.install.directory}</outputDirectory>
                                     <destFileName>${evs.executable.filename}</destFileName>
                                 </artifactItem>
                             </artifactItems>
