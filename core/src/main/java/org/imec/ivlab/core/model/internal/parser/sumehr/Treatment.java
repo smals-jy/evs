@@ -4,7 +4,9 @@ import org.imec.ivlab.core.model.internal.parser.ItemParsedItem;
 
 import org.joda.time.LocalDate;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper=false)
 @Data
 public class Treatment extends ItemParsedItem {
 
