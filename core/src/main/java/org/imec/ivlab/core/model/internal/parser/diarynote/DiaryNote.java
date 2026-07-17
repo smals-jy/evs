@@ -8,8 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.imec.ivlab.core.model.internal.parser.ParsedKmehrItem;
 
+@EqualsAndHashCode(callSuper=false)
 @Data
 public class DiaryNote extends ParsedKmehrItem {
 
