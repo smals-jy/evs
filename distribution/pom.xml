@@ -12,20 +12,9 @@
     <artifactId>distribution</artifactId>
     <version>4.0.0</version>
 
-    <properties>
-        <!-- IzPack removed -->
-        <evs.executable.filename>EVS-${project.version}.jar</evs.executable.filename>
-    </properties>
-
-    <dependencies>
-        <!-- IzPack dependencies removed on purpose -->
-    </dependencies>
-
     <build>
-
         <plugins>
-
-            <!-- Keep only resource copy that produces the delivery output into the build.install.directory -->
+                 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.5.0</version>
@@ -50,40 +39,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Removed: maven-antrun-plugin that copied into izpack staging (not needed) -->
-
-            <!-- Removed: izpack-maven-plugin and its dependencies -->
-
-            <!-- Copy the produced artifact (EVS jar) to the build.install.directory so that builds/.../EVS contains the runtime artifact -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-installed</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>${project.packaging}</type>
-                                    <outputDirectory>${build.install.directory}</outputDirectory>
-                                    <destFileName>${evs.executable.filename}</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
-
     </build>
-
 </project>
