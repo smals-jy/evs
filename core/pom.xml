@@ -39,6 +39,12 @@
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-base</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- To support the migration from original JDK 8 to JDK 21 -->
@@ -54,6 +60,12 @@
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-kmehr</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

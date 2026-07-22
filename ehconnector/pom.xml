@@ -44,36 +44,78 @@
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-core</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-bootstrap</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-base</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-technical-signature</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-utilities-hubservicesv3</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahubv3</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-intrahubcommons</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency> 
              
         <!-- Business / domain modules kept conservatively -->
@@ -81,11 +123,23 @@
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-common</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>be.fgov.ehealth.connector</groupId>
             <artifactId>connector-business-kmehrcommons</artifactId>
             <version>${ehealth.connector.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Logging: keep single SLF4J binding (Log4j2) to avoid multiple runtime bindings -->
