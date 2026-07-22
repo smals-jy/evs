@@ -207,6 +207,8 @@
                             <outputDirectory>${build.install.jar.directory}${file.separator}dependency-jars${file.separator}</outputDirectory>
                             <!-- Exclude eHealth standards group and the local automation core if provided separately -->
                             <excludeGroupIds>be.fgov.ehealth.standards,org.imec.ivlab.ehealth.automation</excludeGroupIds>
+                            <!-- Legacy BC 1.64 is not Java 21 compatible; do not place it in the distribution. -->
+                            <excludeArtifactIds>bcprov-jdk15on,bcmail-jdk15on,bcpkix-jdk15on</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
