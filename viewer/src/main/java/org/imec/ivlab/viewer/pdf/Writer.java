@@ -24,17 +24,17 @@ import be.fgov.ehealth.standards.kmehr.id.v1.IDPATIENT;
 import be.fgov.ehealth.standards.kmehr.schema.v1.AddressType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.CountryType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TelecomType;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.TextAlignment;
+
 import java.io.IOException;
-import org.joda.time.LocalDateTime;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,9 +46,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.commons.lang3.tuple.Pair;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.core.model.internal.parser.ParsedItem;
 import org.imec.ivlab.core.model.internal.parser.common.Header;
 import org.imec.ivlab.core.model.internal.parser.common.TransactionCommon;
@@ -60,13 +59,14 @@ import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.StringUtils;
 import org.imec.ivlab.core.util.XmlFormatterUtil;
 import org.imec.ivlab.core.util.XmlModifier;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public abstract class Writer {
-
-    //private final static Logger LOG = LogManager.getLogger(Writer.class);
 
     private static final String ANNOTATION_TEXT_NOT_SUPPORTED = "Not supported";
 
@@ -97,8 +97,8 @@ public abstract class Writer {
         cdHcPartyTranslations.put("CD-ENCRYPTION-ACTOR", "Encryption actor code");
     }
 
-    protected PdfPTable hcpartyTypeToTable(HcParty hcParty) {
-        PdfPTable table = initializeDetailTable();
+    protected Table hcpartyTypeToTable(HcParty hcParty) {
+        Table table = initializeDetailTable();
 
         String title = StringUtils.joinWith(" ", hcParty.getFirstname(), hcParty.getFamilyname(), hcParty.getName());
         addRow(table, createDetailHeader(title));
@@ -108,7 +108,7 @@ public abstract class Writer {
         return table;
     }
 
-    protected void addHcPartyDetailRows(HcParty hcParty, PdfPTable table) {
+    protected void addHcPartyDetailRows(HcParty hcParty, Table table) {
         addRow(table, toDetailRowsIfHasValue(getHcPartyIdentifiers(hcParty.getIds())));
         addRow(table, toDetailRowsIfHasValue(getHcPartyCodes(hcParty.getCds())));
         addRow(table, toDetailRowIfHasValue("First name", hcParty.getFirstname()));
@@ -118,20 +118,18 @@ public abstract class Writer {
         addRow(table, toDetailRowsIfHasValue(getAddresses(hcParty.getAddresses())));
     }
 
-    protected PdfPTable contactPersonToTable(ContactPerson person) {
+    protected Table contactPersonToTable(ContactPerson person) {
         return personToTable(person);
     }
 
-    protected PdfPTable patientToTable(Patient patient) {
-        PdfPTable table = personToTable(patient);
+    protected Table patientToTable(Patient patient) {
+        Table table = personToTable(patient);
         addRow(table, toDetailRowIfHasValue("Record date time", Translator.formatAsDateTime(patient.getRecordDateTime())));
         return table;
     }
 
-
-    private PdfPTable personToTable(AbstractPerson person) {
-
-        PdfPTable table = initializeDetailTable();
+    private Table personToTable(AbstractPerson person) {
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader(StringUtils.joinFields(StringUtils.joinWith(" ", person.getFirstnames().toArray()), person.getFamilyname(), " ")));
         addRow(table, toDetailRowsIfHasValue(getPatientIdentifiers(person.getIds())));
         if (CollectionsUtil.notEmptyOrNull(person.getFirstnames())) {
@@ -149,12 +147,10 @@ public abstract class Writer {
         addRow(table, toDetailRowsIfHasValue(getTelecoms(person.getTelecoms())));
         addRow(table, toDetailRowsIfHasValue(getAddresses(person.getAddresses())));
         return table;
-
     }
 
     protected List<Pair<String, String>> getAddresses(List<AddressType> addressTypes) {
         List<Pair<String, String>> existingRows = new ArrayList<>();
-
 
         if (CollectionsUtil.emptyOrNull(addressTypes)) {
             return null;
@@ -187,12 +183,10 @@ public abstract class Writer {
         }
 
         return existingRows;
-
     }
 
     protected List<Pair<String, String>> getTelecoms(List<TelecomType> telecomTypes) {
         List<Pair<String, String>> existingRows = new ArrayList<>();
-
 
         if (CollectionsUtil.emptyOrNull(telecomTypes)) {
             return null;
@@ -203,7 +197,6 @@ public abstract class Writer {
         }
 
         return existingRows;
-
     }
 
     protected List<Pair<String, String>> getHcPartyIdentifiers(List<IDHCPARTY> idhcparties) {
@@ -221,7 +214,6 @@ public abstract class Writer {
         }
 
         return existingRows;
-
     }
 
     protected List<Pair<String, String>> getHcPartyCodes(List<CDHCPARTY> cdhcparties) {
@@ -239,25 +231,19 @@ public abstract class Writer {
         }
 
         return existingRows;
-
     }
 
     private String translateIdHcparty(IDHCPARTY idhcparty) {
-
         if (idHcPartyTranslations.containsKey(idhcparty.getS().value())) {
             return idHcPartyTranslations.get(idhcparty.getS().value());
         }
-
         return idhcparty.getS().value();
     }
 
-
     private String translateCdHcParty(CDHCPARTY cdhcparty) {
-
         if (cdHcPartyTranslations.containsKey(cdhcparty.getS().value())) {
             return cdHcPartyTranslations.get(cdhcparty.getS().value());
         }
-
         return cdhcparty.getS().value();
     }
 
@@ -270,18 +256,18 @@ public abstract class Writer {
 
     private Set<String> collectCDAddresses(List<CDADDRESS> cdaddresses) {
         return Optional.ofNullable(cdaddresses)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(CDADDRESS::getValue)
-            .collect(Collectors.toSet());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(CDADDRESS::getValue)
+                .collect(Collectors.toSet());
     }
 
     private Set<String> collectTelecoms(List<CDTELECOM> cdtelecoms) {
         return Optional.ofNullable(cdtelecoms)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(CDTELECOM::getValue)
-            .collect(Collectors.toSet());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(CDTELECOM::getValue)
+                .collect(Collectors.toSet());
     }
 
     protected String parseTextWithLayoutContent(Object content) {
@@ -310,59 +296,53 @@ public abstract class Writer {
         }
     }
 
-    protected PdfPTable createGeneralInfoTable(String title, Header header) {
+    protected Table createGeneralInfoTable(String title, Header header) {
 
-        PdfPTable table = new PdfPTable(20);
-        table.setWidthPercentage(95);
+        // Relative column width ratios (totaling 20 parts)
+        Table table = new Table(new float[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+        table.setWidth(com.itextpdf.layout.properties.UnitValue.createPercentValue(95));
 
-        // the cell object
-        PdfPCell cell;
+        Cell cell;
 
-        // title
+        // Title
         cell = getCenteredCell();
-        cell.setPhrase(getFrontPageHeaderPhrase(title));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
+        cell.add(getFrontPageHeaderPhrase(title));
+        cell.setBorder(Border.NO_BORDER);
         cell.setPaddingBottom(30f);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(14);
+        cell = new Cell(1, 14).add(getFrontPageHeaderPhrase(" "));
+        cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase("Afdruk op: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell = new Cell(1, 3).add(getDefaultPhrase("Afdruk op: "));
+        cell.setBorder(Border.NO_BORDER);
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
-        
+
         LocalDate headerDate = header.getDate();
         DateTime headerTime = header.getTime();
         LocalDateTime headerDateTime = new LocalDateTime(
-            headerDate.getYear(),
-            headerDate.getMonthOfYear(), 
-            headerDate.getDayOfMonth(), 
-            headerTime.getHourOfDay(),
-            headerTime.getMinuteOfHour(), 
-            headerTime.getSecondOfMinute() 
+                headerDate.getYear(),
+                headerDate.getMonthOfYear(),
+                headerDate.getDayOfMonth(),
+                headerTime.getHourOfDay(),
+                headerTime.getMinuteOfHour(),
+                headerTime.getSecondOfMinute()
         );
-        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(headerDateTime)));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell = new Cell(1, 3).add(getDefaultPhraseBold(formatAsDateTime(headerDateTime)));
+        cell.setBorder(Border.NO_BORDER);
+        cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
+        cell = new Cell(1, 20).add(getFrontPageHeaderPhrase(" "));
+        cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
         return table;
-
     }
 
-    protected <T extends ParsedItem<?>> List<PdfPTable> toUnparsedContentTable(T parsedItem, String topic) {
+    protected <T extends ParsedItem<?>> List<Table> toUnparsedContentTable(T parsedItem, String topic) {
         if (parsedItem == null) {
             return Collections.emptyList();
         } else {
@@ -370,82 +350,75 @@ public abstract class Writer {
         }
     }
 
-    protected Collection<PdfPTable> createHcPartyTables(List<HcParty> hcParties) {
+    protected Collection<Table> createHcPartyTables(List<HcParty> hcParties) {
         return Optional.ofNullable(hcParties)
-                       .orElse(Collections.emptyList())
-                       .stream()
-                       .map(this::hcpartyTypeToTable)
-                       .collect(Collectors.toList());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::hcpartyTypeToTable)
+                .collect(Collectors.toList());
     }
 
-    protected PdfPTable createTransactionMetadata(TransactionCommon transactionCommon) {
+    protected Table createTransactionMetadata(TransactionCommon transactionCommon) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader("General information"));
         addRow(table, createDetailRow("Date", formatAsDate(transactionCommon.getDate())));
         addRow(table, createDetailRow("Time", formatAsTime(transactionCommon.getTime())));
         addRow(table, toDetailRowIfHasValue("Record date time", formatAsDateTime(transactionCommon.getRecordDateTime())));
 
         transactionCommon
-            .getIdkmehrs()
-            .forEach(idkmehr -> {
-                addRow(table, createDetailRow(idkmehr
-                    .getS()
-                    .value(), idkmehr.getValue()));
-            });
+                .getIdkmehrs()
+                .forEach(idkmehr -> {
+                    addRow(table, createDetailRow(idkmehr
+                            .getS()
+                            .value(), idkmehr.getValue()));
+                });
 
         transactionCommon
-            .getCdtransactions()
-            .forEach(cdtransaction -> {
-                addRow(table, createRowWithValidation(cdtransaction
-                    .getS()
-                    .value(), cdtransaction));
-            });
+                .getCdtransactions()
+                .forEach(cdtransaction -> {
+                    addRow(table, createRowWithValidation(cdtransaction
+                            .getS()
+                            .value(), cdtransaction));
+                });
         return table;
-
-    }
-
-    protected static Font getValidationAnnotationFont() {
-        Font font = new Phrase().getFont();
-        font.setSize(8);
-        font.setStyle(Font.NORMAL);
-        font.setColor(BaseColor.WHITE);
-        return font;
     }
 
     protected abstract boolean isSupported(CDTRANSACTION cdtransaction);
 
-    private List<PdfPCell> createRowWithValidation(String title, CDTRANSACTION cdtransaction) {
-        List<PdfPCell> pdfPCells = toDetailRowIfHasValue(title, cdtransaction.getValue());
-        if (CollectionsUtil.size(pdfPCells) == 2 && !isSupported(cdtransaction)) {
-            annotateCellWithValidationMessage(pdfPCells.get(1), ANNOTATION_TEXT_NOT_SUPPORTED);
+    private List<Cell> createRowWithValidation(String title, CDTRANSACTION cdtransaction) {
+        List<Cell> cells = toDetailRowIfHasValue(title, cdtransaction.getValue());
+        if (CollectionsUtil.size(cells) == 2 && !isSupported(cdtransaction)) {
+            annotateCellWithValidationMessage(cells.get(1), ANNOTATION_TEXT_NOT_SUPPORTED);
         }
-        return pdfPCells;
+        return cells;
     }
 
-    private void annotateCellWithValidationMessage(PdfPCell pdfPCell, String message) {
-        annotateCell(pdfPCell, message, BaseColor.RED, getValidationAnnotationFont());
+    private void annotateCellWithValidationMessage(Cell cell, String message) {
+        annotateCell(cell, message, ColorConstants.RED);
     }
 
-    private void annotateCell(PdfPCell pdfPCell, String annotationText, BaseColor colour, Font font) {
-        if (pdfPCell == null) {
+    private void annotateCell(Cell cell, String annotationText, com.itextpdf.kernel.colors.Color colour) {
+        if (cell == null) {
             return;
         }
-        Chunk chunkSpace = new Chunk(" ");
-        Chunk chunkAnnotation = new Chunk("[" + annotationText + "]").setBackground(colour);
-        chunkAnnotation.setFont(font);
-        pdfPCell.getPhrase().add(chunkSpace);
-        pdfPCell.getPhrase().add(chunkAnnotation);
+
+        Text chunkSpace = new Text(" ");
+        Text chunkAnnotation = new Text("[" + annotationText + "]");
+        chunkAnnotation.setBackgroundColor(colour);
+        chunkAnnotation.setFontSize(8);
+        chunkAnnotation.setFontColor(ColorConstants.WHITE);
+
+        // Fetch children/paragraphs in the cell and append the annotation text
+        if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof Paragraph) {
+            Paragraph paragraph = (Paragraph) cell.getChildren().get(0);
+            paragraph.add(chunkSpace);
+            paragraph.add(chunkAnnotation);
+        } else {
+            Paragraph paragraph = new Paragraph();
+            paragraph.add(chunkSpace);
+            paragraph.add(chunkAnnotation);
+            cell.add(paragraph);
+        }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
