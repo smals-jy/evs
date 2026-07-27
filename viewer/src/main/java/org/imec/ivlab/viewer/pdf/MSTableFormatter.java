@@ -6,6 +6,7 @@ import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -93,28 +94,28 @@ public class MSTableFormatter {
     protected static Cell getMedicationHeaderCell() {
         Cell cell = getCenteredCell();
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getHeaderCellLeftAligned() {
         Cell cell = getLeftAlignedCell();
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getSuspensionHeaderCell() {
         Cell cell = getCenteredCell();
         cell.setBackgroundColor(SUSPENSION_RED_COLOR);
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getMedicationSubHeaderCell() {
         Cell cell = getCenteredCell();
         cell.setBackgroundColor(DARK_GREY_COLOR);
-        cell.setBorderColor(DARK_GREY_COLOR);
+        cell.setBorder(new SolidBorder(DARK_GREY_COLOR, 1f));
         return cell;
     }
 
