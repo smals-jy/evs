@@ -1,6 +1,6 @@
 package org.imec.ivlab.viewer.pdf;
 
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getCellWithoutBorder;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getSubtitleFont;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getSubtitleHighlightFont;
@@ -113,7 +113,7 @@ public class TableHelper {
       if (CollectionsUtil.size(tablesForDualColumn) % 2 == 1) {
         Cell spacerCell = getCellWithoutBorder();
         spacerCell.setColspan(1);
-        spacerCell.add(getDefaultPhrase(""));
+        spacerCell.add(getDefaultParagraph(""));
         table.addCell(spacerCell);
       }
 
@@ -257,11 +257,11 @@ public class TableHelper {
   public static List<Cell> createDetailRow(String key, String value) {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
-    cell.add(getDefaultPhrase(StringUtils.nullToString(key)));
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cell.setColspan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
-    cell.add(getDefaultPhrase(StringUtils.nullToString(value)));
+    cell.add(getDefaultParagraph(StringUtils.nullToString(value)));
     cell.setColspan(70);
     cells.add(cell);
     return cells;
@@ -270,7 +270,7 @@ public class TableHelper {
   public static List<Cell> createDetailRow(String key, Paragraph valuePhrase) {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
-    cell.add(getDefaultPhrase(StringUtils.nullToString(key)));
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cell.setColspan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
@@ -283,7 +283,7 @@ public class TableHelper {
   public static List<Cell> createDetailRow(String content) {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getValueCell();
-    cell.add(getDefaultPhrase(StringUtils.nullToString(content)));
+    cell.add(getDefaultParagraph(StringUtils.nullToString(content)));
     cell.setColspan(100);
     cells.add(cell);
     return cells;
@@ -292,7 +292,7 @@ public class TableHelper {
   public static List<Cell> createDetailRow(String key, byte[] value) {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
-    cell.add(getDefaultPhrase(StringUtils.nullToString(key)));
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cell.setColspan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
@@ -300,7 +300,7 @@ public class TableHelper {
       Image img = new Image(ImageDataFactory.create(value));
       cell.add(img);
     } catch (Exception e) {
-      cell.add(getDefaultPhrase("Failed to render image"));
+      cell.add(getDefaultParagraph("Failed to render image"));
     }
     cell.setColspan(70);
     cells.add(cell);

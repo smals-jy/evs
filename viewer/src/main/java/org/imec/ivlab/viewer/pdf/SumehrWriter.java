@@ -1,9 +1,9 @@
 package org.imec.ivlab.viewer.pdf;
 
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getCenteredCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhraseBold;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraphBold;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.PdfHelper.writeToDocument;
 import static org.imec.ivlab.viewer.pdf.TableHelper.addRow;
 import static org.imec.ivlab.viewer.pdf.TableHelper.combineTables;
@@ -130,46 +130,46 @@ public class SumehrWriter extends Writer {
 
         // title
         cell = getCenteredCell();
-        cell.add(getFrontPageHeaderPhrase(title));
+        cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(20);
         cell.setPaddingBottom(30f);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderPhrase(""));
+        cell = new Cell().add(getFrontPageHeaderParagraph(""));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(10);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultPhrase("Afdruk op: "));
+        cell = new Cell().add(getDefaultParagraph("Afdruk op: "));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
-        cell = new Cell().add(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
+        cell = new Cell().add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderPhrase(""));
+        cell = new Cell().add(getFrontPageHeaderParagraph(""));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(10);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultPhrase("EVSref: "));
+        cell = new Cell().add(getDefaultParagraph("EVSref: "));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultPhrase(evsRef));
+        cell = new Cell().add(getDefaultParagraph(evsRef));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderPhrase(" "));
+        cell = new Cell().add(getFrontPageHeaderParagraph(" "));
         cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(20);
         table.addCell(cell);
