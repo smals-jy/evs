@@ -1,10 +1,8 @@
 package org.imec.ivlab.viewer.pdf;
 
-import com.itextpdf.text.Chunk;
+import com.itextpdf.layout.element.Text;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,57 +14,42 @@ import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getSyntaxRoseFont;
 
 public class Highlighter {
 
-    //private final static Logger LOG = LogManager.getLogger(Highlighter.class);
-
-
     private static final char CHAR_ATTRIBUTE_SPLITTER = '=';
     private static final char CHAR_ATTRIBUTE_SPACER = ' ';
     private static final char CHAR_OPEN_TAG = '<';
     private static final char CHAR_CLOSE_TAG = '>';
     private static final char CHAR_SLASH = '/';
     private static final char CHAR_QUOTE = '\"';
-    //private static final char END_ATTRIBUTE_VALUE = '\"';
-
 
     public static void main(String[] args) {
         Highlighter.syntaxHighlightXml("<?xml version=\"1.0\" encoding=\"UTF-8\"?><a attr1Key=\"attr1Value\"> <b>" +
                 "<ns3:c>bla</ns3:c>");
     }
 
-    public static List<Chunk> syntaxHighlightXml(String xmlString) {
-
+    public static List<Text> syntaxHighlightXml(String xmlString) {
         return parseXml(xmlString);
-
     }
 
-
-    private static List<Chunk> parseXml(String xml) {
-
-        List<Chunk> chunks = new ArrayList<>();
-
-        //Context context = Context.CLOSE_TAG;
+    private static List<Text> parseXml(String xml) {
+        List<Text> textElements = new ArrayList<>();
 
         ParseResult result = new ParseResult(null, xml, Context.CLOSE_TAG);
 
         do {
             result = parse(result.getContext(), result.getRemainder());
             if (result != null) {
-                Chunk chunk = chunkForBracket(result);
-                chunk.setCharacterSpacing(0.5f);
-                chunk.setWordSpacing(0.7f);
-                chunks.add(chunk);
+                Text text = textForBracket(result);
+                text.setCharacterSpacing(0.5f);
+                text.setWordSpacing(0.7f);
+                textElements.add(text);
             }
 
         } while (result != null);
 
-        return chunks;
+        return textElements;
     }
 
-    // regexp for all tags, traversing lines
-    // per start/open
-
     private static ParseResult parse(Context oldContext, String oldRemainder) {
-
         int posOfMatch = -1;
         String match = null;
         String remainder = null;
@@ -124,7 +107,7 @@ public class Highlighter {
                     break;
                 }
 
-                // tag name found
+                // Tag name found
                 if (posOfMatch > 0) {
                     match = StringUtils.substring(oldRemainder, 0, posOfMatch);
                     remainder = StringUtils.substring(oldRemainder, posOfMatch);
@@ -185,7 +168,7 @@ public class Highlighter {
                     return null;
                 }
 
-                match = StringUtils.substring(oldRemainder, 0, posOfMatch  + 2);
+                match = StringUtils.substring(oldRemainder, 0, posOfMatch + 2);
                 remainder = StringUtils.substring(oldRemainder, posOfMatch + 2);
                 nextContext = Context.ATTRIBUTE_VALUE;
                 break;
@@ -195,7 +178,6 @@ public class Highlighter {
         }
 
         return new ParseResult(match, remainder, nextContext);
-
     }
 
     private enum Context {
@@ -226,7 +208,6 @@ public class Highlighter {
             return context;
         }
 
-
         @Override
         public String toString() {
             return "ParseResult{" +
@@ -237,34 +218,32 @@ public class Highlighter {
         }
     }
 
-    private static Chunk chunkForBracket(ParseResult parseResult) {
+    private static Text textForBracket(ParseResult parseResult) {
+        Text text = new Text(parseResult.getMatch());
 
         switch (parseResult.getContext()) {
-
-            case ATTRIBUTE_KEY: return new Chunk(parseResult.getMatch(), getSyntaxGreenFont());
-            case ATTRIBUTE_VALUE: return new Chunk(parseResult.getMatch(), getSyntaxYellowFont());
-            case OPEN_TAG: case CLOSE_TAG: case TAG_SLASH: case SPACES_IN_TAG: case ATTRIBUTE_SPLITTER: case TAG_TEXT_CONTENT: return new Chunk(parseResult.getMatch(), getSyntaxWhiteFont());
-            case TAG_NAME: return new Chunk(parseResult.getMatch(), getSyntaxRoseFont());
-            default: return new Chunk(parseResult.getMatch(), getSyntaxWhiteFont());
+            case ATTRIBUTE_KEY:
+                return text.setFont(getSyntaxGreenFont());
+            case ATTRIBUTE_VALUE:
+                return text.setFont(getSyntaxYellowFont());
+            case OPEN_TAG: case CLOSE_TAG: case TAG_SLASH: case SPACES_IN_TAG: case ATTRIBUTE_SPLITTER: case TAG_TEXT_CONTENT:
+                return text.setFont(getSyntaxWhiteFont());
+            case TAG_NAME:
+                return text.setFont(getSyntaxRoseFont());
+            default:
+                return text.setFont(getSyntaxWhiteFont());
         }
-
     }
 
     private static int getPosOfFirstMatchingChar(String completeString, char[] chars) {
-
         return StringUtils.indexOfAny(completeString, chars);
-
     }
 
     private static int getPosOfSecondMatchingChar(String completeString, char[] chars) {
-
         int posOfFirsOccurrence = StringUtils.indexOfAny(completeString, chars);
         if (posOfFirsOccurrence < 0) {
             return posOfFirsOccurrence;
         }
         return StringUtils.indexOfAny(StringUtils.substring(completeString, posOfFirsOccurrence + 1), chars);
-
     }
-
-
 }
