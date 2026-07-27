@@ -117,6 +117,10 @@ public class DiaryNoteWriter extends Writer {
         return CDTRANSACTIONschemes.CD_TRANSACTION.equals(cdtransaction.getS()) || cdtransaction.getValue() == null || VITALINK_SUPPORTED_CD_DIARYNOTE_VALUES.contains(StringUtils.lowerCase(cdtransaction.getValue()));
     }
 
+    private static PdfFont getValidationAnnotationFont() {
+        return getTableDefaultFont();
+    }
+
     private void annotateCellWithValidationMessage(Cell cell, String message) {
         annotateCell(cell, message, ColorConstants.RED, getValidationAnnotationFont());
     }
