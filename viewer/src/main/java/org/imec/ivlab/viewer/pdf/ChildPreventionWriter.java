@@ -7,12 +7,13 @@ import static org.imec.ivlab.viewer.pdf.TableHelper.createDetailHeader;
 import static org.imec.ivlab.viewer.pdf.TableHelper.createTitleTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.initializeDetailTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toDetailRowIfHasValue;
+import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTables;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDUNIT;
 import be.fgov.ehealth.standards.kmehr.schema.v1.UnitType;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.layout.element.Table;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class ChildPreventionWriter extends Writer {
 
     }
 
-    private static List<ChildPrevention> readTestFile(String filename)  {
+    private static List<ChildPrevention> readTestFile(String filename) {
         File inputFile = IOUtils.getResourceAsFile("/childprevention/" + filename);
 
         KmehrEntryList kmehrEntryList = KmehrExtractor.getKmehrEntryList(inputFile);
@@ -59,15 +60,15 @@ public class ChildPreventionWriter extends Writer {
 
         String schemeTitle = "ChildPrevention Visualization";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle, childPrevention.getHeader());
-        List<PdfPTable> detailTables = createDetailTables(childPrevention);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle, childPrevention.getHeader());
+        List<Table> detailTables = createDetailTables(childPrevention);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
-    private List<PdfPTable> createDetailTables(ChildPrevention childPrevention) {
+    private List<Table> createDetailTables(ChildPrevention childPrevention) {
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         tables.add(combineTables(null, new ArrayList<>(), toUnparsedContentTables(Collections.singletonList(childPrevention), null)));
 
@@ -77,7 +78,8 @@ public class ChildPreventionWriter extends Writer {
         tables.add(combineTables(createTitleTable("Author"), createHcPartyTables(childPrevention.getTransactionCommon().getAuthor()), toUnparsedContentTables(childPrevention.getTransactionCommon().getAuthor(), "Author")));
         tables.add(combineTables(createTitleTable("Redactor"), createHcPartyTables(childPrevention.getTransactionCommon().getRedactor()), toUnparsedContentTables(childPrevention.getTransactionCommon().getRedactor(), "Redactor")));
         tables.add(combineTables(createTitleTable("Transaction metadata"), createTransactionMetadata(childPrevention.getTransactionCommon()), toUnparsedContentTables(childPrevention.getTransactionCommon().getAuthor(), "Author")));
-        List<PdfPTable> tablesUnparsed = new ArrayList<>();
+        
+        List<Table> tablesUnparsed = new ArrayList<>();
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getResultHearingScreeningLeft(), "ResultHearingSreeningLeft"));
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getResultHearingScreeningRight(), "ResultHearingSreeningRight"));
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getBacterialMeningitis(), "BacterialMeningitis"));
@@ -85,15 +87,14 @@ public class ChildPreventionWriter extends Writer {
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getRefusalHearingScreening(), "RefusalHearingScreening"));
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getSevereHeadTrauma(), "SevereHeadTrauma"));
         tablesUnparsed.addAll(toUnparsedContentTable(childPrevention.getPregnancyCMVInfection(), "PregnancyCMVInfection"));
+        
         tables.add(combineTables(createTitleTable("Childprevention"), createChildpreventionTables(childPrevention), tablesUnparsed));
         return tables;
-
     }
 
-    private List<PdfPTable> createChildpreventionTables(ChildPrevention childPrevention) {
+    private List<Table> createChildpreventionTables(ChildPrevention childPrevention) {
 
-
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader("Childprevention details"));
 
         addRow(table, toDetailRowIfHasValue("Pregnancy duration in weeks", parseDuration(childPrevention.getPregnancyDuration())));
@@ -104,7 +105,7 @@ public class ChildPreventionWriter extends Writer {
         addRow(table, toDetailRowIfHasValue("Bacterial meningitis", Optional.ofNullable(childPrevention.getBacterialMeningitis()).map(BooleanItem::getValue).orElse(null)));
         addRow(table, toDetailRowIfHasValue("Severe head trauma", Optional.ofNullable(childPrevention.getSevereHeadTrauma()).map(BooleanItem::getValue).orElse(null)));
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
         tables.add(table);
         return tables;
     }
