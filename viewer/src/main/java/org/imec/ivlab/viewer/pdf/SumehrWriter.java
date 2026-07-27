@@ -26,7 +26,7 @@ import static org.imec.ivlab.viewer.pdf.Translator.translateRoute;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.dt.v1.TextType;
-import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -119,7 +119,6 @@ public class SumehrWriter extends Writer {
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
-
     private Table createGeneralInfoTable(String title, String evsRef) {
 
         Table table = new Table(UnitValue.createPercentArray(20));
@@ -131,47 +130,47 @@ public class SumehrWriter extends Writer {
         // title
         cell = getCenteredCell();
         cell.add(getFrontPageHeaderParagraph(title));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(20);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(20);
         cell.setPaddingBottom(30f);
         table.addCell(cell);
 
         cell = new Cell().add(getFrontPageHeaderParagraph(""));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(10);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(10);
         table.addCell(cell);
 
         cell = new Cell().add(getDefaultParagraph("Afdruk op: "));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(6);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
         cell = new Cell().add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(4);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell().add(getFrontPageHeaderParagraph(""));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(10);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(10);
         table.addCell(cell);
 
         cell = new Cell().add(getDefaultParagraph("EVSref: "));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(6);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
         cell = new Cell().add(getDefaultParagraph(evsRef));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(4);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell().add(getFrontPageHeaderParagraph(" "));
-        cell.setBorderColor(ColorConstants.WHITE);
-        cell.setColspan(20);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setColumnSpan(20);
         table.addCell(cell);
 
         return table;
