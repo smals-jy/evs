@@ -9,7 +9,6 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.TextUnderline;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import java.io.IOException;
 
