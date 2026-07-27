@@ -223,15 +223,15 @@ public class Highlighter {
 
         switch (parseResult.getContext()) {
             case ATTRIBUTE_KEY:
-                return text.setFont(getSyntaxGreenFont());
+                return text.addStyle(getSyntaxGreenFont());
             case ATTRIBUTE_VALUE:
-                return text.setFont(getSyntaxYellowFont());
+                return text.addStyle(getSyntaxYellowFont());
             case OPEN_TAG: case CLOSE_TAG: case TAG_SLASH: case SPACES_IN_TAG: case ATTRIBUTE_SPLITTER: case TAG_TEXT_CONTENT:
-                return text.setFont(getSyntaxWhiteFont());
+                return text.addStyle(getSyntaxWhiteFont());
             case TAG_NAME:
-                return text.setFont(getSyntaxRoseFont());
+                return text.addStyle(getSyntaxRoseFont());
             default:
-                return text.setFont(getSyntaxWhiteFont());
+                return text.addStyle(getSyntaxWhiteFont());
         }
     }
 

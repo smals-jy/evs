@@ -90,7 +90,7 @@ public class TableHelper {
   public static Table combineTables(Table titleTable, Collection<Table> tablesForDualColumn, Collection<Table> tablesForSingleColumn) {
 
     Table table = new Table(UnitValue.createPercentArray(2));
-
+    table.useAllAvailableWidth();
     table.setKeepTogether(true);
     table.setMarginBottom(10f);
 
@@ -227,15 +227,15 @@ public class TableHelper {
     List<Text> titleChunks = new ArrayList<>();
 
     if (org.apache.commons.lang3.StringUtils.isNotEmpty(titlePartHighlight)) {
-      titleChunks.add(new Text(titlePartHighlight).setFont(getSubtitleHighlightFont()));
+      titleChunks.add(new Text(titlePartHighlight).addStyle(getSubtitleHighlightFont()));
     }
 
     if (org.apache.commons.lang3.StringUtils.isNotEmpty(titlePartNormal)) {
-      titleChunks.add(new Text(titlePartNormal).setFont(getSubtitleFont()));
+      titleChunks.add(new Text(titlePartNormal).addStyle(getSubtitleFont()));
     }
 
     if (CollectionsUtil.emptyOrNull(titleChunks)) {
-      titleChunks.add(new Text(" ").setFont(getSubtitleFont()));
+      titleChunks.add(new Text(" ").addStyle(getSubtitleFont()));
     }
 
     List<Cell> cells = new ArrayList<>();

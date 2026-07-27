@@ -177,4 +177,24 @@ public class MSTableFormatter {
                 .setFontSize(7f)
                 .setUnderline();
     }
+
+    protected static PdfFont getMedicationUriFont() {
+        return HELVETICA_FONT;
+    }
+
+    protected static PdfFont getCommentTitleUnderlineFont() {
+        return HELVETICA_FONT;
+    }
+
+    protected static PdfFont getTableDefaultFont() {
+        return HELVETICA_FONT;
+    }
+
+    protected static PdfFont getMedicationAuthorFont() {
+        return HELVETICA_FONT;
+    }
+
+    protected static PdfFont getMedicationAuthorBoldFont() {
+        return HELVETICA_BOLD_FONT;
+    }
 }

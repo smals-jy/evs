@@ -332,7 +332,6 @@ public class MSWriter extends Writer {
 
         table = new Table(UnitValue.createPercentArray(getNumberOfColumns(isGlobalScheme)));
         table.setWidth(UnitValue.createPercentValue(95));
-        table.getHeader().addCell(new Cell()); // Initialize header container structure if needed
 
         takeTimeManager = new TakeTimeManager(collectRegimentEntries(medicationEntries));
         dayperiodTakeManager = new DayperiodTakeManager();
@@ -601,7 +600,7 @@ public class MSWriter extends Writer {
     private static void createSuspensionRow(Suspension suspension, boolean isGlobalScheme) {
         Cell cell = getSuspensionHeaderCell();
         cell.add(getSuspensionHeaderParagraph("Onderbroken: " + formatAsDate(suspension.getBeginDate()) + " tot " + formatAsDate(suspension.getEndDate())));
-        cell.setColspan(isGlobalScheme ? 44 : 43);
+        cell.setColspan(40);
         table.addCell(cell);
     }
 
@@ -645,13 +644,53 @@ public class MSWriter extends Writer {
         return text;
     }
 
-    private static List<List<RegimenEntry>> groupByDayperiodOrTime(List<RegimenEntry> entries) {
-        if (CollectionsUtil.emptyOrNull(entries)) {
-            return Collections.emptyList();
+    private static List<List<RegimenEntry>> groupByDayperiodOrTime(final List<RegimenEntry> regimenEntriesOriginal) {
+
+        List<RegimenEntry> regimenEntries = new ArrayList<>(regimenEntriesOriginal);
+
+        List<List<RegimenEntry>> groupedRegimenEntries = new ArrayList<>();
+
+        if (CollectionsUtil.emptyOrNull(regimenEntriesOriginal)) {
+            return groupedRegimenEntries;
         }
-        List<List<RegimenEntry>> grouped = new ArrayList<>();
-        grouped.add(new ArrayList<>(entries));
-        return grouped;
+
+        boolean allEntriesProcessed = false;
+        int currentRegimenEntry = 0;
+
+        while (!allEntriesProcessed) {
+
+            List<RegimenEntry> similarEntries = new ArrayList<>();
+
+            RegimenEntry regimenEntry = regimenEntries.get(currentRegimenEntry);
+            similarEntries.add(regimenEntry);
+
+            ListIterator<RegimenEntry> innerIterator = regimenEntries.listIterator(currentRegimenEntry + 1);
+            while (innerIterator.hasNext()) {
+                RegimenEntry otherRegimenEntry = (RegimenEntry) innerIterator.next();
+
+                if (regimenEntry.appliesToSameDay(otherRegimenEntry)) {
+                    similarEntries.add(otherRegimenEntry);
+                    innerIterator.remove();
+                }
+            }
+
+            if (regimenEntries.size() == 1) {
+                allEntriesProcessed = true;
+            }
+
+            currentRegimenEntry++;
+
+            groupedRegimenEntries.add(similarEntries);
+
+            if (currentRegimenEntry + 1 > regimenEntries.size()) {
+                break;
+            }
+
+
+        }
+
+        return groupedRegimenEntries;
+
     }
 
     private static String combineDateAndTime(LocalDate date, org.joda.time.LocalTime time) {
@@ -663,7 +702,7 @@ public class MSWriter extends Writer {
     }
 
     private static String combineEndDateAndConditionAndDuration(LocalDate date, String condition, Duration duration, LocalDate beginDate) {
-        return joinFields(" ", formatAsDate(date), condition, durationToString(duration));
+        return joinFields(" ", formatAsDate(date), condition, durationToString(duration, beginDate));
     }
 
     @Override

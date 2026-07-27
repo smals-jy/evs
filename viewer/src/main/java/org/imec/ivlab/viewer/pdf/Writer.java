@@ -309,6 +309,7 @@ public abstract class Writer {
         cell.add(getFrontPageHeaderPhrase(title));
         cell.setBorder(Border.NO_BORDER);
         cell.setPaddingBottom(30f);
+        cell.setColspan(20);
         table.addCell(cell);
 
         cell = new Cell(1, 14).add(getFrontPageHeaderPhrase(" "));
@@ -322,14 +323,17 @@ public abstract class Writer {
 
         LocalDate headerDate = header.getDate();
         DateTime headerTime = header.getTime();
-        LocalDateTime headerDateTime = new LocalDateTime(
-                headerDate.getYear(),
-                headerDate.getMonthOfYear(),
-                headerDate.getDayOfMonth(),
-                headerTime.getHourOfDay(),
-                headerTime.getMinuteOfHour(),
-                headerTime.getSecondOfMinute()
-        );
+        LocalDateTime headerDateTime = null;
+        if (headerDate != null && headerTime != null) {
+            headerDateTime = new LocalDateTime(
+                    headerDate.getYear(),
+                    headerDate.getMonthOfYear(),
+                    headerDate.getDayOfMonth(),
+                    headerTime.getHourOfDay(),
+                    headerTime.getMinuteOfHour(),
+                    headerTime.getSecondOfMinute()
+            );
+        }
         cell = new Cell(1, 3).add(getDefaultPhraseBold(formatAsDateTime(headerDateTime)));
         cell.setBorder(Border.NO_BORDER);
         cell.setTextAlignment(TextAlignment.LEFT);

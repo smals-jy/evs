@@ -31,25 +31,25 @@ public class PdfHelper {
             File tempPdfFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
             tempPdfFile.deleteOnExit();
 
-            // Create PdfWriter and PdfDocument
-            PdfWriter writer = new PdfWriter(tempPdfFile.getAbsolutePath());
-            PdfDocument pdfDoc = new PdfDocument(writer);
+            // Create PdfWriter and PdfDocument with try-with-resources
+            try (PdfWriter writer = new PdfWriter(tempPdfFile.getAbsolutePath());
+                 PdfDocument pdfDoc = new PdfDocument(writer);
+                 Document document = new Document(pdfDoc, PageSize.A4.rotate(), false)) {
 
-            // Set default page size to landscape A4
-            pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
+                // Set default page size to landscape A4
+                pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
 
-            // Create Document with custom margins (Top=25, Right=0, Bottom=30, Left=0)
-            Document document = new Document(pdfDoc, PageSize.A4.rotate(), false);
-            document.setMargins(25, 0, 30, 0);
+                // Set custom margins (Top=25, Right=0, Bottom=30, Left=0)
+                document.setMargins(25, 0, 30, 0);
 
-            // Add table elements
-            document.add(generalInfoTable);
-            for (Table table : detailTables) {
-                document.add(table);
+                // Add table elements
+                document.add(generalInfoTable);
+                for (Table table : detailTables) {
+                    document.add(table);
+                }
+
+                // Resources are automatically closed here
             }
-
-            // Close the document (automatically closes the underlying writer and pdfDoc)
-            document.close();
 
             // Stamp/manipulate the temporary PDF to the final destination path
             manipulatePdf(tempPdfFile.getAbsolutePath(), fileLocation);
