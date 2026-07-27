@@ -78,7 +78,6 @@ public class TableHelper {
     }
   }
 
-
   public static Table combineTables(Table titleTable, Table contentTable, List<Table> unparsedContentTables) {
 
     List<Table> contentTables = new ArrayList<>();
@@ -96,7 +95,7 @@ public class TableHelper {
 
     if (titleTable != null) {
       Cell titleCell = getCellWithoutBorder();
-      titleCell.setColspan(2);
+      titleCell.setColumnSpan(2);
       titleCell.add(titleTable);
       table.addCell(titleCell);
     }
@@ -105,14 +104,14 @@ public class TableHelper {
 
       for (Table contentTable : tablesForDualColumn) {
         Cell contentCell = getCellWithoutBorder();
-        contentCell.setColspan(1);
+        contentCell.setColumnSpan(1);
         contentCell.add(contentTable);
         table.addCell(contentCell);
       }
 
       if (CollectionsUtil.size(tablesForDualColumn) % 2 == 1) {
         Cell spacerCell = getCellWithoutBorder();
-        spacerCell.setColspan(1);
+        spacerCell.setColumnSpan(1);
         spacerCell.add(getDefaultParagraph(""));
         table.addCell(spacerCell);
       }
@@ -123,7 +122,7 @@ public class TableHelper {
 
       for (Table contentTable : tablesForSingleColumn) {
         Cell contentCell = getCellWithoutBorder();
-        contentCell.setColspan(2);
+        contentCell.setColumnSpan(2);
         contentCell.add(contentTable);
         table.addCell(contentCell);
       }
@@ -147,7 +146,7 @@ public class TableHelper {
 
     Cell cell = SumehrTableFormatter.getMaintitleCell();
     cell.add(SumehrTableFormatter.getMaintitlePhrase(title));
-    cell.setColspan(100);
+    cell.setColumnSpan(100);
     table.addCell(cell);
 
     return table;
@@ -245,7 +244,7 @@ public class TableHelper {
       paragraph.add(text);
     }
     cell.add(paragraph);
-    cell.setColspan(100);
+    cell.setColumnSpan(100);
     cells.add(cell);
     return cells;
   }
@@ -258,11 +257,11 @@ public class TableHelper {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+    cell.setColumnSpan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
     cell.add(getDefaultParagraph(StringUtils.nullToString(value)));
-    cell.setColspan(70);
+    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }
@@ -271,11 +270,11 @@ public class TableHelper {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+    cell.setColumnSpan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
     cell.add(valuePhrase);
-    cell.setColspan(70);
+    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }
@@ -284,7 +283,7 @@ public class TableHelper {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getValueCell();
     cell.add(getDefaultParagraph(StringUtils.nullToString(content)));
-    cell.setColspan(100);
+    cell.setColumnSpan(100);
     cells.add(cell);
     return cells;
   }
@@ -293,7 +292,7 @@ public class TableHelper {
     List<Cell> cells = new ArrayList<>();
     Cell cell = SumehrTableFormatter.getKeyCell();
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+    cell.setColumnSpan(30);
     cells.add(cell);
     cell = SumehrTableFormatter.getValueCell();
     try {
@@ -302,7 +301,7 @@ public class TableHelper {
     } catch (Exception e) {
       cell.add(getDefaultParagraph("Failed to render image"));
     }
-    cell.setColspan(70);
+    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }
