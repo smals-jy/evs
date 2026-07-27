@@ -26,12 +26,12 @@ import static org.imec.ivlab.viewer.pdf.Translator.translateRoute;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.dt.v1.TextType;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import java.io.File;
-import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,6 +72,7 @@ import org.imec.ivlab.core.util.IOUtils;
 import org.imec.ivlab.core.util.StringUtils;
 import org.imec.ivlab.viewer.converter.TestFileConverter;
 import org.imec.ivlab.viewer.converter.exceptions.SchemaConversionException;
+import org.joda.time.LocalDateTime;
 
 public class SumehrWriter extends Writer {
 
@@ -82,7 +83,6 @@ public class SumehrWriter extends Writer {
         cdContentTranslations.put("CD-EAN", "EAN");
         cdContentTranslations.put("CD-ATC", "ATC");
         cdContentTranslations.put("CD-VACCINEINDICATION", "Indication");
-
     }
 
     private static Set<String> cdContentToIgnore = new HashSet<>();
@@ -113,64 +113,64 @@ public class SumehrWriter extends Writer {
 
         String schemeTitle = "Sumehr visualisation";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle, sumehr.getEvsRef());
-        List<PdfPTable> detailTables = createSumehrDetailTables(sumehr);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle, sumehr.getEvsRef());
+        List<Table> detailTables = createSumehrDetailTables(sumehr);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
 
-    private PdfPTable createGeneralInfoTable(String title, String evsRef) {
+    private Table createGeneralInfoTable(String title, String evsRef) {
 
-        PdfPTable table = new PdfPTable(20);
-        table.setWidthPercentage(95);
+        Table table = new Table(UnitValue.createPercentArray(20));
+        table.setWidth(UnitValue.createPercentValue(95));
 
         // the cell object
-        PdfPCell cell;
+        Cell cell;
 
         // title
         cell = getCenteredCell();
-        cell.setPhrase(getFrontPageHeaderPhrase(title));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell.add(getFrontPageHeaderPhrase(title));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(20);
         cell.setPaddingBottom(30f);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(""));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getFrontPageHeaderPhrase(""));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(10);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase("Afdruk op: "));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getDefaultPhrase("Afdruk op: "));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(6);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(4);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(""));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getFrontPageHeaderPhrase(""));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(10);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase("EVSref: "));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getDefaultPhrase("EVSref: "));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(6);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase(evsRef));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getDefaultPhrase(evsRef));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(4);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
+        cell = new Cell().add(getFrontPageHeaderPhrase(" "));
+        cell.setBorderColor(ColorConstants.WHITE);
         cell.setColspan(20);
         table.addCell(cell);
 
@@ -178,15 +178,15 @@ public class SumehrWriter extends Writer {
 
     }
 
-    private List<PdfPTable> createSumehrDetailTables(Sumehr sumehr) {
+    private List<Table> createSumehrDetailTables(Sumehr sumehr) {
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         tables.add(combineTables(null, new ArrayList<>(), toUnparsedContentTables(Collections.singletonList(sumehr), null)));
 
         tables.add(combineTables(createTitleTable("Author"), createHcPartyTables(sumehr.getTransactionCommon().getAuthor()), toUnparsedContentTables(sumehr.getTransactionCommon().getAuthor(), "Author")));
         tables.add(combineTables(createTitleTable("Patient"), patientToTable(sumehr.getTransactionCommon().getPerson()), toUnparsedContentTable(sumehr.getTransactionCommon().getPerson(), "Patient")));
-        Collection<PdfPTable> riskTables = new ArrayList<>();
+        Collection<Table> riskTables = new ArrayList<>();
         riskTables.addAll(createRisksTable(sumehr.getAllergies(), "Allergy"));
         riskTables.addAll(createRisksTable(sumehr.getAdrs(), "Adverse drug reaction"));
         riskTables.addAll(createRisksTable(sumehr.getSocialRisks(), "Social risk"));
@@ -211,9 +211,9 @@ public class SumehrWriter extends Writer {
 
     }
 
-    private PdfPTable vaccinationToTable(Vaccination vaccination) {
+    private Table vaccinationToTable(Vaccination vaccination) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader(vaccination.getVaccinatedAgainst()));
         addRow(table, toDetailRowIfHasValue("Vaccine", identifierIdAndName(vaccination.getIdentifier())));
@@ -242,7 +242,7 @@ public class SumehrWriter extends Writer {
             .toStrings(textTypes).toArray());
     }
 
-    private Collection<PdfPTable> createRisksTable(List<Risk> risks, String category) {
+    private Collection<Table> createRisksTable(List<Risk> risks, String category) {
         return Optional.ofNullable(risks)
             .orElse(Collections.emptyList())
             .stream()
@@ -250,7 +250,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createTextsTable(List<TextType> textTypes) {
+    private Collection<Table> createTextsTable(List<TextType> textTypes) {
         return Optional.ofNullable(textTypes)
                        .orElse(Collections.emptyList())
                        .stream()
@@ -258,7 +258,7 @@ public class SumehrWriter extends Writer {
                        .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createPatientWillsTable(List<PatientWill> patientWills) {
+    private Collection<Table> createPatientWillsTable(List<PatientWill> patientWills) {
         return Optional.ofNullable(patientWills)
             .orElse(Collections.emptyList())
             .stream()
@@ -266,7 +266,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createVaccinationsTable(List<Vaccination> vaccinations) {
+    private Collection<Table> createVaccinationsTable(List<Vaccination> vaccinations) {
         return Optional.ofNullable(vaccinations)
             .orElse(Collections.emptyList())
             .stream()
@@ -274,7 +274,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createMedicationEntriesTable(List<MedicationEntrySumehr> medicationEntries) {
+    private Collection<Table> createMedicationEntriesTable(List<MedicationEntrySumehr> medicationEntries) {
         return Optional.ofNullable(medicationEntries)
             .orElse(Collections.emptyList())
             .stream()
@@ -282,7 +282,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private List<PdfPTable> createHealthCareTables(List<HealthCareElement> healthCareElements) {
+    private List<Table> createHealthCareTables(List<HealthCareElement> healthCareElements) {
         return Optional.ofNullable(healthCareElements)
             .orElse(Collections.emptyList())
             .stream()
@@ -290,7 +290,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private List<PdfPTable> createTreatmentTables(List<Treatment> treatments) {
+    private List<Table> createTreatmentTables(List<Treatment> treatments) {
         return Optional
             .ofNullable(treatments)
             .orElse(Collections.emptyList())
@@ -299,7 +299,7 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private List<PdfPTable> createProblemTables(List<Problem> problems) {
+    private List<Table> createProblemTables(List<Problem> problems) {
         return Optional
             .ofNullable(problems)
             .orElse(Collections.emptyList())
@@ -308,15 +308,15 @@ public class SumehrWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private List<PdfPTable> createContactPersonTables(List<ContactPerson> contactPersons) {
+    private List<Table> createContactPersonTables(List<ContactPerson> contactPersons) {
         if (CollectionsUtil.emptyOrNull(contactPersons)) {
             return null;
         }
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         for (ContactPerson contactPerson : contactPersons) {
-            PdfPTable table = contactPersonToTable(contactPerson);
+            Table table = contactPersonToTable(contactPerson);
             addRow(table, toDetailRowIfHasValue("Relationship", contactPerson.getRelation()));
             tables.add(table);
         }
@@ -325,9 +325,9 @@ public class SumehrWriter extends Writer {
 
     }
 
-    private PdfPTable riskToTable(Risk risk, String category) {
+    private Table riskToTable(Risk risk, String category) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
         String title = StringUtils.joinWith(" & ", TextTypeUtil.toStrings(risk.getContentTextTypes()).toArray());
         addRow(table, createDetailHeader(StringUtils.joinWith(": ", category, ""), title));
 
@@ -348,15 +348,15 @@ public class SumehrWriter extends Writer {
 
     }
 
-    private PdfPTable textTypeToTable(TextType textType) {
-        PdfPTable table = initializeDetailTable();
+    private Table textTypeToTable(TextType textType) {
+        Table table = initializeDetailTable();
         addRow(table, createDetailRow(textType.getValue()));
         return table;
     }
 
-    private PdfPTable patientWillToTable(PatientWill patientWill) {
+    private Table patientWillToTable(PatientWill patientWill) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
 
         String title = StringUtils.joinWith(System.lineSeparator(), CDContentUtil.toStrings(patientWill.getCdcontents()).toArray());
         addRow(table, createDetailHeader(title));
@@ -380,9 +380,9 @@ public class SumehrWriter extends Writer {
 
     }
 
-    private PdfPTable treatmentToTable(Treatment treatment) {
+    private Table treatmentToTable(Treatment treatment) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
 
         String name = collectText(treatment.getContentTextTypes());
 
@@ -394,7 +394,6 @@ public class SumehrWriter extends Writer {
             }
         }
 
-        //addRow(table, toDetailRowIfHasValue("Text", name));
         addRow(table, toDetailRowIfHasValue("Begin", treatment.getBeginmoment()));
         addRow(table, toDetailRowIfHasValue("End", treatment.getEndmoment()));
         addRow(table, toDetailRowIfHasValue("Text", collectText(treatment.getContentTextTypes())));
@@ -406,9 +405,9 @@ public class SumehrWriter extends Writer {
         return table;
     }
 
-    private PdfPTable problemToTable(Problem problem) {
+    private Table problemToTable(Problem problem) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
 
         String name = collectText(problem.getContentTextTypes());
 
@@ -420,7 +419,6 @@ public class SumehrWriter extends Writer {
             }
         }
 
-        //addRow(table, toDetailRowIfHasValue("Text", name));
         addRow(table, toDetailRowIfHasValue("Begin", problem.getBeginmoment()));
         addRow(table, toDetailRowIfHasValue("End", problem.getEndmoment()));
         addRow(table, toDetailRowIfHasValue("Text", collectText(problem.getContentTextTypes())));
@@ -432,8 +430,6 @@ public class SumehrWriter extends Writer {
         }
         return table;
     }
-
-
 
     private String identifierIdAndName(Identifier identifier) {
         if (identifier == null) {
@@ -452,9 +448,9 @@ public class SumehrWriter extends Writer {
         return identifier.getId();
     }
 
-    private PdfPTable medicationEntryToTable(MedicationEntrySumehr medicationEntrySumehr) {
+    private Table medicationEntryToTable(MedicationEntrySumehr medicationEntrySumehr) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader(identifierNameOrId(medicationEntrySumehr.getIdentifier())));
 
         addRow(table, toDetailRowIfHasValue("Medication", identifierIdAndName(medicationEntrySumehr.getIdentifier())));
@@ -513,8 +509,6 @@ public class SumehrWriter extends Writer {
 
     }
 
-
-
     private List<Pair<String, String>> getRegimenEntries(List<RegimenEntry> regimenEntries) {
         List<Pair<String, String>> existingRows = new ArrayList<>();
 
@@ -562,9 +556,9 @@ public class SumehrWriter extends Writer {
         return existingRows;
     }
 
-    private PdfPTable healthCareElementToTable(HealthCareElement healthCareElement) {
+    private Table healthCareElementToTable(HealthCareElement healthCareElement) {
 
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
 
         String name = collectText(healthCareElement.getContentTextTypes());
 
@@ -596,7 +590,7 @@ public class SumehrWriter extends Writer {
         return cdcontent.getS().value();
     }
 
-    private List<PdfPCell> cdContentToDetailRow(CDCONTENT cdcontent) {
+    private List<Cell> cdContentToDetailRow(CDCONTENT cdcontent) {
 
         if (cdcontent.getS() != null && cdContentToIgnore.contains(cdcontent.getS().value())) {
             return null;
