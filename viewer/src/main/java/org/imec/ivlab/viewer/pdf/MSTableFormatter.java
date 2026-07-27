@@ -35,7 +35,11 @@ public class MSTableFormatter {
     }
 
     protected static Cell getCenteredCell() {
-        Cell cell = new Cell();
+        return getCenteredCell(1, 1);
+    }
+
+    protected static Cell getCenteredCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.CENTER);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
@@ -46,7 +50,11 @@ public class MSTableFormatter {
     }
 
     protected static Cell getLeftAlignedCell() {
-        Cell cell = new Cell();
+        return getLeftAlignedCell(1, 1);
+    }
+
+    protected static Cell getLeftAlignedCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.LEFT);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
@@ -57,7 +65,11 @@ public class MSTableFormatter {
     }
 
     protected static Cell getRightAlignedCell() {
-        Cell cell = new Cell();
+        return getRightAlignedCell(1, 1);
+    }
+
+    protected static Cell getRightAlignedCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.RIGHT);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
@@ -68,7 +80,11 @@ public class MSTableFormatter {
     }
 
     protected static Cell getObsoleteMedicationCellNotObsolete() {
-        Cell cell = new Cell();
+        return getObsoleteMedicationCellNotObsolete(1, 1);
+    }
+
+    protected static Cell getObsoleteMedicationCellNotObsolete(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.CENTER);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setRotationAngle(Math.toRadians(90));
@@ -76,13 +92,21 @@ public class MSTableFormatter {
     }
 
     protected static Cell getObsoleteMedicationCellObsolete() {
-        Cell cell = getObsoleteMedicationCellNotObsolete();
+        return getObsoleteMedicationCellObsolete(1, 1);
+    }
+
+    protected static Cell getObsoleteMedicationCellObsolete(int rowspan, int colspan) {
+        Cell cell = getObsoleteMedicationCellNotObsolete(rowspan, colspan);
         cell.setBackgroundColor(OBSOLETE_ORANGE_COLOR);
         return cell;
     }
 
     protected static Cell getQuantityWithValueCell() {
-        Cell cell = getCenteredCell();
+        return getQuantityWithValueCell(1, 1);
+    }
+
+    protected static Cell getQuantityWithValueCell(int rowspan, int colspan) {
+        Cell cell = getCenteredCell(rowspan, colspan);
         cell.setBackgroundColor(QUANTITY_CELL_COLOR);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
@@ -92,28 +116,44 @@ public class MSTableFormatter {
     }
 
     protected static Cell getMedicationHeaderCell() {
-        Cell cell = getCenteredCell();
+        return getMedicationHeaderCell(1, 1);
+    }
+
+    protected static Cell getMedicationHeaderCell(int rowspan, int colspan) {
+        Cell cell = getCenteredCell(rowspan, colspan);
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
         cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getHeaderCellLeftAligned() {
-        Cell cell = getLeftAlignedCell();
+        return getHeaderCellLeftAligned(1, 1);
+    }
+
+    protected static Cell getHeaderCellLeftAligned(int rowspan, int colspan) {
+        Cell cell = getLeftAlignedCell(rowspan, colspan);
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
         cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getSuspensionHeaderCell() {
-        Cell cell = getCenteredCell();
+        return getSuspensionHeaderCell(1, 1);
+    }
+
+    protected static Cell getSuspensionHeaderCell(int rowspan, int colspan) {
+        Cell cell = getCenteredCell(rowspan, colspan);
         cell.setBackgroundColor(SUSPENSION_RED_COLOR);
         cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         return cell;
     }
 
     protected static Cell getMedicationSubHeaderCell() {
-        Cell cell = getCenteredCell();
+        return getMedicationSubHeaderCell(1, 1);
+    }
+
+    protected static Cell getMedicationSubHeaderCell(int rowspan, int colspan) {
+        Cell cell = getCenteredCell(rowspan, colspan);
         cell.setBackgroundColor(DARK_GREY_COLOR);
         cell.setBorder(new SolidBorder(DARK_GREY_COLOR, 1f));
         return cell;
