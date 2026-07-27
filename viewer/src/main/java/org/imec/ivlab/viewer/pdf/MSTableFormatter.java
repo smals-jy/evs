@@ -1,23 +1,43 @@
 package org.imec.ivlab.viewer.pdf;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.TextUnderline;
+import com.itextpdf.layout.properties.VerticalAlignment;
+import java.io.IOException;
 
 public class MSTableFormatter {
 
-    private static final BaseColor DARK_GREY_COLOR = new BaseColor(64, 70, 71);
-    private static final BaseColor IMEC_BLUE_COLOR = new BaseColor(55, 141, 181);
-    private static final BaseColor OBSOLETE_ORANGE_COLOR = new BaseColor(244, 191, 66);
+    private static final Color DARK_GREY_COLOR = new DeviceRgb(64, 70, 71);
+    private static final Color IMEC_BLUE_COLOR = new DeviceRgb(55, 141, 181);
+    private static final Color OBSOLETE_ORANGE_COLOR = new DeviceRgb(244, 191, 66);
+    private static final Color SUSPENSION_RED_COLOR = new DeviceRgb(248, 79, 69);
 
-    private static final BaseColor QUANTITY_CELL_COLOR = DARK_GREY_COLOR;
+    private static final Color QUANTITY_CELL_COLOR = DARK_GREY_COLOR;
 
-    protected static PdfPCell getCenteredCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    private static PdfFont HELVETICA_FONT;
+    private static PdfFont HELVETICA_BOLD_FONT;
+
+    static {
+        try {
+            HELVETICA_FONT = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+            HELVETICA_BOLD_FONT = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        } catch (IOException e) {
+            throw new RuntimeException("Error initializing default fonts", e);
+        }
+    }
+
+    protected static Cell getCenteredCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(2f);
@@ -25,10 +45,10 @@ public class MSTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getLeftAlignedCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    protected static Cell getLeftAlignedCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.LEFT);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(2f);
@@ -36,10 +56,10 @@ public class MSTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getRightAlignedCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    protected static Cell getRightAlignedCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(2f);
@@ -47,22 +67,22 @@ public class MSTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getObsoleteMedicationCellNotObsolete() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setRotation(90);
+    protected static Cell getObsoleteMedicationCellNotObsolete() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        cell.setRotationAngle(Math.toRadians(90));
         return cell;
     }
 
-    protected static PdfPCell getObsoleteMedicationCellObsolete() {
-        PdfPCell cell = getObsoleteMedicationCellNotObsolete();
+    protected static Cell getObsoleteMedicationCellObsolete() {
+        Cell cell = getObsoleteMedicationCellNotObsolete();
         cell.setBackgroundColor(OBSOLETE_ORANGE_COLOR);
         return cell;
     }
 
-    protected static PdfPCell getQuantityWithValueCell() {
-        PdfPCell cell = getCenteredCell();
+    protected static Cell getQuantityWithValueCell() {
+        Cell cell = getCenteredCell();
         cell.setBackgroundColor(QUANTITY_CELL_COLOR);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
@@ -71,195 +91,91 @@ public class MSTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getMedicationHeaderCell() {
-        PdfPCell cell = getCenteredCell();
+    protected static Cell getMedicationHeaderCell() {
+        Cell cell = getCenteredCell();
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
-        cell.setBorderColorLeft(BaseColor.WHITE);
-        cell.setBorderColorRight(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        cell.setBorderColorBottom(BaseColor.WHITE);
+        cell.setBorderColor(ColorConstants.WHITE);
         return cell;
     }
 
-    protected static PdfPCell getHeaderCellLeftAligned() {
-        PdfPCell cell = getLeftAlignedCell();
+    protected static Cell getHeaderCellLeftAligned() {
+        Cell cell = getLeftAlignedCell();
         cell.setBackgroundColor(IMEC_BLUE_COLOR);
-        cell.setBorderColorLeft(BaseColor.WHITE);
-        cell.setBorderColorRight(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        cell.setBorderColorBottom(BaseColor.WHITE);
+        cell.setBorderColor(ColorConstants.WHITE);
         return cell;
     }
 
-    protected static PdfPCell getSuspensionHeaderCell() {
-        PdfPCell cell = getCenteredCell();
-        cell.setBackgroundColor(new BaseColor(248, 79, 69));
-        cell.setBorderColorLeft(BaseColor.WHITE);
-        cell.setBorderColorRight(BaseColor.WHITE);
-        cell.setBorderColorTop(BaseColor.WHITE);
-        cell.setBorderColorBottom(BaseColor.WHITE);
+    protected static Cell getSuspensionHeaderCell() {
+        Cell cell = getCenteredCell();
+        cell.setBackgroundColor(SUSPENSION_RED_COLOR);
+        cell.setBorderColor(ColorConstants.WHITE);
         return cell;
     }
 
-    protected static PdfPCell getMedicationSubHeaderCell() {
-        PdfPCell cell = getCenteredCell();
-        BaseColor bgcolor = new BaseColor(64, 70, 71);
-        cell.setBackgroundColor(bgcolor);
-        cell.setBorderColorLeft(bgcolor);
-        cell.setBorderColorRight(bgcolor);
-        cell.setBorderColorTop(bgcolor);
-        cell.setBorderColorBottom(bgcolor);
+    protected static Cell getMedicationSubHeaderCell() {
+        Cell cell = getCenteredCell();
+        cell.setBackgroundColor(DARK_GREY_COLOR);
+        cell.setBorderColor(DARK_GREY_COLOR);
         return cell;
     }
 
-    protected static Font getTableDefaultFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-
-        return font;
-
+    protected static Paragraph getDefaultParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(7f);
     }
 
-    protected static Font getMedicationAuthorFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(6);
-
-        return font;
-
+    protected static Paragraph getDefaultParagraphBold(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_BOLD_FONT)
+                .setFontSize(7f);
     }
 
-    protected static Font getMedicationUriFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-
-        return font;
-
+    protected static Paragraph getQuantityParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(7f)
+                .setFontColor(ColorConstants.WHITE);
     }
 
-    protected static Font getMedicationAuthorBoldFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(6);
-        font.setStyle(Font.BOLD);
-
-        return font;
-
+    protected static Paragraph getFrontPageHeaderParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(16f);
     }
 
-    protected static Font getCommentTitleUnderlineFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setStyle(Font.UNDERLINE);
-
-        return font;
-
+    protected static Paragraph getMedicationHeaderParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_BOLD_FONT)
+                .setFontSize(10f)
+                .setFontColor(ColorConstants.WHITE);
     }
 
-    protected static Font getTableDefaultBoldFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setStyle(Font.BOLD);
-
-        return font;
-
+    protected static Paragraph getSuspensionHeaderParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_BOLD_FONT)
+                .setFontSize(7f)
+                .setFontColor(ColorConstants.WHITE);
     }
 
-    protected static Font getFrontPageHeaderFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(16);
-
-        return font;
-
+    protected static Paragraph getMedicationSubHeaderParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(7f)
+                .setFontColor(ColorConstants.WHITE);
     }
 
-    protected static Font getMedicationHeaderFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(10);
-        font.setColor(BaseColor.WHITE);
-        font.setStyle(Font.BOLD);
-
-        return font;
-
+    protected static Paragraph getMedicationObsoleteParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(10f)
+                .setFontColor(ColorConstants.BLACK);
     }
 
-    protected static Font getObsoleteFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(10);
-        font.setColor(BaseColor.BLACK);
-        return font;
-
+    protected static Paragraph getCommentTitleUnderlineParagraph(String text) {
+        return new Paragraph(text)
+                .setFont(HELVETICA_FONT)
+                .setFontSize(7f)
+                .setUnderline();
     }
-
-    protected static Font getQuantityFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setColor(BaseColor.WHITE);
-        return font;
-
-    }
-
-    protected static Font getSuspensionHeaderFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setColor(BaseColor.WHITE);
-        font.setStyle(Font.BOLD);
-
-        return font;
-
-    }
-
-
-    protected static Font getMedicationSubHeaderFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setStyle(Font.NORMAL);
-        font.setColor(BaseColor.WHITE);
-
-        return font;
-
-    }
-
-    protected static Phrase getDefaultPhrase(String phraseString) {
-        return new Phrase(phraseString, getTableDefaultFont());
-    }
-
-    protected static Phrase getDefaultPhraseBold(String phraseString) {
-        return new Phrase(phraseString, getTableDefaultBoldFont());
-    }
-
-    protected static Phrase getQuantityPhrase(String phraseString) {
-        return new Phrase(phraseString, getQuantityFont());
-    }
-
-    protected static Phrase getFrontPageHeaderPhrase(String phraseString) {
-        return new Phrase(phraseString, getFrontPageHeaderFont());
-    }
-
-    protected static Phrase getMedicationHeaderPhrase(String phraseString) {
-        return new Phrase(phraseString, getMedicationHeaderFont());
-    }
-
-    protected static Phrase getSuspensionHeaderPhrase(String phraseString) {
-        return new Phrase(phraseString, getSuspensionHeaderFont());
-    }
-
-    protected static Phrase getMedicationSubHeaderPhrase(String phraseString) {
-        return new Phrase(phraseString, getMedicationSubHeaderFont());
-    }
-
-    protected static Phrase getMedicationObsoletePhrase(String phraseString) {
-        return new Phrase(phraseString, getObsoleteFont());
-    }
-
 }
