@@ -11,7 +11,7 @@
     </parent>
     <artifactId>viewer</artifactId>
     <properties>
-        <itext.version>9.7.0</itext.version>
+        <itext.version>9.7.1</itext.version>
     </properties>
     <dependencies>
 
