@@ -1,9 +1,9 @@
 package org.imec.ivlab.viewer.pdf;
 
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getCenteredCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhraseBold;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraphBold;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.TableHelper.addRow;
 import static org.imec.ivlab.viewer.pdf.TableHelper.createDetailHeader;
 import static org.imec.ivlab.viewer.pdf.TableHelper.createDetailRow;
@@ -306,17 +306,17 @@ public abstract class Writer {
 
         // Title
         cell = getCenteredCell();
-        cell.add(getFrontPageHeaderPhrase(title));
+        cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorder(Border.NO_BORDER);
         cell.setPaddingBottom(30f);
         cell.setColspan(20);
         table.addCell(cell);
 
-        cell = new Cell(1, 14).add(getFrontPageHeaderPhrase(" "));
+        cell = new Cell(1, 14).add(getFrontPageHeaderParagraph(" "));
         cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
-        cell = new Cell(1, 3).add(getDefaultPhrase("Afdruk op: "));
+        cell = new Cell(1, 3).add(getDefaultParagraph("Afdruk op: "));
         cell.setBorder(Border.NO_BORDER);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
@@ -334,12 +334,12 @@ public abstract class Writer {
                     headerTime.getSecondOfMinute()
             );
         }
-        cell = new Cell(1, 3).add(getDefaultPhraseBold(formatAsDateTime(headerDateTime)));
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAsDateTime(headerDateTime)));
         cell.setBorder(Border.NO_BORDER);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell(1, 20).add(getFrontPageHeaderPhrase(" "));
+        cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
         cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 

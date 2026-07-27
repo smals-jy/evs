@@ -1,13 +1,13 @@
 package org.imec.ivlab.viewer.pdf;
 
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getCenteredCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhraseBold;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraphBold;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getHeaderCellLeftAligned;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getLeftAlignedCell;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.PdfHelper.writeToDocument;
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDate;
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDateTime;
@@ -91,26 +91,26 @@ public class VaccinationListWriter extends Writer {
 
         // Title row
         cell = getCenteredCell();
-        cell.add(getFrontPageHeaderPhrase(title));
+        cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorder(Border.NO_BORDER);
         cell.setColspan(20);
         table.addCell(cell);
 
-        cell = new Cell(1, 14).add(getFrontPageHeaderPhrase(" "));
+        cell = new Cell(1, 14).add(getFrontPageHeaderParagraph(" "));
         cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
-        cell = new Cell(1, 3).add(getDefaultPhrase("Afdruk op: "));
+        cell = new Cell(1, 3).add(getDefaultParagraph("Afdruk op: "));
         cell.setBorder(Border.NO_BORDER);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new Cell(1, 3).add(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
         cell.setBorder(Border.NO_BORDER);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell(1, 20).add(getFrontPageHeaderPhrase(" "));
+        cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
         cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
@@ -146,7 +146,7 @@ public class VaccinationListWriter extends Writer {
         table.setWidth(UnitValue.createPercentValue(TABLE_WIDTH_PERCENTAGE));
 
         Cell cell = getMedicationHeaderCell();
-        cell.add(getMedicationHeaderPhrase(title));
+        cell.add(getMedicationHeaderParagraph(title));
         cell.setColspan(numColumns);
         table.addCell(cell);
 
@@ -226,7 +226,7 @@ public class VaccinationListWriter extends Writer {
 
     private Cell createHeaderCell(String content, int colspan) {
         Cell cell = getHeaderCellLeftAligned();
-        cell.add(getMedicationHeaderPhrase(content));
+        cell.add(getMedicationHeaderParagraph(content));
         cell.setColspan(colspan);
         cell.setRowspan(1);
         cell.setBorder(Border.NO_BORDER);
@@ -235,7 +235,7 @@ public class VaccinationListWriter extends Writer {
 
     private Cell createContentCell(String content, int colspan) {
         Cell cell = getLeftAlignedCell();
-        cell.add(getDefaultPhrase(content));
+        cell.add(getDefaultParagraph(content));
         cell.setColspan(colspan);
         cell.setRowspan(1);
         cell.setBorder(Border.NO_BORDER);

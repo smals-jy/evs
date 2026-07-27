@@ -9,7 +9,6 @@ import static org.imec.ivlab.viewer.pdf.TableHelper.createDetailRow;
 import static org.imec.ivlab.viewer.pdf.TableHelper.createTitleTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.initializeDetailTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toDetailRowIfHasValue;
-import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTables;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDLNKvalues;
