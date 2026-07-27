@@ -9,6 +9,7 @@ import static org.imec.ivlab.viewer.pdf.TableHelper.createDetailRow;
 import static org.imec.ivlab.viewer.pdf.TableHelper.createTitleTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.initializeDetailTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toDetailRowIfHasValue;
+import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTable;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTables;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDLNKvalues;
@@ -18,13 +19,13 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTIONschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.LnkType;
 import be.fgov.ehealth.standards.kmehr.dt.v1.TextType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TextWithLayoutType;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ import org.imec.ivlab.core.util.IOUtils;
 import org.imec.ivlab.viewer.converter.TestFileConverter;
 import org.imec.ivlab.viewer.pdf.formatting.PlainText;
 import org.imec.ivlab.viewer.pdf.formatting.StrikeThroughText;
-import org.imec.ivlab.viewer.pdf.formatting.Text;
 
 public class DiaryNoteWriter extends Writer {
 
@@ -80,15 +80,15 @@ public class DiaryNoteWriter extends Writer {
 
         String schemeTitle = "Diary Note Visualization";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle, diaryNote.getHeader());
-        List<PdfPTable> detailTables = createSumehrDetailTables(diaryNote);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle, diaryNote.getHeader());
+        List<Table> detailTables = createSumehrDetailTables(diaryNote);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
-    private List<PdfPTable> createSumehrDetailTables(DiaryNote diaryNote) {
+    private List<Table> createSumehrDetailTables(DiaryNote diaryNote) {
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         tables.add(combineTables(null, new ArrayList<>(), toUnparsedContentTables(Collections.singletonList(diaryNote), null)));
 
@@ -103,8 +103,8 @@ public class DiaryNoteWriter extends Writer {
 
     }
 
-    private List<PdfPTable> createDiaryNotetables(DiaryNote diaryNote) {
-        List<PdfPTable> tables = new ArrayList<>();
+    private List<Table> createDiaryNotetables(DiaryNote diaryNote) {
+        List<Table> tables = new ArrayList<>();
 
         tables.addAll(createLnkTable(diaryNote.getLinkTypes()));
         tables.addAll(createTextwithLayoutTable(diaryNote.getTextWithLayoutTypes()));
@@ -118,27 +118,37 @@ public class DiaryNoteWriter extends Writer {
         return CDTRANSACTIONschemes.CD_TRANSACTION.equals(cdtransaction.getS()) || cdtransaction.getValue() == null || VITALINK_SUPPORTED_CD_DIARYNOTE_VALUES.contains(StringUtils.lowerCase(cdtransaction.getValue()));
     }
 
-    private void annotateCellWithValidationMessage(PdfPCell pdfPCell, String message) {
-        annotateCell(pdfPCell, message, BaseColor.RED, getValidationAnnotationFont());
+    private void annotateCellWithValidationMessage(Cell cell, String message) {
+        annotateCell(cell, message, ColorConstants.RED, getValidationAnnotationFont());
     }
 
-    private void annotateCell(PdfPCell pdfPCell, String annotationText, BaseColor colour, Font font) {
-        if (pdfPCell == null) {
+    private void annotateCell(Cell cell, String annotationText, Color colour, PdfFont font) {
+        if (cell == null) {
             return;
         }
-        Chunk chunkSpace = new Chunk(" ");
-        Chunk chunkAnnotation = new Chunk("[" + annotationText + "]").setBackground(colour);
-        chunkAnnotation.setFont(font);
-        pdfPCell.getPhrase().add(chunkSpace);
-        pdfPCell.getPhrase().add(chunkAnnotation);
+        Text textSpace = new Text(" ");
+        Text textAnnotation = new Text("[" + annotationText + "]")
+                .setBackgroundColor(colour)
+                .setFont(font);
+
+        // Find or create paragraph content in the cell
+        Paragraph p;
+        if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof Paragraph) {
+            p = (Paragraph) cell.getChildren().get(0);
+        } else {
+            p = new Paragraph();
+            cell.add(p);
+        }
+        p.add(textSpace);
+        p.add(textAnnotation);
     }
 
     private boolean isValidTextualMessage(Integer textLength) {
         return textLength <= TEXT_MESSAGE_MAX_LENGTH;
     }
 
-    private PdfPTable lnkToTable(LnkType lnkType) {
-        PdfPTable table = initializeDetailTable();
+    private Table lnkToTable(LnkType lnkType) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Link"));
         addRow(table, toDetailRowIfHasValue("Type", Optional.ofNullable(lnkType.getTYPE()).map(CDLNKvalues::value).orElse(null)));
@@ -150,8 +160,8 @@ public class DiaryNoteWriter extends Writer {
         return table;
     }
 
-    private PdfPTable textWithoutLayoutToTable(TextType textType) {
-        PdfPTable table = initializeDetailTable();
+    private Table textWithoutLayoutToTable(TextType textType) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Text without layout"));
         addRow(table, createDetailRow("L", textType.getL()));
@@ -161,16 +171,16 @@ public class DiaryNoteWriter extends Writer {
         return table;
     }
 
-    private List<PdfPCell> createTextLengthDetailRow(Integer length) {
-        List<PdfPCell> pdfPCells = toDetailRowIfHasValue("Content length", length);
-        if (CollectionsUtil.size(pdfPCells) == 2 && !isValidTextualMessage(length)) {
-            annotateCellWithValidationMessage(pdfPCells.get(1), ANNOTATION_TEXT_TEXT_MESSAGE_TOO_LONG);
+    private List<Cell> createTextLengthDetailRow(Integer length) {
+        List<Cell> cells = toDetailRowIfHasValue("Content length", length);
+        if (CollectionsUtil.size(cells) == 2 && !isValidTextualMessage(length)) {
+            annotateCellWithValidationMessage(cells.get(1), ANNOTATION_TEXT_TEXT_MESSAGE_TOO_LONG);
         }
-        return pdfPCells;
+        return cells;
     }
 
-    private PdfPTable textWithLayoutToTable(TextWithLayoutType textWithLayoutType) {
-        PdfPTable table = initializeDetailTable();
+    private Table textWithLayoutToTable(TextWithLayoutType textWithLayoutType) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Text with layout"));
         addRow(table, createDetailRow("L", textWithLayoutType.getL()));
@@ -183,7 +193,7 @@ public class DiaryNoteWriter extends Writer {
         int textlength = plainTextLines.stream().map(String::length).mapToInt(Integer::intValue).sum();
         addRow(table, createTextLengthDetailRow(textlength));
 
-        List<Chunk> textLines =
+        List<Text> textLines =
             textWithLayoutType
                 .getContent()
                 .stream()
@@ -192,35 +202,35 @@ public class DiaryNoteWriter extends Writer {
                 .map(this::toText)
                 .flatMap(Collection::stream)
                 .map(this::removeXmlTags)
-                .map(this::toChunk)
+                .map(this::toTextElement)
                 .collect(Collectors.toList());
 
         Paragraph contentParagraph = new Paragraph();
-        contentParagraph.addAll(textLines);
+        for (Text textElement : textLines) {
+            contentParagraph.add(textElement);
+        }
 
         addRow(table, createDetailRow("Content value", contentParagraph));
 
         return table;
     }
 
-    private Chunk toChunk(Text text) {
+    private Text toTextElement(org.imec.ivlab.viewer.pdf.formatting.Text text) {
         if (text instanceof StrikeThroughText) {
-            return new Chunk(text.getValue(), getStrikeThroughFont());
+            return new Text(text.getValue())
+                    .setFont(getTableDefaultFont())
+                    .setFontSize(7f)
+                    .setLineThrough()
+                    .setFontColor(ColorConstants.BLACK);
         } else {
-            return new Chunk(text.getValue(), getTableDefaultFont());
+            return new Text(text.getValue())
+                    .setFont(getTableDefaultFont())
+                    .setFontSize(7f);
         }
     }
 
-    private Font getStrikeThroughFont() {
-        Font font = new Phrase().getFont();
-        font.setSize(7);
-        font.setStyle(Font.STRIKETHRU);
-        font.setColor(BaseColor.BLACK);
-        return font;
-    }
-
-    private List<Text> toText(String inputString) {
-        List<Text> texts = new ArrayList<>();
+    private List<org.imec.ivlab.viewer.pdf.formatting.Text> toText(String inputString) {
+        List<org.imec.ivlab.viewer.pdf.formatting.Text> texts = new ArrayList<>();
 
         while (findMatch(inputString).isPresent()) {
             Match match = findMatch(inputString).get();
@@ -238,15 +248,15 @@ public class DiaryNoteWriter extends Writer {
         return inputString.substring(match.positionEnd);
     }
 
-    private boolean registerRemainingAsPlainText(String inputString, List<Text> texts) {
+    private boolean registerRemainingAsPlainText(String inputString, List<org.imec.ivlab.viewer.pdf.formatting.Text> texts) {
         return texts.add(new PlainText(inputString));
     }
 
-    private boolean registerMatchAsStrikeThroughText(List<Text> texts, Match match) {
+    private boolean registerMatchAsStrikeThroughText(List<org.imec.ivlab.viewer.pdf.formatting.Text> texts, Match match) {
         return texts.add(new StrikeThroughText(match.value));
     }
 
-    private boolean registerBeforeMatchAsPlainText(String inputString, List<Text> texts, Match match) {
+    private boolean registerBeforeMatchAsPlainText(String inputString, List<org.imec.ivlab.viewer.pdf.formatting.Text> texts, Match match) {
         return texts.add(new PlainText(inputString.substring(0, match.positionStart)));
     }
 
@@ -276,12 +286,12 @@ public class DiaryNoteWriter extends Writer {
         return matcher.replaceAll("");
     }
 
-    private Text removeXmlTags(Text text) {
+    private org.imec.ivlab.viewer.pdf.formatting.Text removeXmlTags(org.imec.ivlab.viewer.pdf.formatting.Text text) {
         text.setValue(removeXmlTags(text.getValue()));
         return text;
     }
 
-    private Collection<PdfPTable> createLnkTable(List<LnkType> lnkTypes) {
+    private Collection<Table> createLnkTable(List<LnkType> lnkTypes) {
         return Optional.ofNullable(lnkTypes)
             .orElse(Collections.emptyList())
             .stream()
@@ -289,7 +299,7 @@ public class DiaryNoteWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createTextWithoutLayoutTable(List<TextType> textTypes) {
+    private Collection<Table> createTextWithoutLayoutTable(List<TextType> textTypes) {
         return Optional.ofNullable(textTypes)
             .orElse(Collections.emptyList())
             .stream()
@@ -297,7 +307,7 @@ public class DiaryNoteWriter extends Writer {
             .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createTextwithLayoutTable(List<TextWithLayoutType> textTypes) {
+    private Collection<Table> createTextwithLayoutTable(List<TextWithLayoutType> textTypes) {
         return Optional.ofNullable(textTypes)
             .orElse(Collections.emptyList())
             .stream()
