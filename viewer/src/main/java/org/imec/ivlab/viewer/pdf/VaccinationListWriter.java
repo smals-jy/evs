@@ -90,10 +90,9 @@ public class VaccinationListWriter extends Writer {
         Cell cell;
 
         // Title row
-        cell = getCenteredCell();
+        cell = getCenteredCell(1, 20);
         cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(20);
         table.addCell(cell);
 
         cell = new Cell(1, 14).add(getFrontPageHeaderParagraph(" "));
@@ -145,9 +144,8 @@ public class VaccinationListWriter extends Writer {
         Table table = new Table(numColumns);
         table.setWidth(UnitValue.createPercentValue(TABLE_WIDTH_PERCENTAGE));
 
-        Cell cell = getMedicationHeaderCell();
+        Cell cell = getMedicationHeaderCell(1, numColumns);
         cell.add(getMedicationHeaderParagraph(title));
-        cell.setColumnSpan(numColumns);
         table.addCell(cell);
 
         return table;
@@ -225,19 +223,15 @@ public class VaccinationListWriter extends Writer {
     }
 
     private Cell createHeaderCell(String content, int colspan) {
-        Cell cell = getHeaderCellLeftAligned();
+        Cell cell = getHeaderCellLeftAligned(1, colspan);
         cell.add(getMedicationHeaderParagraph(content));
-        cell.setColumnSpan(colspan);
-        cell.setRowSpan(1);
         cell.setBorder(Border.NO_BORDER);
         return cell;
     }
 
     private Cell createContentCell(String content, int colspan) {
-        Cell cell = getLeftAlignedCell();
+        Cell cell = getLeftAlignedCell(1, colspan);
         cell.add(getDefaultParagraph(content));
-        cell.setColumnSpan(colspan);
-        cell.setRowSpan(1);
         cell.setBorder(Border.NO_BORDER);
         return cell;
     }

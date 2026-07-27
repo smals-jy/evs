@@ -39,6 +39,7 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 
 import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -174,103 +175,103 @@ public class MSWriter extends Writer {
         Cell cell;
 
         // title
-        cell = getCenteredCell();
+        cell = getCenteredCell(1, 20);
         cell.add(getFrontPageHeaderParagraph(title));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setMarginBottom(30f);
         table.addCell(cell);
 
         // general info
         cell = new Cell(1, 8).add(getDefaultParagraph("Patiënt"));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("Laatst gewijzigd door: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAuthors(scheme.getAuthors())));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("Versie: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(Optional.ofNullable(scheme.getVersion()).orElse("0")));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell(1, 8).add(getFrontPageHeaderParagraph(scheme.getPatient().getFirstName()));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("Laatst gewijzigd op: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(StringUtils.joinWith(" ", formatAsDate(scheme.getLastModifiedDate()), formatAsTime(scheme.getLastModifiedTime()))));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("Afdruk op: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
         cell = new Cell(1, 8).add(getFrontPageHeaderParagraph(scheme.getPatient().getLastName()));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 6).add(getFrontPageHeaderParagraph(""));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("# MSE transacties: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(String.valueOf(scheme.getMedicationCount())));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
         table.addCell(cell);
 
         cell = new Cell(1, 8).add(getDefaultParagraph(scheme.getPatient().getId()));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 6).add(getFrontPageHeaderParagraph(""));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraph("# TS transacties: "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.RIGHT);
         cell.setVerticalAlignment(VerticalAlignment.TOP);
         table.addCell(cell);
 
         cell = new Cell(1, 3).add(getDefaultParagraphBold(String.valueOf(scheme.getSuspensionsCount())));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         cell.setTextAlignment(TextAlignment.LEFT);
         cell.setVerticalAlignment(VerticalAlignment.TOP);
         table.addCell(cell);
 
         cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
-        cell.setBorderColor(ColorConstants.WHITE);
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         return table;
@@ -367,14 +368,13 @@ public class MSWriter extends Writer {
     }
 
     private static void createMedicationHeaderRow(String medicationGroup, boolean isGlobalScheme) {
-        Cell cell = getMedicationHeaderCell();
+        Cell cell = getMedicationHeaderCell(1, isGlobalScheme ? 17 : 16);
         cell.setPaddingTop(6f);
         cell.setPaddingBottom(6f);
         cell.setPaddingLeft(6f);
         cell.setPaddingRight(6f);
 
         cell.add(getMedicationHeaderParagraph(medicationGroup));
-        cell.setColspan(isGlobalScheme ? 17 : 16);
         table.addCell(cell);
 
         addHeaderCell("", 2);
@@ -389,17 +389,15 @@ public class MSWriter extends Writer {
     }
 
     private static void addHeaderCell(String title, int colspan) {
-        Cell cell = getMedicationHeaderCell();
+        Cell cell = getMedicationHeaderCell(1, colspan);
         cell.add(getMedicationHeaderParagraph(title));
-        cell.setColspan(colspan);
         table.addCell(cell);
     }
 
     private static void createMedicationSubHeaderRow(Set<String> takeTimes, boolean isGlobalScheme) {
-        Cell cell = getMedicationSubHeaderCell();
         if (isGlobalScheme) {
+            Cell cell = getMedicationSubHeaderCell(1, 1);
             cell.add(getMedicationSubHeaderParagraph(" "));
-            cell.setColspan(1);
             table.addCell(cell);
         }
 
@@ -441,9 +439,8 @@ public class MSWriter extends Writer {
     }
 
     private static void addSubHeaderCell(String text, int colspan) {
-        Cell cell = getMedicationSubHeaderCell();
+        Cell cell = getMedicationSubHeaderCell(1, colspan);
         cell.add(getMedicationSubHeaderParagraph(text));
-        cell.setColspan(colspan);
         table.addCell(cell);
     }
 
@@ -479,29 +476,19 @@ public class MSWriter extends Writer {
             }
         }
 
-        Cell cellVerticalObsolete = null;
-        if (isGlobalScheme) {
-            if (rangeChecker.isObsolete(LocalDate.now(), medicationEntry)) {
-                cellVerticalObsolete = getObsoleteMedicationCellObsolete();
-                cellVerticalObsolete.add(getMedicationObsoleteParagraph("obsolete"));
-            } else {
-                cellVerticalObsolete = getObsoleteMedicationCellNotObsolete();
-            }
-            cellVerticalObsolete.setColspan(1);
-        }
+        boolean isObsolete = isGlobalScheme && rangeChecker.isObsolete(LocalDate.now(), medicationEntry);
 
         if (medicationEntry.getPosologyOrRegimen() instanceof Posology) {
-            if (isGlobalScheme && cellVerticalObsolete != null) {
-                cellVerticalObsolete.setRowspan(1 + suspensionTable);
-                table.addCell(cellVerticalObsolete);
+            int rowspan = 1 + suspensionTable;
+
+            if (isGlobalScheme) {
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
             Posology posology = (Posology) medicationEntry.getPosologyOrRegimen();
 
-            Cell cell = getCenteredCell();
+            Cell cell = getCenteredCell(rowspan, 4);
             cell.add(getMedicationNameParagraph(medicationEntry));
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
             table.addCell(cell);
 
             addSimpleCell(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode()), 2, 1);
@@ -511,27 +498,22 @@ public class MSWriter extends Writer {
             addSimpleCell(posology.getText(), 28, 1);
 
             Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-            cell = getCenteredCell();
+            cell = getCenteredCell(rowspan, 4);
             cell.add(remarksParagraph);
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
             table.addCell(cell);
 
         } else if (medicationEntry.getPosologyOrRegimen() instanceof Regimen) {
 
             Regimen regimen = (Regimen) medicationEntry.getPosologyOrRegimen();
             List<List<RegimenEntry>> groupedRegimenentries = groupByDayperiodOrTime(regimen.getEntries());
+            int rowspan = groupedRegimenentries.size() + suspensionTable;
 
-            Cell cell = getCenteredCell();
-            cell.add(getMedicationNameParagraph(medicationEntry));
-            cell.setColspan(4);
-
-            if (isGlobalScheme && cellVerticalObsolete != null) {
-                cellVerticalObsolete.setRowspan(groupedRegimenentries.size() + suspensionTable);
-                table.addCell(cellVerticalObsolete);
+            if (isGlobalScheme) {
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            cell.setRowspan(groupedRegimenentries.size() + suspensionTable);
+            Cell cell = getCenteredCell(rowspan, 4);
+            cell.add(getMedicationNameParagraph(medicationEntry));
             table.addCell(cell);
 
             if (CollectionsUtil.notEmptyOrNull(groupedRegimenentries)) {
@@ -543,10 +525,8 @@ public class MSWriter extends Writer {
 
                     if (regimenIndex == 0) {
                         Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-                        Cell remarksCell = getCenteredCell();
+                        Cell remarksCell = getCenteredCell(rowspan, 4);
                         remarksCell.add(remarksParagraph);
-                        remarksCell.setColspan(4);
-                        remarksCell.setRowspan(groupedRegimenentries.size() + suspensionTable);
                         table.addCell(remarksCell);
                     }
                     regimenIndex++;
@@ -557,23 +537,20 @@ public class MSWriter extends Writer {
                 createMedicationSubRowsPart3(null);
 
                 Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-                Cell remarksCell = getCenteredCell();
+                Cell remarksCell = getCenteredCell(rowspan, 4);
                 remarksCell.add(remarksParagraph);
-                remarksCell.setColspan(4);
-                remarksCell.setRowspan(groupedRegimenentries.size() + suspensionTable);
                 table.addCell(remarksCell);
             }
 
         } else {
-            if (isGlobalScheme && cellVerticalObsolete != null) {
-                cellVerticalObsolete.setRowspan(1 + suspensionTable);
-                table.addCell(cellVerticalObsolete);
+            int rowspan = 1 + suspensionTable;
+
+            if (isGlobalScheme) {
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            Cell cell = getCenteredCell();
+            Cell cell = getCenteredCell(rowspan, 4);
             cell.add(getMedicationNameParagraph(medicationEntry));
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
             table.addCell(cell);
 
             addSimpleCell(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode()), 2, 1);
@@ -583,10 +560,8 @@ public class MSWriter extends Writer {
             addSimpleCell("Geen posologie of regime gedefinieerd", 28, 1);
 
             Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-            cell = getCenteredCell();
+            cell = getCenteredCell(rowspan, 4);
             cell.add(remarksParagraph);
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
             table.addCell(cell);
         }
 
@@ -598,10 +573,20 @@ public class MSWriter extends Writer {
     }
 
     private static void createSuspensionRow(Suspension suspension, boolean isGlobalScheme) {
-        Cell cell = getSuspensionHeaderCell();
+        Cell cell = getSuspensionHeaderCell(1, 40);
         cell.add(getSuspensionHeaderParagraph("Onderbroken: " + formatAsDate(suspension.getBeginDate()) + " tot " + formatAsDate(suspension.getEndDate())));
-        cell.setColspan(40);
         table.addCell(cell);
+    }
+
+    private static Cell createObsoleteCell(boolean obsolete, int rowspan) {
+        Cell cell;
+        if (obsolete) {
+            cell = getObsoleteMedicationCellObsolete(rowspan, 1);
+            cell.add(getMedicationObsoleteParagraph("obsolete"));
+        } else {
+            cell = getObsoleteMedicationCellNotObsolete(rowspan, 1);
+        }
+        return cell;
     }
 
     private static void createMedicationSubRowsPart1(FrequencyCode frequencyCode, RegimenEntry regimenEntry) {
@@ -621,10 +606,8 @@ public class MSWriter extends Writer {
     }
 
     private static void addSimpleCell(String text, int colspan, int rowspan) {
-        Cell cell = getCenteredCell();
+        Cell cell = getCenteredCell(rowspan, colspan);
         cell.add(getDefaultParagraph(text));
-        cell.setColspan(colspan);
-        cell.setRowspan(rowspan);
         table.addCell(cell);
     }
 

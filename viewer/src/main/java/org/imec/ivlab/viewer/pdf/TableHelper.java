@@ -94,8 +94,7 @@ public class TableHelper {
     table.setMarginBottom(10f);
 
     if (titleTable != null) {
-      Cell titleCell = getCellWithoutBorder();
-      titleCell.setColumnSpan(2);
+      Cell titleCell = getCellWithoutBorder(1, 2);
       titleCell.add(titleTable);
       table.addCell(titleCell);
     }
@@ -103,15 +102,13 @@ public class TableHelper {
     if (CollectionsUtil.notEmptyOrNull(tablesForDualColumn)) {
 
       for (Table contentTable : tablesForDualColumn) {
-        Cell contentCell = getCellWithoutBorder();
-        contentCell.setColumnSpan(1);
+        Cell contentCell = getCellWithoutBorder(1, 1);
         contentCell.add(contentTable);
         table.addCell(contentCell);
       }
 
       if (CollectionsUtil.size(tablesForDualColumn) % 2 == 1) {
-        Cell spacerCell = getCellWithoutBorder();
-        spacerCell.setColumnSpan(1);
+        Cell spacerCell = getCellWithoutBorder(1, 1);
         spacerCell.add(getDefaultParagraph(""));
         table.addCell(spacerCell);
       }
@@ -121,8 +118,7 @@ public class TableHelper {
     if (CollectionsUtil.notEmptyOrNull(tablesForSingleColumn)) {
 
       for (Table contentTable : tablesForSingleColumn) {
-        Cell contentCell = getCellWithoutBorder();
-        contentCell.setColumnSpan(2);
+        Cell contentCell = getCellWithoutBorder(1, 2);
         contentCell.add(contentTable);
         table.addCell(contentCell);
       }
@@ -144,9 +140,8 @@ public class TableHelper {
 
     Table table = initializeTitleTable();
 
-    Cell cell = SumehrTableFormatter.getMaintitleCell();
+    Cell cell = SumehrTableFormatter.getMaintitleCell(1, 100);
     cell.add(SumehrTableFormatter.getMaintitlePhrase(title));
-    cell.setColumnSpan(100);
     table.addCell(cell);
 
     return table;
@@ -238,13 +233,12 @@ public class TableHelper {
     }
 
     List<Cell> cells = new ArrayList<>();
-    Cell cell = SumehrTableFormatter.getSubtitleCell();
+    Cell cell = SumehrTableFormatter.getSubtitleCell(1, 100);
     Paragraph paragraph = new Paragraph();
     for (Text text : titleChunks) {
       paragraph.add(text);
     }
     cell.add(paragraph);
-    cell.setColumnSpan(100);
     cells.add(cell);
     return cells;
   }
@@ -255,53 +249,46 @@ public class TableHelper {
 
   public static List<Cell> createDetailRow(String key, String value) {
     List<Cell> cells = new ArrayList<>();
-    Cell cell = SumehrTableFormatter.getKeyCell();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColumnSpan(30);
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
+    cell = SumehrTableFormatter.getValueCell(1, 70);
     cell.add(getDefaultParagraph(StringUtils.nullToString(value)));
-    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }
 
   public static List<Cell> createDetailRow(String key, Paragraph valuePhrase) {
     List<Cell> cells = new ArrayList<>();
-    Cell cell = SumehrTableFormatter.getKeyCell();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColumnSpan(30);
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
+    cell = SumehrTableFormatter.getValueCell(1, 70);
     cell.add(valuePhrase);
-    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }
 
   public static List<Cell> createDetailRow(String content) {
     List<Cell> cells = new ArrayList<>();
-    Cell cell = SumehrTableFormatter.getValueCell();
+    Cell cell = SumehrTableFormatter.getValueCell(1, 100);
     cell.add(getDefaultParagraph(StringUtils.nullToString(content)));
-    cell.setColumnSpan(100);
     cells.add(cell);
     return cells;
   }
 
   public static List<Cell> createDetailRow(String key, byte[] value) {
     List<Cell> cells = new ArrayList<>();
-    Cell cell = SumehrTableFormatter.getKeyCell();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
     cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
-    cell.setColumnSpan(30);
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
+    cell = SumehrTableFormatter.getValueCell(1, 70);
     try {
       Image img = new Image(ImageDataFactory.create(value));
       cell.add(img);
     } catch (Exception e) {
       cell.add(getDefaultParagraph("Failed to render image"));
     }
-    cell.setColumnSpan(70);
     cells.add(cell);
     return cells;
   }

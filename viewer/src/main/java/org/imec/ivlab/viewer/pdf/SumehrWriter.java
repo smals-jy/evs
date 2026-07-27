@@ -128,49 +128,41 @@ public class SumehrWriter extends Writer {
         Cell cell;
 
         // title
-        cell = getCenteredCell();
+        cell = getCenteredCell(1, 20);
         cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(20);
         cell.setPaddingBottom(30f);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderParagraph(""));
+        cell = new Cell(1, 10).add(getFrontPageHeaderParagraph(""));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(10);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultParagraph("Afdruk op: "));
+        cell = new Cell(1, 6).add(getDefaultParagraph("Afdruk op: "));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
-        cell = new Cell().add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
+        cell = new Cell(1, 4).add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderParagraph(""));
+        cell = new Cell(1, 10).add(getFrontPageHeaderParagraph(""));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(10);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultParagraph("EVSref: "));
+        cell = new Cell(1, 6).add(getDefaultParagraph("EVSref: "));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(6);
         cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new Cell().add(getDefaultParagraph(evsRef));
+        cell = new Cell(1, 4).add(getDefaultParagraph(evsRef));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(4);
         cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new Cell().add(getFrontPageHeaderParagraph(" "));
+        cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
         cell.setBorder(Border.NO_BORDER);
-        cell.setColumnSpan(20);
         table.addCell(cell);
 
         return table;

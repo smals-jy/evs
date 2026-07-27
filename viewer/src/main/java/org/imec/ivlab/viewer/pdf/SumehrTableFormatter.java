@@ -29,13 +29,21 @@ public class SumehrTableFormatter {
     private static final Color UNPARSEDTITLE_TEXT_COLOR = ColorConstants.BLACK;
 
     protected static Cell getCellWithoutBorder() {
-        Cell cell = new Cell();
+        return getCellWithoutBorder(1, 1);
+    }
+
+    protected static Cell getCellWithoutBorder(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setBorder(Border.NO_BORDER);
         return cell;
     }
 
     protected static Cell getMaintitleCell() {
-        Cell cell = new Cell();
+        return getMaintitleCell(1, 1);
+    }
+
+    protected static Cell getMaintitleCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setBackgroundColor(MAINTITLE_BACKGROUND_COLOR);
         cell.setTextAlignment(TextAlignment.CENTER);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
@@ -47,7 +55,11 @@ public class SumehrTableFormatter {
     }
 
     protected static Cell getSubtitleCell() {
-        Cell cell = new Cell();
+        return getSubtitleCell(1, 1);
+    }
+
+    protected static Cell getSubtitleCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setBackgroundColor(SUBTITLE_BACKGROUND_COLOR);
         cell.setTextAlignment(TextAlignment.CENTER);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
@@ -59,7 +71,11 @@ public class SumehrTableFormatter {
     }
 
     protected static Cell getUnparsedTitleCell() {
-        Cell cell = new Cell();
+        return getUnparsedTitleCell(1, 1);
+    }
+
+    protected static Cell getUnparsedTitleCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setBackgroundColor(UNPARSEDTITLE_BACKGROUND_COLOR);
         cell.setTextAlignment(TextAlignment.CENTER);
         cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
@@ -71,7 +87,11 @@ public class SumehrTableFormatter {
     }
 
     protected static Cell getKeyCell() {
-        Cell cell = new Cell();
+        return getKeyCell(1, 1);
+    }
+
+    protected static Cell getKeyCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.RIGHT);
         cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setPaddingTop(4f);
@@ -80,7 +100,11 @@ public class SumehrTableFormatter {
     }
 
     protected static Cell getValueCell() {
-        Cell cell = new Cell();
+        return getValueCell(1, 1);
+    }
+
+    protected static Cell getValueCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.LEFT);
         cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setPaddingTop(4f);
@@ -89,7 +113,11 @@ public class SumehrTableFormatter {
     }
 
     protected static Cell getUnparsedCell() {
-        Cell cell = new Cell();
+        return getUnparsedCell(1, 1);
+    }
+
+    protected static Cell getUnparsedCell(int rowspan, int colspan) {
+        Cell cell = new Cell(rowspan, colspan);
         cell.setTextAlignment(TextAlignment.LEFT);
         cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setBackgroundColor(SYNTAX_HIGHLIGHT_BACKGROUND_DARK);
