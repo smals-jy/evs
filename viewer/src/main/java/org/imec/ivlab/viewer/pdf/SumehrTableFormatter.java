@@ -1,45 +1,44 @@
 package org.imec.ivlab.viewer.pdf;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.Style;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.VerticalAlignment;
 
 public class SumehrTableFormatter {
 
-    private static final BaseColor SUBTITLE_BACKGROUND_COLOR = new BaseColor(181,199,182);
-    private static final BaseColor MAINTITLE_BACKGROUND_COLOR = new BaseColor(233,151,156);
-    private static final BaseColor UNPARSEDTITLE_BACKGROUND_COLOR = new BaseColor(239,242,75);
-    private static final BaseColor SYNTAX_HIGHLIGHT_ROSE = new BaseColor(242,38,114);
-    private static final BaseColor SYNTAX_HIGHLIGHT_YELLOW = new BaseColor(230,219,116);
-    private static final BaseColor SYNTAX_HIGHLIGHT_GREEN = new BaseColor(166,226,44);
-    private static final BaseColor SYNTAX_HIGHLIGHT_WHITE = new BaseColor(248,248,242);
-    private static final BaseColor SYNTAX_HIGHLIGHT_BACKGROUND_DARK = new BaseColor(39,40,34);
-    private static final BaseColor SUBTITLE_TEXT_COLOR = BaseColor.BLACK;
-    private static final BaseColor MAINTITLE_TEXT_COLOR = BaseColor.BLACK;
-    private static final BaseColor UNPARSEDTITLE_TEXT_COLOR = BaseColor.BLACK;
+    private static final Color SUBTITLE_BACKGROUND_COLOR = new DeviceRgb(181, 199, 182);
+    private static final Color MAINTITLE_BACKGROUND_COLOR = new DeviceRgb(233, 151, 156);
+    private static final Color UNPARSEDTITLE_BACKGROUND_COLOR = new DeviceRgb(239, 242, 75);
+    private static final Color SYNTAX_HIGHLIGHT_ROSE = new DeviceRgb(242, 38, 114);
+    private static final Color SYNTAX_HIGHLIGHT_YELLOW = new DeviceRgb(230, 219, 116);
+    private static final Color SYNTAX_HIGHLIGHT_GREEN = new DeviceRgb(166, 226, 44);
+    private static final Color SYNTAX_HIGHLIGHT_WHITE = new DeviceRgb(248, 248, 242);
+    private static final Color SYNTAX_HIGHLIGHT_BACKGROUND_DARK = new DeviceRgb(39, 40, 34);
+    private static final Color SUBTITLE_TEXT_COLOR = ColorConstants.BLACK;
+    private static final Color MAINTITLE_TEXT_COLOR = ColorConstants.BLACK;
+    private static final Color UNPARSEDTITLE_TEXT_COLOR = ColorConstants.BLACK;
 
-    // color pallette 2017: https://www.w3schools.com/colors/colors_palettes.asp
-    /*
-        233,151,156
-        208,196,205
-        164,153,140
-        181,199,182
-    */
-
-    protected static PdfPCell getCellWithoutBorder() {
-        PdfPCell cell = new PdfPCell();
-        cell.setBorder(Rectangle.NO_BORDER);
+    protected static Cell getCellWithoutBorder() {
+        Cell cell = new Cell();
+        cell.setBorder(Border.NO_BORDER);
         return cell;
     }
 
-    protected static PdfPCell getMaintitleCell() {
-        PdfPCell cell = new PdfPCell();
+    protected static Cell getMaintitleCell() {
+        Cell cell = new Cell();
         cell.setBackgroundColor(MAINTITLE_BACKGROUND_COLOR);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(2f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(1f);
@@ -47,11 +46,11 @@ public class SumehrTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getSubtitleCell() {
-        PdfPCell cell = new PdfPCell();
+    protected static Cell getSubtitleCell() {
+        Cell cell = new Cell();
         cell.setBackgroundColor(SUBTITLE_BACKGROUND_COLOR);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(2f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(1f);
@@ -59,11 +58,11 @@ public class SumehrTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getUnparsedTitleCell() {
-        PdfPCell cell = new PdfPCell();
+    protected static Cell getUnparsedTitleCell() {
+        Cell cell = new Cell();
         cell.setBackgroundColor(UNPARSEDTITLE_BACKGROUND_COLOR);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setTextAlignment(TextAlignment.CENTER);
+        cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
         cell.setPaddingTop(2f);
         cell.setPaddingBottom(4f);
         cell.setPaddingLeft(1f);
@@ -71,28 +70,28 @@ public class SumehrTableFormatter {
         return cell;
     }
 
-    protected static PdfPCell getKeyCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
+    protected static Cell getKeyCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
         return cell;
     }
 
-    protected static PdfPCell getValueCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
+    protected static Cell getValueCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.LEFT);
+        cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setPaddingTop(4f);
         cell.setPaddingBottom(4f);
         return cell;
     }
 
-    protected static PdfPCell getUnparsedCell() {
-        PdfPCell cell = new PdfPCell();
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
+    protected static Cell getUnparsedCell() {
+        Cell cell = new Cell();
+        cell.setTextAlignment(TextAlignment.LEFT);
+        cell.setVerticalAlignment(VerticalAlignment.TOP);
         cell.setBackgroundColor(SYNTAX_HIGHLIGHT_BACKGROUND_DARK);
         cell.setPaddingTop(1f);
         cell.setPaddingBottom(6f);
@@ -101,101 +100,78 @@ public class SumehrTableFormatter {
         return cell;
     }
 
-    protected static Font getMaintitleFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(10);
-        font.setStyle(Font.NORMAL);
-        font.setColor(MAINTITLE_TEXT_COLOR);
-
-        return font;
-
+    protected static Style getMaintitleFont() {
+        Style style = new Style();
+        style.setFontSize(10f);
+        style.setFontColor(MAINTITLE_TEXT_COLOR);
+        return style;
     }
 
-    protected static Font getUnparsedtitleFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(8);
-        font.setStyle(Font.NORMAL);
-        font.setColor(UNPARSEDTITLE_TEXT_COLOR);
-
-        return font;
-
+    protected static Style getUnparsedtitleFont() {
+        Style style = new Style();
+        style.setFontSize(8f);
+        style.setFontColor(UNPARSEDTITLE_TEXT_COLOR);
+        return style;
     }
 
-    protected static Font getSubtitleFont() {
-
-        Font font = new Phrase().getFont();
-        font.setSize(8);
-        font.setStyle(Font.NORMAL);
-        font.setColor(SUBTITLE_TEXT_COLOR);
-
-        return font;
-
+    protected static Style getSubtitleFont() {
+        Style style = new Style();
+        style.setFontSize(8f);
+        style.setFontColor(SUBTITLE_TEXT_COLOR);
+        return style;
     }
 
-    protected static Font getSubtitleHighlightFont() {
-
-        Font font = getSubtitleFont();
-        font.setStyle(Font.BOLD);
-
-        return font;
-
+    protected static Style getSubtitleHighlightFont() {
+        Style style = getSubtitleFont();
+        try {
+            PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            style.setFont(boldFont);
+        } catch (Exception e) {
+            // Fallback if font loading fails
+        }
+        return style;
     }
 
-    private static Font getSyntaxFont() {
-        Font font = new Phrase().getFont();
-        font.setSize(8);
-        font.setStyle(Font.NORMAL);
-        return font;
+    private static Style getSyntaxFont() {
+        Style style = new Style();
+        style.setFontSize(8f);
+        return style;
     }
 
-    protected static Font getSyntaxWhiteFont() {
-
-        Font font = getSyntaxFont();
-        font.setColor(SYNTAX_HIGHLIGHT_WHITE);
-
-        return font;
-
+    protected static Style getSyntaxWhiteFont() {
+        Style style = getSyntaxFont();
+        style.setFontColor(SYNTAX_HIGHLIGHT_WHITE);
+        return style;
     }
 
-    protected static Font getSyntaxRoseFont() {
-
-        Font font = getSyntaxFont();
-        font.setColor(SYNTAX_HIGHLIGHT_ROSE);
-
-        return font;
-
+    protected static Style getSyntaxRoseFont() {
+        Style style = getSyntaxFont();
+        style.setFontColor(SYNTAX_HIGHLIGHT_ROSE);
+        return style;
     }
 
-    protected static Font getSyntaxGreenFont() {
-
-        Font font = getSyntaxFont();
-        font.setColor(SYNTAX_HIGHLIGHT_GREEN);
-
-        return font;
-
+    protected static Style getSyntaxGreenFont() {
+        Style style = getSyntaxFont();
+        style.setFontColor(SYNTAX_HIGHLIGHT_GREEN);
+        return style;
     }
 
-    protected static Font getSyntaxYellowFont() {
-
-        Font font = getSyntaxFont();
-        font.setColor(SYNTAX_HIGHLIGHT_YELLOW);
-
-        return font;
-
+    protected static Style getSyntaxYellowFont() {
+        Style style = getSyntaxFont();
+        style.setFontColor(SYNTAX_HIGHLIGHT_YELLOW);
+        return style;
     }
 
-    protected static Phrase getSubtitlePhrase(String phraseString) {
-        return new Phrase(phraseString, getSubtitleFont());
+    protected static Paragraph getSubtitlePhrase(String phraseString) {
+        return new Paragraph(phraseString).addStyle(getSubtitleFont());
     }
 
-    protected static Phrase getMaintitlePhrase(String phraseString) {
-        return new Phrase(phraseString, getMaintitleFont());
+    protected static Paragraph getMaintitlePhrase(String phraseString) {
+        return new Paragraph(phraseString).addStyle(getMaintitleFont());
     }
 
-    protected static Phrase getUnparsedtitlePhrase(String phraseString) {
-        return new Phrase(phraseString, getUnparsedtitleFont());
+    protected static Paragraph getUnparsedtitlePhrase(String phraseString) {
+        return new Paragraph(phraseString).addStyle(getUnparsedtitleFont());
     }
 
 }
