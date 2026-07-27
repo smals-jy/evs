@@ -305,11 +305,11 @@ public abstract class Writer {
         Cell cell;
 
         // Title
-        cell = getCenteredCell();
+        cell = new Cell(1, 20);
+        cell.setTextAlignment(TextAlignment.CENTER);
         cell.add(getFrontPageHeaderParagraph(title));
         cell.setBorder(Border.NO_BORDER);
         cell.setPaddingBottom(30f);
-        cell.setColspan(20);
         table.addCell(cell);
 
         cell = new Cell(1, 14).add(getFrontPageHeaderParagraph(" "));
