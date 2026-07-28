@@ -1,6 +1,6 @@
 package org.imec.ivlab.validator.validators.business.model;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleResult;
 import org.imec.ivlab.validator.validators.model.Level;
 
