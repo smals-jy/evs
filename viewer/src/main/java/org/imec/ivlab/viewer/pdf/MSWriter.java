@@ -40,6 +40,8 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
