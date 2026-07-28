@@ -32,10 +32,12 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: List dependancies
+      - name: List dependancies 
+        shell: bash
         run: |
           cd builder && mvn dependency:tree
       - name: Find duplicated dependancies
+        shell: bash
         run: |
           cd builder && mvn dependency:analyze-duplicate  
   search_dependencies:
