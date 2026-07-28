@@ -1,7 +1,7 @@
 package org.imec.ivlab.validator.validators.business.rules.impl;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.validator.validators.business.rules.BaseKmehrMessageRule;
 import org.imec.ivlab.validator.validators.business.rules.model.RuleExecution;
 import org.imec.ivlab.validator.validators.model.Level;
