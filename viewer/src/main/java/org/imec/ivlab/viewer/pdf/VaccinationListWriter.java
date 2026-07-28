@@ -1,13 +1,13 @@
 package org.imec.ivlab.viewer.pdf;
 
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getCenteredCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhraseBold;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraphBold;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getHeaderCellLeftAligned;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getLeftAlignedCell;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.PdfHelper.writeToDocument;
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDate;
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDateTime;
@@ -19,10 +19,13 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENTschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDDRUGCNK;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDDRUGCNKschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+
 import org.joda.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,59 +75,55 @@ public class VaccinationListWriter extends Writer {
 
         String schemeTitle = "Vaccination List Visualization";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle);
-        PdfPTable detailTable = createDetailTable(vaccinations);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle);
+        Table detailTable = createDetailTable(vaccinations);
 
         writeToDocument(fileLocation, generalInfoTable, Collections.singletonList(detailTable));
     }
 
-    protected PdfPTable createGeneralInfoTable(String title) {
+    protected Table createGeneralInfoTable(String title) {
 
-        PdfPTable table = new PdfPTable(20);
-        table.setWidthPercentage(VaccinationListWriter.TABLE_WIDTH_PERCENTAGE);
+        // 20 uniform columns
+        Table table = new Table(20);
+        table.setWidth(UnitValue.createPercentValue(VaccinationListWriter.TABLE_WIDTH_PERCENTAGE));
 
-        // the cell object
-        PdfPCell cell;
+        Cell cell;
 
-        // title
-        cell = getCenteredCell();
-        cell.setPhrase(getFrontPageHeaderPhrase(title));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
+        // Title row
+        cell = getCenteredCell(1, 20);
+        cell.add(getFrontPageHeaderParagraph(title));
+        cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(14);
+        cell = new Cell(1, 14).add(getFrontPageHeaderParagraph(" "));
+        cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase("Afdruk op: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell = new Cell(1, 3).add(getDefaultParagraph("Afdruk op: "));
+        cell.setBorder(Border.NO_BORDER);
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
+        cell.setBorder(Border.NO_BORDER);
+        cell.setTextAlignment(TextAlignment.LEFT);
+        table.addCell(cell);
+
+        cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
+        cell.setBorder(Border.NO_BORDER);
         table.addCell(cell);
 
         return table;
 
     }
 
-    private PdfPTable createDetailTable(List<Vaccination> vaccinations) {
+    private Table createDetailTable(List<Vaccination> vaccinations) {
 
         int numColumns = 45;
 
-        PdfPTable table = new PdfPTable(1);
-        table.setWidthPercentage(95);
-        table.setHeaderRows(1);
+        // Container table with 1 column holding embedded tables/rows
+        Table table = new Table(1);
+        table.setWidth(UnitValue.createPercentValue(95));
 
         table.addCell(createHeaderRow("VACCINATIONS", numColumns));
         table.addCell(createVaccinationDetailHeaderRow(numColumns));
@@ -141,33 +140,34 @@ public class VaccinationListWriter extends Writer {
 
     }
 
-    private PdfPTable createHeaderRow(String title, int numColumns) {
-        PdfPTable table = new PdfPTable(numColumns);
-        table.setWidthPercentage(TABLE_WIDTH_PERCENTAGE);
+    private Table createHeaderRow(String title, int numColumns) {
+        Table table = new Table(numColumns);
+        table.setWidth(UnitValue.createPercentValue(TABLE_WIDTH_PERCENTAGE));
 
-        PdfPCell cell = getMedicationHeaderCell();
-        cell.setPhrase(getMedicationHeaderPhrase(title));
-        cell.setColspan(numColumns);
+        Cell cell = getMedicationHeaderCell(1, numColumns);
+        cell.add(getMedicationHeaderParagraph(title));
         table.addCell(cell);
 
         return table;
     }
 
-    private PdfPTable createVaccinationDetailHeaderRow(int numColumns) {
-        PdfPTable table = new PdfPTable(numColumns);
-        table.setWidthPercentage(TABLE_WIDTH_PERCENTAGE);
+    private Table createVaccinationDetailHeaderRow(int numColumns) {
+        // Define column widths proportionally (5 + 10 + 15 + 15 = 45 parts)
+        Table table = new Table(new float[]{5, 10, 15, 15});
+        table.setWidth(UnitValue.createPercentValue(TABLE_WIDTH_PERCENTAGE));
 
-        table.addCell(createHeaderCell("Application date", 5));
-        table.addCell(createHeaderCell("Vaccine code", 10));
-        table.addCell(createHeaderCell("Vaccine name", 15));
-        table.addCell(createHeaderCell("Protects against", 15));
+        table.addCell(createHeaderCell("Application date", 1));
+        table.addCell(createHeaderCell("Vaccine code", 1));
+        table.addCell(createHeaderCell("Vaccine name", 1));
+        table.addCell(createHeaderCell("Protects against", 1));
 
         return table;
     }
 
-    private PdfPTable createVaccinationDetailDataRow(VaccinationItem vaccinationItem, int numColumns) {
-        PdfPTable table = new PdfPTable(numColumns);
-        table.setWidthPercentage(TABLE_WIDTH_PERCENTAGE);
+    private Table createVaccinationDetailDataRow(VaccinationItem vaccinationItem, int numColumns) {
+        // Define column widths proportionally matching header (5 + 10 + 15 + 15 = 45 parts)
+        Table table = new Table(new float[]{5, 10, 15, 15});
+        table.setWidth(UnitValue.createPercentValue(TABLE_WIDTH_PERCENTAGE));
 
         String code = null;
         String name = null;
@@ -198,7 +198,7 @@ public class VaccinationListWriter extends Writer {
                 .toArray());
             name = StringUtils.joinWith(System.lineSeparator(), intendedNames.toArray());
             protectsAgainst = StringUtils.join(intendedCnks.stream().map(entry -> VaccinationEnricher.getProtectsAgainstByCnk(entry.getValue())).toArray(), System.lineSeparator());
-        } if (CollectionUtils.isNotEmpty(contentCodesForAtc)) {
+        } else if (CollectionUtils.isNotEmpty(contentCodesForAtc)) {
             code = StringUtils.joinWith(System.lineSeparator(), contentCodesForAtc
                 .stream()
                 .map(cdcontent -> "ATC: " + cdcontent.getValue())
@@ -214,30 +214,25 @@ public class VaccinationListWriter extends Writer {
             protectsAgainst = StringUtils.join(contentCodesForVaccinnet.stream().map(entry -> VaccinationEnricher.getProtectsAgainstByVaccinnetCode(entry.getValue())).toArray(), System.lineSeparator());
         }
 
-        table.addCell(createContentCell(formatAsDate(vaccinationItem.getBeginMoment()), 5));
-        table.addCell(createContentCell(code, 10));
-        table.addCell(createContentCell(name, 15));
-        table.addCell(createContentCell(protectsAgainst, 15));
+        table.addCell(createContentCell(formatAsDate(vaccinationItem.getBeginMoment()), 1));
+        table.addCell(createContentCell(code, 1));
+        table.addCell(createContentCell(name, 1));
+        table.addCell(createContentCell(protectsAgainst, 1));
 
         return table;
     }
 
-    private PdfPCell createHeaderCell(String content, int colspan) {
-        PdfPCell cell = getHeaderCellLeftAligned();
-        cell.setPhrase(getMedicationHeaderPhrase(content));
-        cell.setColspan(colspan);
-        cell.setRowspan(1);
-        cell.setBorder(0);
-        cell.setIndent(0);
+    private Cell createHeaderCell(String content, int colspan) {
+        Cell cell = getHeaderCellLeftAligned(1, colspan);
+        cell.add(getMedicationHeaderParagraph(content));
+        cell.setBorder(Border.NO_BORDER);
         return cell;
     }
 
-    private PdfPCell createContentCell(String content, int colspan) {
-        PdfPCell cell = getLeftAlignedCell();
-        cell.setPhrase(getDefaultPhrase(content));
-        cell.setColspan(colspan);
-        cell.setRowspan(1);
-        cell.setBorder(0);
+    private Cell createContentCell(String content, int colspan) {
+        Cell cell = getLeftAlignedCell(1, colspan);
+        cell.add(getDefaultParagraph(content));
+        cell.setBorder(Border.NO_BORDER);
         return cell;
     }
 

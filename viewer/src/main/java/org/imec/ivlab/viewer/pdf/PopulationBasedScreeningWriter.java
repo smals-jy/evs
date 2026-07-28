@@ -10,7 +10,7 @@ import static org.imec.ivlab.viewer.pdf.TableHelper.toDetailRowIfHasValue;
 import static org.imec.ivlab.viewer.pdf.TableHelper.toUnparsedContentTables;
 
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.layout.element.Table;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public class PopulationBasedScreeningWriter extends Writer {
 
     }
 
-    private static List<PopulationBasedScreening> readTestFile(String filename)  {
+    private static List<PopulationBasedScreening> readTestFile(String filename) {
         File inputFile = IOUtils.getResourceAsFile("/populationbasedscreening/" + filename);
 
         KmehrEntryList kmehrEntryList = KmehrExtractor.getKmehrEntryList(inputFile);
@@ -57,16 +57,15 @@ public class PopulationBasedScreeningWriter extends Writer {
 
         String schemeTitle = "PopulationBasedScreening Visualization";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle, populationBasedScreening.getHeader());
-        List<PdfPTable> detailTables = createDetailTables(populationBasedScreening);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle, populationBasedScreening.getHeader());
+        List<Table> detailTables = createDetailTables(populationBasedScreening);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
+    private List<Table> createDetailTables(PopulationBasedScreening populationBasedScreening) {
 
-    private List<PdfPTable> createDetailTables(PopulationBasedScreening populationBasedScreening) {
-
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         tables.add(combineTables(null, new ArrayList<>(), toUnparsedContentTables(Collections.singletonList(populationBasedScreening), null)));
 
@@ -76,7 +75,8 @@ public class PopulationBasedScreeningWriter extends Writer {
         tables.add(combineTables(createTitleTable("Author"), createHcPartyTables(populationBasedScreening.getTransactionCommon().getAuthor()), toUnparsedContentTables(populationBasedScreening.getTransactionCommon().getAuthor(), "Author")));
         tables.add(combineTables(createTitleTable("Redactor"), createHcPartyTables(populationBasedScreening.getTransactionCommon().getRedactor()), toUnparsedContentTables(populationBasedScreening.getTransactionCommon().getRedactor(), "Redactor")));
         tables.add(combineTables(createTitleTable("Transaction metadata"), createTransactionMetadata(populationBasedScreening.getTransactionCommon()), toUnparsedContentTables(populationBasedScreening.getTransactionCommon().getAuthor(), "Author")));
-        List<PdfPTable> tablesUnparsed = new ArrayList<>();
+        
+        List<Table> tablesUnparsed = new ArrayList<>();
         tablesUnparsed.addAll(toUnparsedContentTable(populationBasedScreening.getScreeningYear(), "Screening year"));
         tablesUnparsed.addAll(toUnparsedContentTable(populationBasedScreening.getScreeningType(), "Screening type"));
         tablesUnparsed.addAll(toUnparsedContentTable(populationBasedScreening.getInvitationDate(), "Invitation date"));
@@ -94,13 +94,11 @@ public class PopulationBasedScreeningWriter extends Writer {
 
         tables.add(combineTables(createTitleTable("Population Based Screening"), createChildpreventionTables(populationBasedScreening), tablesUnparsed));
         return tables;
-
     }
 
-    private List<PdfPTable> createChildpreventionTables(PopulationBasedScreening childPrevention) {
+    private List<Table> createChildpreventionTables(PopulationBasedScreening childPrevention) {
 
-
-        PdfPTable table = initializeDetailTable();
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader("Childprevention details"));
 
         addRow(table, toDetailRowIfHasValue("Screening type", Optional.ofNullable(childPrevention.getScreeningType()).map(TextItem::getText).orElse(null)));
@@ -118,7 +116,7 @@ public class PopulationBasedScreeningWriter extends Writer {
         addRow(table, toDetailRowIfHasValue("Followup approved", Optional.ofNullable(childPrevention.getFollowupApproved()).map(BooleanItem::getValue).orElse(null)));
         addRow(table, toDetailRowIfHasValue("Next invitation indication", Optional.ofNullable(childPrevention.getNextInvitationIndication()).map(TextItem::getText).orElse(null)));
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
         tables.add(table);
         return tables;
     }

@@ -31,8 +31,10 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDUNIT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDUNITschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.LnkType;
 import be.fgov.ehealth.standards.kmehr.dt.v1.TextType;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -77,15 +79,15 @@ public class VaccinationWriter extends Writer {
 
         String schemeTitle = "Vaccination Visualization";
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(schemeTitle, vaccination.getHeader());
-        List<PdfPTable> detailTables = createDetailTables(vaccination);
+        Table generalInfoTable = createGeneralInfoTable(schemeTitle, vaccination.getHeader());
+        List<Table> detailTables = createDetailTables(vaccination);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
-    private List<PdfPTable> createDetailTables(Vaccination vaccination) {
+    private List<Table> createDetailTables(Vaccination vaccination) {
 
-        List<PdfPTable> tables = new ArrayList<>();
+        List<Table> tables = new ArrayList<>();
 
         tables.add(combineTables(null, new ArrayList<>(), toUnparsedContentTables(Collections.singletonList(vaccination), null)));
 
@@ -95,7 +97,7 @@ public class VaccinationWriter extends Writer {
         tables.add(combineTables(createTitleTable("Author"), createHcPartyTables(vaccination.getTransactionCommon().getAuthor()), toUnparsedContentTables(vaccination.getTransactionCommon().getAuthor(), "Author")));
         tables.add(combineTables(createTitleTable("Redactor"), createHcPartyTables(vaccination.getTransactionCommon().getRedactor()), toUnparsedContentTables(vaccination.getTransactionCommon().getRedactor(), "Redactor")));
         tables.add(combineTables(createTitleTable("Transaction metadata"), createTransactionMetadata(vaccination.getTransactionCommon()), toUnparsedContentTables(vaccination.getTransactionCommon().getAuthor(), "Author")));
-        List<PdfPTable> unparsedVaccinationTables = vaccination
+        List<Table> unparsedVaccinationTables = vaccination
             .getVaccinationItems()
             .stream()
             .findFirst()
@@ -106,8 +108,8 @@ public class VaccinationWriter extends Writer {
 
     }
 
-    private List<PdfPTable> createVaccinationTables(Vaccination vaccination) {
-        List<PdfPTable> tables = new ArrayList<>();
+    private List<Table> createVaccinationTables(Vaccination vaccination) {
+        List<Table> tables = new ArrayList<>();
 
         tables.addAll(createLnkTable(vaccination.getLinkTypes()));
         tables.addAll(createTextWithoutLayoutTable(vaccination.getTextTypes()));
@@ -117,8 +119,8 @@ public class VaccinationWriter extends Writer {
         return tables;
     }
 
-    private PdfPTable createEncounterLocationTable(EncounterLocation encounterLocation) {
-        PdfPTable table = initializeDetailTable();
+    private Table createEncounterLocationTable(EncounterLocation encounterLocation) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Encounter location"));
 
@@ -129,8 +131,8 @@ public class VaccinationWriter extends Writer {
         return table;
     }
 
-    private PdfPTable createVaccinationDetailsTable(VaccinationItem vaccinationItem) {
-        PdfPTable table = initializeDetailTable();
+    private Table createVaccinationDetailsTable(VaccinationItem vaccinationItem) {
+        Table table = initializeDetailTable();
         addRow(table, createDetailHeader("Vaccination"));
 
         List<CDDRUGCNK> intendedMedicinalCnks = getMedicinalIntendedCnks(vaccinationItem);
@@ -164,40 +166,39 @@ public class VaccinationWriter extends Writer {
         return table;
     }
 
-    private List<PdfPCell> createCdContentRow(CDCONTENT cdcontent) {
+    private List<Cell> createCdContentRow(CDCONTENT cdcontent) {
         String key = Optional.ofNullable(cdcontent.getS()).map(CDCONTENTschemes::value).orElse(null);
         String value = cdcontent.getValue();
         return toDetailRowIfHasValue(key, value);
     }
 
-    private List<PdfPCell> createQuantityUnitRow(CDUNIT cdunit, String titlePrefix) {
+    private List<Cell> createQuantityUnitRow(CDUNIT cdunit, String titlePrefix) {
         Optional<CDUNIT> maybeUnit = Optional.ofNullable(cdunit);
         String key = StringUtils.joinWith(" ", titlePrefix, maybeUnit.map(CDUNIT::getS).map(CDUNITschemes::value).orElse(null));
         String value = maybeUnit.map(CDUNIT::getValue).orElse(null);
         return toDetailRowIfHasValue(key, value);
     }
 
-    private List<PdfPCell> createProductNameRow(String productName, String title) {
+    private List<Cell> createProductNameRow(String productName, String title) {
         String key = title;
         String value = productName;
         return toDetailRowIfHasValue(key, value);
     }
 
-    private List<PdfPCell> createMedicinalProductInnClusterRow(CDINNCLUSTER innCluster, String titlePrefix) {
+    private List<Cell> createMedicinalProductInnClusterRow(CDINNCLUSTER innCluster, String titlePrefix) {
         String key = StringUtils.joinWith(" ", titlePrefix, Optional.ofNullable(innCluster.getS()).orElse(null));
         String value = innCluster.getValue();
         return toDetailRowIfHasValue(key, value);
     }
 
-    private List<PdfPCell> createCnkRow(CDDRUGCNK cddrugcnk, String titlePrefix) {
+    private List<Cell> createCnkRow(CDDRUGCNK cddrugcnk, String titlePrefix) {
         String key = StringUtils.joinWith(" ", titlePrefix, Optional.ofNullable(cddrugcnk.getS()).orElse(null));
         String value = cddrugcnk.getValue();
         return toDetailRowIfHasValue(key, value);
     }
 
-
-    private PdfPTable lnkToTable(LnkType lnkType) {
-        PdfPTable table = initializeDetailTable();
+    private Table lnkToTable(LnkType lnkType) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Link"));
         addRow(table, toDetailRowIfHasValue("Type", Optional.ofNullable(lnkType.getTYPE()).map(CDLNKvalues::value).orElse(null)));
@@ -209,8 +210,8 @@ public class VaccinationWriter extends Writer {
         return table;
     }
 
-    private PdfPTable textWithoutLayoutToTable(TextType textType) {
-        PdfPTable table = initializeDetailTable();
+    private Table textWithoutLayoutToTable(TextType textType) {
+        Table table = initializeDetailTable();
 
         addRow(table, createDetailHeader("Text without layout"));
         addRow(table, createDetailRow("L", textType.getL()));
@@ -220,12 +221,11 @@ public class VaccinationWriter extends Writer {
         return table;
     }
 
-    private List<PdfPCell> createTextLengthDetailRow(Integer length) {
-        List<PdfPCell> pdfPCells = toDetailRowIfHasValue("Content length", length);
-        return pdfPCells;
+    private List<Cell> createTextLengthDetailRow(Integer length) {
+        return toDetailRowIfHasValue("Content length", length);
     }
 
-    private Collection<PdfPTable> createLnkTable(List<LnkType> lnkTypes) {
+    private Collection<Table> createLnkTable(List<LnkType> lnkTypes) {
         return Optional.ofNullable(lnkTypes)
                        .orElse(Collections.emptyList())
                        .stream()
@@ -233,7 +233,7 @@ public class VaccinationWriter extends Writer {
                        .collect(Collectors.toList());
     }
 
-    private Collection<PdfPTable> createTextWithoutLayoutTable(List<TextType> textTypes) {
+    private Collection<Table> createTextWithoutLayoutTable(List<TextType> textTypes) {
         return Optional.ofNullable(textTypes)
                        .orElse(Collections.emptyList())
                        .stream()

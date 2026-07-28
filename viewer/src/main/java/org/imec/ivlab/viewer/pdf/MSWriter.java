@@ -2,20 +2,20 @@ package org.imec.ivlab.viewer.pdf;
 
 import static org.imec.ivlab.core.util.StringUtils.joinFields;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getCenteredCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhraseBold;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraphBold;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getFrontPageHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderPhrase;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationObsoletePhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationHeaderParagraph;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationObsoleteParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationSubHeaderCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationSubHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getMedicationSubHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getObsoleteMedicationCellNotObsolete;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getObsoleteMedicationCellObsolete;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getQuantityPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getQuantityParagraph;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getQuantityWithValueCell;
 import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getSuspensionHeaderCell;
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getSuspensionHeaderPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getSuspensionHeaderParagraph;
 import static org.imec.ivlab.viewer.pdf.PdfHelper.writeToDocument;
 import static org.imec.ivlab.viewer.pdf.TakeTimeManager.MAX_NUMBER_OF_STANDALONE_TAKING_TIMES;
 import static org.imec.ivlab.viewer.pdf.Translator.durationToString;
@@ -37,13 +37,18 @@ import static org.imec.ivlab.viewer.pdf.Translator.translateTemporality;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTEMPORALITYvalues;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.VerticalAlignment;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -65,6 +70,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,12 +107,12 @@ public class MSWriter extends Writer {
 
     private final static Logger LOG = LogManager.getLogger(MSWriter.class);
 
-    private static PdfPTable table;
+    private static Table table;
     private static TakeTimeManager takeTimeManager;
     private static DayperiodTakeManager dayperiodTakeManager;
     private static RangeChecker rangeChecker;
 
-    private static final int MAX_LENGTH_TEXT_FIElDS = 1000;
+    private static final int MAX_LENGTH_TEXT_FIELDS = 1000;
     public static final String TOO_LARGE_TEXT = "[TOO LARGE]";
     private static float REMARKS_CONTENT_LEADING = 1.35f;
 
@@ -145,18 +151,12 @@ public class MSWriter extends Writer {
         return scheme;
     }
 
-    /**
-     * Creates a PDF
-     * @param    fileLocation the name of the PDF file that will be created.
-     * @throws    DocumentException 
-     * @throws    IOException
-     */
     public void createPdf(AbstractScheme scheme, String fileLocation) throws SchemaConversionException {
 
         String schemeTitle;
         if (scheme instanceof DailyScheme) {
             DailyScheme dailyScheme = (DailyScheme) scheme;
-            DateTimeFormatter pt =  DateTimeFormat.forPattern("EEEE dd MMMM yyyy");
+            DateTimeFormatter pt = DateTimeFormat.forPattern("EEEE dd MMMM yyyy");
             schemeTitle = "Medicatie dagschema voor " + (dailyScheme.getSchemeDate() != null ? pt.print(dailyScheme.getSchemeDate()) : "");
         } else if (scheme instanceof GlobalScheme) {
             schemeTitle = "Medicatie overzichtschema";
@@ -164,129 +164,120 @@ public class MSWriter extends Writer {
             throw new RuntimeException("Scheme type not supported yet for following class: " + scheme.getClass().getName());
         }
 
-        PdfPTable generalInfoTable = createGeneralInfoTable(scheme, schemeTitle);
-        List<PdfPTable> detailTables = createMedicationTables(scheme);
+        Table generalInfoTable = createGeneralInfoTable(scheme, schemeTitle);
+        List<Table> detailTables = createMedicationTables(scheme);
 
         writeToDocument(fileLocation, generalInfoTable, detailTables);
     }
 
-    public static PdfPTable createGeneralInfoTable(AbstractScheme scheme, String title) {
+    public static Table createGeneralInfoTable(AbstractScheme scheme, String title) {
 
-        PdfPTable table = new PdfPTable(20);
-        table.setWidthPercentage(95);
+        Table table = new Table(UnitValue.createPercentArray(20));
+        table.setWidth(UnitValue.createPercentValue(95));
 
-        // the cell object
-        PdfPCell cell;
+        Cell cell;
 
         // title
-        cell = getCenteredCell();
-        cell.setPhrase(getFrontPageHeaderPhrase(title));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
-        cell.setPaddingBottom(30f);
+        cell = getCenteredCell(1, 20);
+        cell.add(getFrontPageHeaderParagraph(title));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setMarginBottom(30f);
         table.addCell(cell);
 
         // general info
-        cell = new PdfPCell(getDefaultPhrase("Patiënt"));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(8);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhrase("Laatst gewijzigd door: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setColspan(3);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(formatAuthors(scheme.getAuthors())));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhrase("Versie: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setColspan(3);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(Optional.ofNullable(scheme.getVersion()).orElse("0")));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setColspan(3);
+        cell = new Cell(1, 8).add(getDefaultParagraph("Patiënt"));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(scheme.getPatient().getFirstName()));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(8);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhrase("Laatst gewijzigd op: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(StringUtils.joinWith(" ", formatAsDate(scheme.getLastModifiedDate()), formatAsTime(scheme.getLastModifiedTime()))));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setColspan(3);
+        cell = new Cell(1, 3).add(getDefaultParagraph("Laatst gewijzigd door: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase("Afdruk op: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(formatAsDateTime(LocalDateTime.now())));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAuthors(scheme.getAuthors())));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(scheme.getPatient().getLastName()));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(8);
-        table.addCell(cell);
-        cell = new PdfPCell(getFrontPageHeaderPhrase(""));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(6);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhrase("# MSE transacties: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(String.valueOf(scheme.getMedicationCount())));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        cell = new Cell(1, 3).add(getDefaultParagraph("Versie: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getDefaultPhrase(scheme.getPatient().getId()));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(8);
-        table.addCell(cell);
-        cell = new PdfPCell(getFrontPageHeaderPhrase(""));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(6);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhrase("# TS transacties: "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
-        table.addCell(cell);
-        cell = new PdfPCell(getDefaultPhraseBold(String.valueOf(scheme.getSuspensionsCount())));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(3);
-        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
-        cell.setVerticalAlignment(Element.ALIGN_TOP);
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(Optional.ofNullable(scheme.getVersion()).orElse("0")));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
         table.addCell(cell);
 
-        cell = new PdfPCell(getFrontPageHeaderPhrase(" "));
-        cell.setBorderColor(BaseColor.WHITE);
-        cell.setColspan(20);
+        cell = new Cell(1, 8).add(getFrontPageHeaderParagraph(scheme.getPatient().getFirstName()));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraph("Laatst gewijzigd op: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(StringUtils.joinWith(" ", formatAsDate(scheme.getLastModifiedDate()), formatAsTime(scheme.getLastModifiedTime()))));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraph("Afdruk op: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(formatAsDateTime(LocalDateTime.now())));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
+        table.addCell(cell);
+
+        cell = new Cell(1, 8).add(getFrontPageHeaderParagraph(scheme.getPatient().getLastName()));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        table.addCell(cell);
+
+        cell = new Cell(1, 6).add(getFrontPageHeaderParagraph(""));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraph("# MSE transacties: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(String.valueOf(scheme.getMedicationCount())));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
+        cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
+        table.addCell(cell);
+
+        cell = new Cell(1, 8).add(getDefaultParagraph(scheme.getPatient().getId()));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        table.addCell(cell);
+
+        cell = new Cell(1, 6).add(getFrontPageHeaderParagraph(""));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraph("# TS transacties: "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.RIGHT);
+        cell.setVerticalAlignment(VerticalAlignment.TOP);
+        table.addCell(cell);
+
+        cell = new Cell(1, 3).add(getDefaultParagraphBold(String.valueOf(scheme.getSuspensionsCount())));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
+        cell.setTextAlignment(TextAlignment.LEFT);
+        cell.setVerticalAlignment(VerticalAlignment.TOP);
+        table.addCell(cell);
+
+        cell = new Cell(1, 20).add(getFrontPageHeaderParagraph(" "));
+        cell.setBorder(new SolidBorder(ColorConstants.WHITE, 1f));
         table.addCell(cell);
 
         return table;
-
     }
 
     private static String formatAuthors(List<HcpartyType> authors) {
@@ -294,17 +285,15 @@ public class MSWriter extends Writer {
             return "";
         }
 
-        ArrayList<String> authorStrings = new ArrayList<>();
+        List<String> authorStrings = new ArrayList<>();
         for (HcpartyType author : authors) {
             authorStrings.add(org.imec.ivlab.core.util.StringUtils.joinWith(" ", author.getFirstname(), author.getFamilyname(), author.getName()));
         }
 
         return StringUtils.joinWith(System.lineSeparator(), authorStrings.toArray());
-
     }
 
     private static List<RegimenEntry> collectRegimentEntries(List<MedicationEntry> medicationEntries) {
-
         List<RegimenEntry> regimenEntries = new ArrayList<>();
 
         if (medicationEntries == null) {
@@ -318,58 +307,35 @@ public class MSWriter extends Writer {
         }
 
         return regimenEntries;
-
     }
 
     private static TreeMap<CDTEMPORALITYvalues, List<MedicationEntry>> groupMedicationEntriesByTemporality(List<MedicationEntry> medicationEntries) {
-
         List<CDTEMPORALITYvalues> definedOrder = Arrays.asList(CDTEMPORALITYvalues.CHRONIC, CDTEMPORALITYvalues.ACUTE, CDTEMPORALITYvalues.ONESHOT, null);
 
-        Comparator<CDTEMPORALITYvalues> comparator = new Comparator<CDTEMPORALITYvalues>() {
-
-
-            @Override
-            public int compare(CDTEMPORALITYvalues o1, CDTEMPORALITYvalues o2) {
-
-                return Integer.valueOf(definedOrder.indexOf(o1)).compareTo(definedOrder.indexOf(o2));
-            }
-        };
+        Comparator<CDTEMPORALITYvalues> comparator = (o1, o2) -> Integer.compare(definedOrder.indexOf(o1), definedOrder.indexOf(o2));
 
         TreeMap<CDTEMPORALITYvalues, List<MedicationEntry>> map = new TreeMap<>(comparator);
-
 
         if (medicationEntries == null) {
             return map;
         }
 
         for (MedicationEntry medicationEntry : medicationEntries) {
-            if (map.containsKey(medicationEntry.getTemporality())) {
-                map.get(medicationEntry.getTemporality()).add(medicationEntry);
-            } else {
-                map.put(medicationEntry.getTemporality(), new ArrayList<MedicationEntry>());
-                map.get(medicationEntry.getTemporality()).add(medicationEntry);
-            }
+            map.computeIfAbsent(medicationEntry.getTemporality(), k -> new ArrayList<>()).add(medicationEntry);
         }
 
         return map;
-
     }
 
     private static int getNumberOfColumns(boolean globalScheme) {
-        if (globalScheme) {
-            return 49;
-        } else {
-            return 48;
-        }
+        return globalScheme ? 49 : 48;
     }
 
-    private static PdfPTable createMedicationTable(List<MedicationEntry> medicationEntries, String medicationGroupName, boolean isGlobalScheme) {
-
+    private static Table createMedicationTable(List<MedicationEntry> medicationEntries, String medicationGroupName, boolean isGlobalScheme) {
         int headerRows = 2;
 
-        table = new PdfPTable(getNumberOfColumns(isGlobalScheme));
-        table.setWidthPercentage(95);
-        table.setHeaderRows(headerRows);
+        table = new Table(UnitValue.createPercentArray(getNumberOfColumns(isGlobalScheme)));
+        table.setWidth(UnitValue.createPercentValue(95));
 
         takeTimeManager = new TakeTimeManager(collectRegimentEntries(medicationEntries));
         dayperiodTakeManager = new DayperiodTakeManager();
@@ -378,183 +344,107 @@ public class MSWriter extends Writer {
         createMedicationSubHeaderRow(takeTimeManager.getTakeTimes(), isGlobalScheme);
 
         if (medicationEntries != null) {
-
             for (MedicationEntry medicationEntry : medicationEntries) {
-
                 createMedicationRow(medicationEntry, isGlobalScheme);
-
             }
-
         }
 
         return table;
-
     }
 
-    public static List<PdfPTable> createMedicationTables(AbstractScheme scheme) {
+    public static List<Table> createMedicationTables(AbstractScheme scheme) {
+        boolean globalScheme = scheme instanceof GlobalScheme;
 
-        boolean globalScheme = false;
-        if (scheme instanceof GlobalScheme) {
-            globalScheme = true;
-        }
+        List<Table> tables = new ArrayList<>();
+        TreeMap<CDTEMPORALITYvalues, List<MedicationEntry>> medicationEntriesByTemporality = groupMedicationEntriesByTemporality(scheme.getMedicationEntries());
 
-        List<PdfPTable> tables = new ArrayList<>();
-
-        TreeMap<CDTEMPORALITYvalues, List<MedicationEntry>> medicationEntriesByTemporality = groupMedicationEntriesByTemporality(scheme.getMedicationEntries()  );
-
-        for (CDTEMPORALITYvalues cdtemporalitYvalues : medicationEntriesByTemporality.keySet()) {
+        for (CDTEMPORALITYvalues cdtemporalityvalues : medicationEntriesByTemporality.keySet()) {
             String medicationGroupName = "Overige";
-            if (cdtemporalitYvalues != null) {
-                medicationGroupName = translateTemporality(cdtemporalitYvalues);
+            if (cdtemporalityvalues != null) {
+                medicationGroupName = translateTemporality(cdtemporalityvalues);
             }
-            PdfPTable medicationTable = createMedicationTable(medicationEntriesByTemporality.get(cdtemporalitYvalues), medicationGroupName, globalScheme);
+            Table medicationTable = createMedicationTable(medicationEntriesByTemporality.get(cdtemporalityvalues), medicationGroupName, globalScheme);
             tables.add(medicationTable);
         }
 
         return tables;
-
     }
 
     private static void createMedicationHeaderRow(String medicationGroup, boolean isGlobalScheme) {
-
-        PdfPCell cell = getMedicationHeaderCell();
+        Cell cell = getMedicationHeaderCell(1, isGlobalScheme ? 17 : 16);
         cell.setPaddingTop(6f);
         cell.setPaddingBottom(6f);
         cell.setPaddingLeft(6f);
         cell.setPaddingRight(6f);
 
-        cell.setPhrase(getMedicationHeaderPhrase(medicationGroup));
-        if (isGlobalScheme) {
-            cell.setColspan(17);
-        } else {
-            cell.setColspan(16);
-        }
+        cell.add(getMedicationHeaderParagraph(medicationGroup));
         table.addCell(cell);
 
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(2);
-        table.addCell(cell);
+        addHeaderCell("", 2);
+        addHeaderCell("Ontbijt", 6);
+        addHeaderCell("Middagmaal", 6);
+        addHeaderCell("Avondmaal", 6);
+        addHeaderCell("", 2);
+        addHeaderCell("", 2);
+        addHeaderCell("", 2);
+        addHeaderCell("", 2);
+        addHeaderCell("", 4);
+    }
 
-        cell.setPhrase(getMedicationHeaderPhrase("Ontbijt"));
-        cell.setColspan(6);
+    private static void addHeaderCell(String title, int colspan) {
+        Cell cell = getMedicationHeaderCell(1, colspan);
+        cell.add(getMedicationHeaderParagraph(title));
         table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase("Middagmaal"));
-        cell.setColspan(6);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase("Avondmaal"));
-        cell.setColspan(6);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-        cell.setPhrase(getMedicationHeaderPhrase(""));
-        cell.setColspan(4);
-        table.addCell(cell);
-
     }
 
     private static void createMedicationSubHeaderRow(Set<String> takeTimes, boolean isGlobalScheme) {
-
-        PdfPCell cell = getMedicationSubHeaderCell();
         if (isGlobalScheme) {
-            cell.setPhrase(getMedicationSubHeaderPhrase(" "));
-            cell.setColspan(1);
+            Cell cell = getMedicationSubHeaderCell(1, 1);
+            cell.add(getMedicationSubHeaderParagraph(" "));
             table.addCell(cell);
         }
-        cell.setPhrase(getMedicationSubHeaderPhrase("Geneesmiddel"));
-        cell.setColspan(4);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Freq."));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Begin"));
-        cell.setColspan(3);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Eind"));
-        cell.setColspan(3);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Inname/Eenheid"));
-        cell.setColspan(4);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Ochtend"));
-        cell.setColspan(2);
-        table.addCell(cell);
 
-        cell.setPhrase(getMedicationSubHeaderPhrase("Voor"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Tijdens"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Na"));
-        cell.setColspan(2);
-        table.addCell(cell);
+        addSubHeaderCell("Geneesmiddel", 4);
+        addSubHeaderCell("Freq.", 2);
+        addSubHeaderCell("Begin", 3);
+        addSubHeaderCell("Eind", 3);
+        addSubHeaderCell("Inname/Eenheid", 4);
+        addSubHeaderCell("Ochtend", 2);
 
-        cell.setPhrase(getMedicationSubHeaderPhrase("Voor"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Tijdens"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Na"));
-        cell.setColspan(2);
-        table.addCell(cell);
+        addSubHeaderCell("Voor", 2);
+        addSubHeaderCell("Tijdens", 2);
+        addSubHeaderCell("Na", 2);
 
-        cell.setPhrase(getMedicationSubHeaderPhrase("Voor"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Tijdens"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Na"));
-        cell.setColspan(2);
-        table.addCell(cell);
-        cell.setPhrase(getMedicationSubHeaderPhrase("Slaap"));
-        cell.setColspan(2);
-        table.addCell(cell);
+        addSubHeaderCell("Voor", 2);
+        addSubHeaderCell("Tijdens", 2);
+        addSubHeaderCell("Na", 2);
+
+        addSubHeaderCell("Voor", 2);
+        addSubHeaderCell("Tijdens", 2);
+        addSubHeaderCell("Na", 2);
+        addSubHeaderCell("Slaap", 2);
 
         if (CollectionsUtil.emptyOrNull(takeTimes)) {
-            cell.setPhrase(getMedicationSubHeaderPhrase(""));
-            cell.setColspan(6);
-            table.addCell(cell);
+            addSubHeaderCell("", 6);
         } else {
             Set<String> standaloneTakeTimes = takeTimeManager.getStandaloneTakeTimes();
             for (String takeTime : standaloneTakeTimes) {
-                cell.setPhrase(getMedicationSubHeaderPhrase(takeTime));
-                cell.setColspan(2);
-                table.addCell(cell);
+                addSubHeaderCell(takeTime, 2);
             }
             if (standaloneTakeTimes.size() < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES) {
                 for (int columnNumber = standaloneTakeTimes.size(); columnNumber < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES; columnNumber++) {
-                    cell.setPhrase(getDefaultPhrase(""));
-                    cell.setColspan(2);
-                    table.addCell(cell);
+                    addSubHeaderCell("", 2);
                 }
             }
-
         }
 
+        addSubHeaderCell("Opmerkingen", 4);
+    }
 
-        cell.setPhrase(getMedicationSubHeaderPhrase("Opmerkingen"));
-        cell.setColspan(4);
+    private static void addSubHeaderCell(String text, int colspan) {
+        Cell cell = getMedicationSubHeaderCell(1, colspan);
+        cell.add(getMedicationSubHeaderParagraph(text));
         table.addCell(cell);
-
     }
 
     private static String getMedicationName(MedicationEntry medicationEntry) {
@@ -565,226 +455,621 @@ public class MSWriter extends Writer {
         }
     }
 
-    private static Phrase getMedicationNamePhrase(MedicationEntry medicationEntry) {
-        Phrase phrase = getDefaultPhrase("");
-        phrase.add(getMedicationName(medicationEntry));
-        phrase.add(System.lineSeparator());
-        phrase.add(System.lineSeparator());
-        phrase.addAll(toLocalIdChunks(medicationEntry.getLocalId()));
-        phrase.add(System.lineSeparator());
-        phrase.add(System.lineSeparator());
-        phrase.add(getDefaultPhrase(combineDateAndTime(medicationEntry.getCreatedDate(), medicationEntry.getCreatedTime())));
-        phrase.add(System.lineSeparator());
-        phrase.addAll(toHCPartyChunks(medicationEntry.getAuthors()));
-        return phrase;
+    private static Paragraph getMedicationNameParagraph(MedicationEntry medicationEntry) {
+        Paragraph paragraph = getDefaultParagraph("");
+        paragraph.add(getMedicationName(medicationEntry));
+        paragraph.add("\n\n");
+        toLocalIdChunks(medicationEntry.getLocalId()).forEach(paragraph::add);
+        paragraph.add("\n\n");
+        paragraph.add(getDefaultParagraph(combineDateAndTime(medicationEntry.getCreatedDate(), medicationEntry.getCreatedTime())));
+        paragraph.add("\n");
+        toHCPartyChunks(medicationEntry.getAuthors()).forEach(paragraph::add);
+        return paragraph;
     }
 
-    private static void createMedicationRow(MedicationEntry medicationEntry, boolean isGlobalScheme) {
+    private static void createMedicationRow(
+            MedicationEntry medicationEntry,
+            boolean isGlobalScheme) {
 
-        LOG.debug("Creating row for medication with instruction: " + medicationEntry.getInstructionForPatient());
+        LOG.debug("Creating row for medication with instruction: "
+                + medicationEntry.getInstructionForPatient());
 
-        PdfPTable medicationEntryTable = new PdfPTable(getNumberOfColumns(isGlobalScheme));
-        medicationEntryTable.setWidthPercentage(100);
+        /*
+         * Keep each medication entry in its own nested table, as in the iText 5
+         * implementation. This is required for the row spans of medication name,
+         * obsolete marker, and remarks to coexist with a suspension table.
+         */
+        Table parentTable = table;
+        Table medicationEntryTable = new Table(
+                UnitValue.createPercentArray(getNumberOfColumns(isGlobalScheme)));
+        medicationEntryTable.setWidth(UnitValue.createPercentValue(100));
+        table = medicationEntryTable;
 
-        int suspensionsCount = 0;
-        int suspensionTable = 0;
-        if (medicationEntry.getSuspensions() != null) {
-            suspensionsCount = medicationEntry.getSuspensions().size();
-            if (medicationEntry.getSuspensions().size() > 0) {
-                suspensionTable = 1;
-            }
-        }
+        int suspensionsCount = medicationEntry.getSuspensions() == null
+                ? 0
+                : medicationEntry.getSuspensions().size();
+        int suspensionTableRowCount = suspensionsCount > 0 ? 1 : 0;
 
-
-        PdfPCell cellVerticalObsolete = null;
-        if (isGlobalScheme) {
-            if (rangeChecker.isObsolete(LocalDate.now(), medicationEntry)) {
-                cellVerticalObsolete = getObsoleteMedicationCellObsolete();
-                Phrase defaultPhrase = getMedicationObsoletePhrase("obsolete");
-                cellVerticalObsolete.setPhrase(defaultPhrase);
-            } else {
-                cellVerticalObsolete = getObsoleteMedicationCellNotObsolete();
-            }
-            cellVerticalObsolete.setColspan(1);
-        }
-
+        boolean isObsolete = isGlobalScheme
+                && rangeChecker.isObsolete(LocalDate.now(), medicationEntry);
 
         if (medicationEntry.getPosologyOrRegimen() instanceof Posology) {
+            int rowspan = 1 + suspensionTableRowCount;
 
             if (isGlobalScheme) {
-                if (cellVerticalObsolete != null) {
-                    cellVerticalObsolete.setRowspan(1 + suspensionTable);
-                }
-                medicationEntryTable.addCell(cellVerticalObsolete);
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
             Posology posology = (Posology) medicationEntry.getPosologyOrRegimen();
 
-            PdfPCell cell = getCenteredCell();
-            cell.setPhrase(getMedicationNamePhrase(medicationEntry));
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
-            medicationEntryTable.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            cell.setPhrase(getDefaultPhrase(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode())));
-            cell.setColspan(2);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
+            addSimpleCell(
+                    translateFrequency(medicationEntry.getFrequencyCode())
+                            + translateRegimenRepetition(
+                            null,
+                            medicationEntry.getFrequencyCode()),
+                    2,
+                    1);
+            addSimpleCell(
+                    combineStartDateAndCondition(
+                            medicationEntry.getBeginDate(),
+                            medicationEntry.getBeginCondition()),
+                    3,
+                    1);
+            addSimpleCell(
+                    combineEndDateAndConditionAndDuration(
+                            medicationEntry.getEndDate(),
+                            medicationEntry.getEndCondition(),
+                            medicationEntry.getDuration(),
+                            medicationEntry.getBeginDate()),
+                    3,
+                    1);
+            addSimpleCell(translateRoute(medicationEntry.getRoute()), 4, 1);
+            addSimpleCell(posology.getText(), 28, 1);
 
-            cell.setPhrase(getDefaultPhrase(combineStartDateAndCondition(medicationEntry.getBeginDate(), medicationEntry.getBeginCondition())));
-            cell.setColspan(3);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase(combineEndDateAndConditionAndDuration(medicationEntry.getEndDate(), medicationEntry.getEndCondition(), medicationEntry.getDuration(), medicationEntry.getBeginDate())));
-            cell.setColspan(3);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase(translateRoute(medicationEntry.getRoute())));
-            cell.setColspan(4);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase(posology.getText()));
-            cell.setColspan(28);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            Paragraph remarksParagraph = new Paragraph(getRemarksPhrase(medicationEntry));
-            cell.setPhrase(remarksParagraph);
-            cell.setLeading(0, REMARKS_CONTENT_LEADING);
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
-            medicationEntryTable.addCell(cell);
+            Cell remarksCell = getCenteredCell(rowspan, 4);
+            remarksCell.add(getRemarksParagraph(medicationEntry));
+            table.addCell(remarksCell);
 
         } else if (medicationEntry.getPosologyOrRegimen() instanceof Regimen) {
-
-
             Regimen regimen = (Regimen) medicationEntry.getPosologyOrRegimen();
+            List<List<RegimenEntry>> groupedRegimenEntries =
+                    groupByDayperiodOrTime(regimen.getEntries());
 
-            List<List<RegimenEntry>> groupedRegimenentries = groupByDayperiodOrTime(regimen.getEntries());
-
-            PdfPCell cell = getCenteredCell();
-            cell.setPhrase(getMedicationNamePhrase(medicationEntry));
-            cell.setColspan(4);
+            /*
+             * Preserve the legacy geometry. An empty regimen still needs one
+             * rendered row, otherwise a zero-row-span Cell would be created.
+             */
+            int regimenRowCount = Math.max(1, groupedRegimenEntries.size());
+            int rowspan = regimenRowCount + suspensionTableRowCount;
 
             if (isGlobalScheme) {
-                if (cellVerticalObsolete != null) {
-                    cellVerticalObsolete.setRowspan(groupedRegimenentries.size() + suspensionTable);
-                }
-                medicationEntryTable.addCell(cellVerticalObsolete);
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            cell.setRowspan(groupedRegimenentries.size() + suspensionTable);
-            medicationEntryTable.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            if (CollectionsUtil.notEmptyOrNull(groupedRegimenentries)) {
-
+            if (CollectionsUtil.notEmptyOrNull(groupedRegimenEntries)) {
                 int regimenIndex = 0;
 
-                for (List<RegimenEntry> similarEntries : groupedRegimenentries) {
-
-                    createMedicationSubRowsPart1(medicationEntryTable, medicationEntry.getFrequencyCode(), similarEntries.get(0));
-                    createMedicationSubRowsPart2(medicationEntryTable, medicationEntry, regimen.getAdministrationUnit());
-                    createMedicationSubRowsPart3(medicationEntryTable, similarEntries);
+                for (List<RegimenEntry> similarEntries : groupedRegimenEntries) {
+                    createMedicationSubRowsPart1(
+                            medicationEntry.getFrequencyCode(),
+                            similarEntries.get(0));
+                    createMedicationSubRowsPart2(
+                            medicationEntry,
+                            regimen.getAdministrationUnit());
+                    createMedicationSubRowsPart3(similarEntries);
 
                     if (regimenIndex == 0) {
-                        Paragraph remarksParagraph = new Paragraph(getRemarksPhrase(medicationEntry));
-                        cell.setPhrase(remarksParagraph);
-                        cell.setLeading(0, REMARKS_CONTENT_LEADING);
-                        cell.setColspan(4);
-                        cell.setRowspan(groupedRegimenentries.size()  + suspensionTable);
-                        medicationEntryTable.addCell(cell);
+                        Cell remarksCell = getCenteredCell(rowspan, 4);
+                        remarksCell.add(getRemarksParagraph(medicationEntry));
+                        table.addCell(remarksCell);
                     }
 
                     regimenIndex++;
-
                 }
-
             } else {
-                createMedicationSubRowsPart1(medicationEntryTable, medicationEntry.getFrequencyCode(), null);
-                createMedicationSubRowsPart2(medicationEntryTable, medicationEntry, regimen.getAdministrationUnit());
-                createMedicationSubRowsPart3(medicationEntryTable, null);
+                createMedicationSubRowsPart1(
+                        medicationEntry.getFrequencyCode(),
+                        null);
+                createMedicationSubRowsPart2(
+                        medicationEntry,
+                        regimen.getAdministrationUnit());
+                createMedicationSubRowsPart3(Collections.emptyList());
 
-                Paragraph remarksParagraph = new Paragraph(getRemarksPhrase(medicationEntry));
-                cell.setPhrase(remarksParagraph);
-                cell.setLeading(0, REMARKS_CONTENT_LEADING);
-                cell.setColspan(4);
-                cell.setRowspan(groupedRegimenentries.size() + suspensionTable);
-                medicationEntryTable.addCell(cell);
+                Cell remarksCell = getCenteredCell(rowspan, 4);
+                remarksCell.add(getRemarksParagraph(medicationEntry));
+                table.addCell(remarksCell);
             }
 
         } else {
+            int rowspan = 1 + suspensionTableRowCount;
 
             if (isGlobalScheme) {
-                if (cellVerticalObsolete != null) {
-                    cellVerticalObsolete.setRowspan(1 + suspensionTable);
-                }
-                medicationEntryTable.addCell(cellVerticalObsolete);
+                table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            PdfPCell cell = getCenteredCell();
-            cell.setPhrase(getMedicationNamePhrase(medicationEntry));
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
-            medicationEntryTable.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            cell.setPhrase(getDefaultPhrase(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode())));
-            cell.setColspan(2);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
+            addSimpleCell(
+                    translateFrequency(medicationEntry.getFrequencyCode())
+                            + translateRegimenRepetition(
+                            null,
+                            medicationEntry.getFrequencyCode()),
+                    2,
+                    1);
+            addSimpleCell(
+                    combineStartDateAndCondition(
+                            medicationEntry.getBeginDate(),
+                            medicationEntry.getBeginCondition()),
+                    3,
+                    1);
+            addSimpleCell(
+                    combineEndDateAndConditionAndDuration(
+                            medicationEntry.getEndDate(),
+                            medicationEntry.getEndCondition(),
+                            medicationEntry.getDuration(),
+                            medicationEntry.getBeginDate()),
+                    3,
+                    1);
+            addSimpleCell(translateRoute(medicationEntry.getRoute()), 4, 1);
+            addSimpleCell("Geen posologie of regime gedefinieerd", 28, 1);
 
-            cell.setPhrase(getDefaultPhrase(combineStartDateAndCondition(medicationEntry.getBeginDate(), medicationEntry.getBeginCondition())));
-            cell.setColspan(3);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase(combineEndDateAndConditionAndDuration(medicationEntry.getEndDate(), medicationEntry.getEndCondition(), medicationEntry.getDuration(), medicationEntry.getBeginDate())));
-            cell.setColspan(3);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase(translateRoute(medicationEntry.getRoute())));
-            cell.setColspan(4);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            cell.setPhrase(getDefaultPhrase("Geen posologie of regime gedefinieerd"));
-            cell.setColspan(28);
-            cell.setRowspan(1);
-            medicationEntryTable.addCell(cell);
-
-            Paragraph remarksParagraph = new Paragraph(getRemarksPhrase(medicationEntry));
-            cell.setPhrase(remarksParagraph);
-            cell.setLeading(0, REMARKS_CONTENT_LEADING);
-            cell.setColspan(4);
-            cell.setRowspan(1 + suspensionTable);
-            medicationEntryTable.addCell(cell);
-
-
+            Cell remarksCell = getCenteredCell(rowspan, 4);
+            remarksCell.add(getRemarksParagraph(medicationEntry));
+            table.addCell(remarksCell);
         }
-
 
         if (suspensionsCount > 0) {
-
-            PdfPCell cell = getCenteredCell();
-            cell.addElement(createSuspensionTable(medicationEntry.getSuspensions(), 40, medicationEntry.getLocalId()));
-            cell.setColspan(40);
-            cell.setPaddingTop(0f);
-            cell.setPaddingBottom(0f);
-            cell.setPaddingLeft(0f);
-            cell.setPaddingRight(0f);
-            medicationEntryTable.addCell(cell);
-
+            /*
+             * Do not span the entire 48/49-column medication table.
+             *
+             * In the legacy layout this cell spans exactly 40 columns; the
+             * medication name + remarks (+ obsolete marker for global schemes)
+             * occupy the preceding row-spanning columns.
+             */
+            Cell suspensionContainer = new Cell(1, 40);
+            suspensionContainer.setBorder(Border.NO_BORDER);
+            suspensionContainer.setPadding(0f);
+            suspensionContainer.add(createSuspensionTable(
+                    medicationEntry.getSuspensions(),
+                    40,
+                    medicationEntry.getLocalId()));
+            table.addCell(suspensionContainer);
         }
 
+        table = parentTable;
 
+        /*
+         * Restore the legacy PdfPCell(medicationEntryTable) wrapper: one nested
+         * medication table occupies a complete row of the outer medication table.
+         */
+        Cell medicationEntryContainer = new Cell(
+                1,
+                getNumberOfColumns(isGlobalScheme));
+        medicationEntryContainer.setBorder(Border.NO_BORDER);
+        medicationEntryContainer.setPadding(0f);
+        medicationEntryContainer.add(medicationEntryTable);
+        table.addCell(medicationEntryContainer);
+    }
 
-        PdfPCell cell1 = new PdfPCell(medicationEntryTable);
-        cell1.setColspan(getNumberOfColumns(isGlobalScheme));
-        table.addCell(cell1);
+    private static Table createSuspensionTable(
+            List<Suspension> suspensions,
+            int tableColumnCount,
+            LocalId localId) {
 
+        if (CollectionsUtil.emptyOrNull(suspensions)) {
+            return null;
+        }
+
+        Table suspensionTable = new Table(
+                UnitValue.createPercentArray(tableColumnCount));
+        suspensionTable.setWidth(UnitValue.createPercentValue(100));
+
+        Cell stopCell = getSuspensionHeaderCell(suspensions.size() + 1, 1);
+        stopCell.add(getSuspensionHeaderParagraph("STOP"));
+        stopCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        stopCell.setRotationAngle(Math.toRadians(90));
+        suspensionTable.addCell(stopCell);
+
+        addSuspensionHeaderCell(suspensionTable, "ID", 1);
+        addSuspensionHeaderCell(suspensionTable, "Type", 3);
+        addSuspensionHeaderCell(suspensionTable, "Van", 3);
+        addSuspensionHeaderCell(suspensionTable, "Tot", 3);
+        addSuspensionHeaderCell(suspensionTable, "Reden", 18);
+        addSuspensionHeaderCell(suspensionTable, "Aangemaakt op", 3);
+        addSuspensionHeaderCell(suspensionTable, "Aangemaakt door", 8);
+
+        for (Suspension suspension : suspensions) {
+            Cell localIdCell = getCenteredCell(1, 1);
+            Paragraph localIdParagraph = getDefaultParagraph("");
+            toLocalIdChunks(localId).forEach(localIdParagraph::add);
+            localIdCell.add(localIdParagraph);
+            localIdCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+            localIdCell.setRotationAngle(Math.toRadians(90));
+            suspensionTable.addCell(localIdCell);
+
+            addSuspensionValueCell(
+                    suspensionTable,
+                    translateLifecycle(suspension.getLifecycle()),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineStartDateAndCondition(
+                            suspension.getBeginDate(),
+                            null),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineEndDateAndConditionAndDuration(
+                            suspension.getEndDate(),
+                            null,
+                            suspension.getDuration(),
+                            suspension.getBeginDate()),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    suspension.getReason(),
+                    18);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineDateAndTime(
+                            suspension.getCreatedDate(),
+                            suspension.getCreatedTime()),
+                    3);
+
+            Cell authorsCell = getCenteredCell(1, 8);
+            Paragraph authorsParagraph = getDefaultParagraph("");
+            toHCPartyChunks(suspension.getAuthors()).forEach(authorsParagraph::add);
+            authorsParagraph.add(System.lineSeparator());
+            authorsCell.add(authorsParagraph);
+            suspensionTable.addCell(authorsCell);
+        }
+
+        return suspensionTable;
+    }
+
+    private static void addSuspensionHeaderCell(
+            Table suspensionTable,
+            String text,
+            int colspan) {
+
+        Cell cell = getSuspensionHeaderCell(1, colspan);
+        cell.add(getSuspensionHeaderParagraph(text));
+        suspensionTable.addCell(cell);
+    }
+
+    private static void addSuspensionValueCell(
+            Table suspensionTable,
+            String text,
+            int colspan) {
+
+        Cell cell = getCenteredCell(1, colspan);
+        cell.add(getDefaultParagraph(text));
+        suspensionTable.addCell(cell);
+    }
+
+    private static Cell createObsoleteCell(boolean obsolete, int rowspan) {
+        if (obsolete) {
+            Cell cell = getObsoleteMedicationCellObsolete(rowspan, 1);
+            cell.add(getMedicationObsoleteParagraph("obsolete"));
+            return cell;
+        }
+
+        return getObsoleteMedicationCellNotObsolete(rowspan, 1);
+    }
+
+    /*
+     * Legacy behavior: RegimenEntry contributes only its recurrence information
+     * to this column. It does not own begin or end dates.
+     */
+    private static void createMedicationSubRowsPart1(
+            FrequencyCode frequencyCode,
+            RegimenEntry regimenEntry) {
+
+        addSimpleCell(
+                translateFrequency(frequencyCode)
+                        + translateRegimenRepetition(regimenEntry, frequencyCode),
+                2,
+                1);
+    }
+
+    /*
+     * Legacy behavior: MedicationEntry owns begin/end, duration, route, and
+     * administration unit.
+     */
+    private static void createMedicationSubRowsPart2(
+            MedicationEntry medicationEntry,
+            String administrationUnit) {
+
+        addSimpleCell(
+                combineStartDateAndCondition(
+                        medicationEntry.getBeginDate(),
+                        adaptLengthIfNecessary(
+                                medicationEntry.getBeginCondition())),
+                3,
+                1);
+
+        addSimpleCell(
+                combineEndDateAndConditionAndDuration(
+                        medicationEntry.getEndDate(),
+                        adaptLengthIfNecessary(
+                                medicationEntry.getEndCondition()),
+                        medicationEntry.getDuration(),
+                        medicationEntry.getBeginDate()),
+                3,
+                1);
+
+        addSimpleCell(
+                translateRoute(medicationEntry.getRoute())
+                        + " / "
+                        + translateAdministrationUnit(administrationUnit),
+                4,
+                1);
+    }
+
+    private static Cell prepareQuantityCell(BigDecimal quantity) {
+        if (quantity == null) {
+            Cell cell = getCenteredCell(1, 2);
+            cell.add(getQuantityParagraph(""));
+            return cell;
+        }
+
+        Cell cell = getQuantityWithValueCell(1, 2);
+        cell.add(getQuantityParagraph(translateQuantity(quantity)));
+        return cell;
+    }
+
+    private static Map<Dayperiod, BigDecimal> sumQuantitiesPerDayperiod(
+            List<RegimenEntry> regimenEntries) {
+
+        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod = new HashMap<>();
+
+        for (RegimenEntry regimenEntry : regimenEntries) {
+            if (regimenEntry.getDayperiodOrTime() instanceof RegimenDayperiod) {
+                RegimenDayperiod regimenDayperiod =
+                        (RegimenDayperiod) regimenEntry.getDayperiodOrTime();
+
+                quantitiesPerDayperiod.merge(
+                        regimenDayperiod.getDayperiod(),
+                        regimenEntry.getQuantity(),
+                        BigDecimal::add);
+            }
+        }
+
+        return quantitiesPerDayperiod;
+    }
+
+    private static Map<Dayperiod, BigDecimal>
+    sumQuantitiesPerNonStandaloneDayperiod(
+            Map<Dayperiod, BigDecimal> quantitiesPerDayperiod) {
+
+        Map<Dayperiod, BigDecimal> nonStandaloneDayperiods =
+                new HashMap<>();
+
+        for (Map.Entry<Dayperiod, BigDecimal> entry
+                : quantitiesPerDayperiod.entrySet()) {
+            if (!dayperiodTakeManager.isStandaloneDayperiod(entry.getKey())) {
+                nonStandaloneDayperiods.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return nonStandaloneDayperiods;
+    }
+
+    private static Map<String, BigDecimal> sumQuantitiesPerTakeTime(
+            List<RegimenEntry> regimenEntries) {
+
+        Map<String, BigDecimal> quantitiesPerTakeTime = new HashMap<>();
+
+        for (RegimenEntry regimenEntry : regimenEntries) {
+            if (regimenEntry.getDayperiodOrTime() instanceof RegimenTime) {
+                RegimenTime regimenTime =
+                        (RegimenTime) regimenEntry.getDayperiodOrTime();
+
+                String timeString =
+                        takeTimeManager.toTakeTimeString(regimenTime.getTime());
+
+                quantitiesPerTakeTime.merge(
+                        timeString,
+                        regimenEntry.getQuantity(),
+                        BigDecimal::add);
+            }
+        }
+
+        return quantitiesPerTakeTime;
+    }
+
+    private static Map<String, BigDecimal>
+    sumQuantitiesPerNonStandaloneTakeTime(
+            Map<String, BigDecimal> quantitiesPerTakeTime) {
+
+        Map<String, BigDecimal> nonStandaloneTakeTimes = new HashMap<>();
+
+        for (Map.Entry<String, BigDecimal> entry
+                : quantitiesPerTakeTime.entrySet()) {
+            if (!takeTimeManager.isStandaloneTakeTime(entry.getKey())) {
+                nonStandaloneTakeTimes.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return nonStandaloneTakeTimes;
+    }
+
+    private static String concatenateTakeMoments(
+            Map<Dayperiod, BigDecimal> nonStandaloneDayperiods,
+            Map<String, BigDecimal> nonStandaloneTakeTimes) {
+
+        List<String> takeMoments = new ArrayList<>();
+
+        for (Map.Entry<Dayperiod, BigDecimal> entry
+                : nonStandaloneDayperiods.entrySet()) {
+            takeMoments.add(
+                    translateQuantity(entry.getValue())
+                            + " "
+                            + translateDayperiod(entry.getKey()));
+        }
+
+        for (Map.Entry<String, BigDecimal> entry
+                : nonStandaloneTakeTimes.entrySet()) {
+            takeMoments.add(
+                    translateQuantity(entry.getValue())
+                            + " om "
+                            + entry.getKey());
+        }
+
+        Collections.sort(takeMoments, NumberAwareStringComparator.INSTANCE);
+
+        return StringUtils.joinWith(
+                System.lineSeparator() + System.lineSeparator(),
+                takeMoments.toArray());
+    }
+
+    private static void createMedicationSubRowsPart3(
+            List<RegimenEntry> similarEntries) {
+
+        List<RegimenEntry> entries = similarEntries == null
+                ? Collections.emptyList()
+                : similarEntries;
+
+        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod =
+                sumQuantitiesPerDayperiod(entries);
+        Map<String, BigDecimal> quantitiesPerTakeTime =
+                sumQuantitiesPerTakeTime(entries);
+
+        Map<Dayperiod, BigDecimal> nonStandaloneDayperiods =
+                sumQuantitiesPerNonStandaloneDayperiod(quantitiesPerDayperiod);
+        Map<String, BigDecimal> nonStandaloneTakeTimes =
+                sumQuantitiesPerNonStandaloneTakeTime(quantitiesPerTakeTime);
+
+        for (Dayperiod dayperiod
+                : dayperiodTakeManager.getAllPossibleStandaloneDayperiods()) {
+            table.addCell(prepareQuantityCell(
+                    quantitiesPerDayperiod.get(dayperiod)));
+        }
+
+        if (!nonStandaloneDayperiods.isEmpty()
+                || !nonStandaloneTakeTimes.isEmpty()) {
+
+            Cell cell = getQuantityWithValueCell(1, 6);
+            cell.add(getQuantityParagraph(
+                    concatenateTakeMoments(
+                            nonStandaloneDayperiods,
+                            nonStandaloneTakeTimes)));
+            table.addCell(cell);
+            return;
+        }
+
+        Set<String> standaloneTakeTimes =
+                takeTimeManager.getStandaloneTakeTimes();
+
+        for (String takeTime : standaloneTakeTimes) {
+            BigDecimal quantity = quantitiesPerTakeTime.get(takeTime);
+
+            if (quantity != null) {
+                Cell cell = getQuantityWithValueCell(1, 2);
+                cell.add(getQuantityParagraph(translateQuantity(quantity)));
+                table.addCell(cell);
+            } else {
+                Cell cell = getCenteredCell(1, 2);
+                cell.add(getDefaultParagraph(""));
+                table.addCell(cell);
+            }
+        }
+
+        for (int columnNumber = standaloneTakeTimes.size();
+             columnNumber < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES;
+             columnNumber++) {
+            Cell cell = getCenteredCell(1, 2);
+            cell.add(getQuantityParagraph(""));
+            table.addCell(cell);
+        }
+    }
+
+    private static void addSimpleCell(
+            String text,
+            int colspan,
+            int rowspan) {
+
+        Cell cell = getCenteredCell(rowspan, colspan);
+        cell.add(getDefaultParagraph(text));
+        table.addCell(cell);
+    }
+
+    private static Paragraph getRemarksParagraph(
+            MedicationEntry medicationEntry) {
+
+        Paragraph paragraph = getDefaultParagraph("");
+        paragraph.setMultipliedLeading(REMARKS_CONTENT_LEADING);
+
+        boolean hasPreviousRemark = false;
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "indicatie:",
+                medicationEntry.getMedicationUse());
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "gebruiksaanwijzing:",
+                medicationEntry.getInstructionForPatient());
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "magistrale bereiding:",
+                medicationEntry.getCompoundPrescription());
+
+        addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "overdosis:",
+                medicationEntry.getInstructionForOverdosing());
+
+        return paragraph;
+    }
+
+    private static boolean addRemark(
+            Paragraph paragraph,
+            boolean hasPreviousRemark,
+            String header,
+            String value) {
+
+        if (StringUtils.isEmpty(value)) {
+            return hasPreviousRemark;
+        }
+
+        if (hasPreviousRemark) {
+            paragraph.add(System.lineSeparator());
+        }
+
+        for (Text text : toCommentHeaderAndValueChunk(
+                header,
+                adaptLengthIfNecessary(value))) {
+            paragraph.add(text);
+        }
+
+        return true;
+    }
+
+    private static String adaptLengthIfNecessary(String text) {
+        if (text != null && text.length() > MAX_LENGTH_TEXT_FIELDS) {
+            return text.substring(0, MAX_LENGTH_TEXT_FIELDS)
+                    + " "
+                    + TOO_LARGE_TEXT;
+        }
+
+        return text;
     }
 
     private static List<List<RegimenEntry>> groupByDayperiodOrTime(final List<RegimenEntry> regimenEntriesOriginal) {
@@ -836,380 +1121,22 @@ public class MSWriter extends Writer {
 
     }
 
-    private static Phrase getRemarksPhrase(MedicationEntry medicationEntry) {
-
-        Phrase phrase = getDefaultPhrase("");
-
-        if (StringUtils.isNotEmpty(medicationEntry.getMedicationUse())){
-            if (phrase.size() > 1) {
-                phrase.add(System.lineSeparator());
-            }
-            phrase.addAll(toCommentHeaderAndValueChunk("indicatie:", adaptLengthIfNecessary(medicationEntry.getMedicationUse())));
-        }
-
-        if (StringUtils.isNotEmpty(medicationEntry.getInstructionForPatient())){
-            if (phrase.size() > 1) {
-                phrase.add(System.lineSeparator());
-            }
-            phrase.addAll(toCommentHeaderAndValueChunk("gebruiksaanwijzing:", adaptLengthIfNecessary(medicationEntry.getInstructionForPatient())));
-        }
-
-        if (StringUtils.isNotEmpty(medicationEntry.getInstructionForPatient())) {
-            if (phrase.size() > 1) {
-                phrase.add(System.lineSeparator());
-            }
-            phrase.addAll(toCommentHeaderAndValueChunk("magistrale bereiding:", adaptLengthIfNecessary(medicationEntry.getCompoundPrescription())));
-        }
-
-        if (StringUtils.isNotEmpty(medicationEntry.getInstructionForOverdosing())) {
-            if (phrase.size() > 1) {
-                phrase.add(System.lineSeparator());
-            }
-            phrase.addAll(toCommentHeaderAndValueChunk("overdosis:", adaptLengthIfNecessary(medicationEntry.getInstructionForOverdosing())));
-        }
-
-        return phrase;
-
-    }
-
-    private static String adaptLengthIfNecessary(String text) {
-
-        if (StringUtils.length(text) > MAX_LENGTH_TEXT_FIElDS) {
-            return TOO_LARGE_TEXT;
-        } else {
-            return text;
-        }
-
-    }
-
-    private static PdfPTable createSuspensionTable(List<Suspension> suspensions, int tableColumnCount, LocalId localId) {
-
-        if (CollectionsUtil.emptyOrNull(suspensions)) {
-            return null;
-        }
-
-        PdfPTable table = new PdfPTable(tableColumnCount);
-        table.setWidthPercentage(100);
-        PdfPCell cellVertical = getSuspensionHeaderCell();
-        cellVertical.setPhrase(getSuspensionHeaderPhrase("STOP"));
-        cellVertical.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cellVertical.setRotation(90);
-        cellVertical.setColspan(1);
-        cellVertical.setRowspan(suspensions.size() + 1);
-        table.addCell(cellVertical);
-
-        PdfPCell cell = getSuspensionHeaderCell();
-        cell.setPhrase(getSuspensionHeaderPhrase("ID"));
-        cell.setColspan(1);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Type"));
-        cell.setColspan(3);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Van"));
-        cell.setColspan(3);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Tot"));
-        cell.setColspan(3);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Reden"));
-        cell.setColspan(18);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Aangemaakt op"));
-        cell.setColspan(3);
-        table.addCell(cell);
-
-        cell.setPhrase(getSuspensionHeaderPhrase("Aangemaakt door"));
-        cell.setColspan(8);
-        table.addCell(cell);
-
-        for (Suspension suspension : suspensions) {
-
-            PdfPCell cellVertical2 = getCenteredCell();
-            Phrase defaultPhrase = getDefaultPhrase("");
-            defaultPhrase.addAll(toLocalIdChunks(localId));
-            cellVertical2.setPhrase(defaultPhrase);
-            cellVertical2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cellVertical2.setRotation(90);
-            cellVertical2.setColspan(1);
-            table.addCell(cellVertical2);
-
-            cell = getCenteredCell();
-            cell.setPhrase(getDefaultPhrase(translateLifecycle(suspension.getLifecycle())));
-            cell.setColspan(3);
-            table.addCell(cell);
-
-            cell = getCenteredCell();
-            cell.setPhrase(getDefaultPhrase(combineStartDateAndCondition(suspension.getBeginDate(), null)));
-            cell.setColspan(3);
-            table.addCell(cell);
-
-            cell = getCenteredCell();
-            cell.setPhrase(getDefaultPhrase(combineEndDateAndConditionAndDuration(suspension.getEndDate(), null, suspension.getDuration(), suspension.getBeginDate())));
-            cell.setColspan(3);
-            table.addCell(cell);
-
-            cell = getCenteredCell();
-            cell.setPhrase(getDefaultPhrase(suspension.getReason()));
-            cell.setColspan(18);
-            table.addCell(cell);
-
-            cell = getCenteredCell();
-            cell.setPhrase(getDefaultPhrase(combineDateAndTime(suspension.getCreatedDate(), suspension.getCreatedTime())));
-            cell.setColspan(3);
-            table.addCell(cell);
-
-            cell = getCenteredCell();
-            Phrase author = getDefaultPhrase("");
-            author.addAll(toHCPartyChunks(suspension.getAuthors()));
-            author.add(System.lineSeparator());
-            cell.setPhrase(author);
-            cell.setColspan(8);
-            table.addCell(cell);
-
-        }
-
-        return table;
-
-    }
-
-    private static String combineDateAndTime(LocalDate date,  DateTime time) {
+    private static String combineDateAndTime(LocalDate date, DateTime time) {
         return joinFields(formatAsDate(date), formatAsTime(time), System.lineSeparator());
     }
 
-    /**
-     * Create a medication subrow for columns: frequency
-     * @param frequencyCode
-     * @param regimenEntry
-     */
-    private static void createMedicationSubRowsPart1(PdfPTable table, FrequencyCode frequencyCode, RegimenEntry regimenEntry) {
-
-        PdfPCell cell = getCenteredCell();
-
-        cell.setPhrase(getDefaultPhrase(translateFrequency(frequencyCode) + translateRegimenRepetition(regimenEntry, frequencyCode)));
-        cell.setColspan(2);
-        table.addCell(cell);
-
-
-    }
-
-    /**
-     * Create a medication subrows for colums: begin, end, inname/eenheid
-     * @param medicationEntry
-     * @param administrationUnit
-     */
-    private static void createMedicationSubRowsPart2(PdfPTable table, MedicationEntry medicationEntry, String administrationUnit) {
-        PdfPCell cell = getCenteredCell();
-
-        cell.setPhrase(getDefaultPhrase(combineStartDateAndCondition(medicationEntry.getBeginDate(), adaptLengthIfNecessary(medicationEntry.getBeginCondition()))));
-        cell.setColspan(3);
-        cell.setRowspan(1);
-        table.addCell(cell);
-
-        cell.setPhrase(getDefaultPhrase(combineEndDateAndConditionAndDuration(medicationEntry.getEndDate(), adaptLengthIfNecessary(medicationEntry.getEndCondition()), medicationEntry.getDuration(), medicationEntry.getBeginDate())));
-        cell.setColspan(3);
-        cell.setRowspan(1);
-        table.addCell(cell);
-
-        cell.setPhrase(getDefaultPhrase(translateRoute(medicationEntry.getRoute()) + " / " + translateAdministrationUnit(administrationUnit)));
-        cell.setColspan(4);
-        cell.setRowspan(1);
-        table.addCell(cell);
-
-    }
-
-    private static PdfPCell prepareQuantityCell(BigDecimal quantity) {
-
-        PdfPCell cell = null;
-
-        if (quantity == null) {
-            cell = getCenteredCell();
-            cell.setPhrase(getQuantityPhrase(""));
-            return cell;
-        }
-
-        String quantityForMoment = translateQuantity(quantity);
-        cell = getQuantityWithValueCell();
-        cell.setPhrase(getQuantityPhrase(quantityForMoment));
-
-        return cell;
-    }
-
-
-    private static Map<Dayperiod, BigDecimal> sumQuantitiesPerDayperiod(List<RegimenEntry> regimenEntries) {
-
-        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod = new HashMap<>();
-
-        for (RegimenEntry regimenEntry : regimenEntries) {
-            if (regimenEntry.getDayperiodOrTime() instanceof RegimenDayperiod) {
-                RegimenDayperiod regimenDayperiod = (RegimenDayperiod) regimenEntry.getDayperiodOrTime();
-
-                if (quantitiesPerDayperiod.containsKey(regimenDayperiod.getDayperiod())) {
-                    quantitiesPerDayperiod.put(regimenDayperiod.getDayperiod(), quantitiesPerDayperiod.get(regimenDayperiod.getDayperiod()).add(regimenEntry.getQuantity()));
-                } else {
-                    quantitiesPerDayperiod.put(regimenDayperiod.getDayperiod(), regimenEntry.getQuantity());
-                }
-
-            }
-        }
-
-        return quantitiesPerDayperiod;
-
-    }
-
-    private static Map<Dayperiod, BigDecimal> sumQuantitiesPerNonStandaloneDayperiod(Map<Dayperiod, BigDecimal> quantitiesPerDayperiod) {
-
-        Map<Dayperiod, BigDecimal> quantitiesPerStandaloneDayperiod = new HashMap<>();
-
-        for (Map.Entry<Dayperiod, BigDecimal> entry : quantitiesPerDayperiod.entrySet()) {
-            if (!dayperiodTakeManager.isStandaloneDayperiod(entry.getKey())) {
-                quantitiesPerStandaloneDayperiod.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        return quantitiesPerStandaloneDayperiod;
-
-    }
-
-    private static Map<String, BigDecimal> sumQuantitiesPerTakeTime(List<RegimenEntry> regimenEntries) {
-
-        Map<String, BigDecimal> quantitiesPerTakeTime = new HashMap<>();
-
-        for (RegimenEntry regimenEntry : regimenEntries) {
-            if (regimenEntry.getDayperiodOrTime() instanceof RegimenTime) {
-                RegimenTime regimenTime = (RegimenTime) regimenEntry.getDayperiodOrTime();
-
-                String timeString = takeTimeManager.toTakeTimeString(regimenTime.getTime());
-                if (quantitiesPerTakeTime.containsKey(timeString)) {
-                    quantitiesPerTakeTime.put(timeString, quantitiesPerTakeTime.get(timeString).add(regimenEntry.getQuantity()));
-                } else {
-                    quantitiesPerTakeTime.put(timeString, regimenEntry.getQuantity());
-                }
-
-            }
-        }
-
-        return quantitiesPerTakeTime;
-
-    }
-
-    private static Map<String, BigDecimal> sumQuantitiesPerNonStandaloneTakeTime(Map<String, BigDecimal> quantitiesPerTakeTime) {
-
-        Map<String, BigDecimal> quantitiesPerStandaloneTakeTime = new HashMap<>();
-
-        for (Map.Entry<String, BigDecimal> entry : quantitiesPerTakeTime.entrySet()) {
-            if (!takeTimeManager.isStandaloneTakeTime(entry.getKey())) {
-                quantitiesPerStandaloneTakeTime.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        return quantitiesPerStandaloneTakeTime;
-
-    }
-
-
-    private static String concatenateTakeMoments(Map<Dayperiod, BigDecimal> sumQuantitiesPerNonStandaloneDayperiod, Map<String, BigDecimal> sumQuantitiesPerNonStandaloneTakeTime) {
-
-        ArrayList<String> takemoments = new ArrayList<>();
-
-        for (Map.Entry<Dayperiod, BigDecimal> dayperiodBigDecimalEntry : sumQuantitiesPerNonStandaloneDayperiod.entrySet()) {
-            takemoments.add(translateQuantity(dayperiodBigDecimalEntry.getValue()) + " " + translateDayperiod(dayperiodBigDecimalEntry.getKey()));
-        }
-
-        for (Map.Entry<String, BigDecimal> takeTimeBigDecimalEntry : sumQuantitiesPerNonStandaloneTakeTime.entrySet()) {
-            takemoments.add(translateQuantity(takeTimeBigDecimalEntry.getValue()) + " om " + takeTimeBigDecimalEntry.getKey());
-        }
-
-        Collections.sort(takemoments, NumberAwareStringComparator.INSTANCE);
-
-        return StringUtils.joinWith(System.lineSeparator() + System.lineSeparator(), takemoments.toArray());
-
-    }
-
-
-
-    /**
-     * Create a medication subrow for intake columns (based on dayperiod and daytime)
-     * @param similarEntries
-     */
-    private static void createMedicationSubRowsPart3(PdfPTable table, List<RegimenEntry> similarEntries) {
-
-        PdfPCell cell;
-
-        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod = sumQuantitiesPerDayperiod(similarEntries);
-        Map<String, BigDecimal> sumQuantitiesPerTakeTime = sumQuantitiesPerTakeTime(similarEntries);
-
-        Map<Dayperiod, BigDecimal> sumQuantitiesPerNonStandaloneDayperiod = sumQuantitiesPerNonStandaloneDayperiod(quantitiesPerDayperiod);
-        Map<String, BigDecimal> sumQuantitiesPerNonStandaloneTakeTime = sumQuantitiesPerNonStandaloneTakeTime(sumQuantitiesPerTakeTime);
-
-        // Standalone dayperiod columns
-        for (Dayperiod currentDayperiod : dayperiodTakeManager.getAllPossibleStandaloneDayperiods()) {
-            cell = prepareQuantityCell(quantitiesPerDayperiod.get(currentDayperiod));
-            cell.setColspan(2);
-            table.addCell(cell);
-        }
-
-        // non standalone dayperiod or time, grouped in once cell
-        if (!sumQuantitiesPerNonStandaloneDayperiod.isEmpty() || !sumQuantitiesPerNonStandaloneTakeTime.isEmpty()) {
-
-            cell = getQuantityWithValueCell();
-            cell.setPhrase(getQuantityPhrase(concatenateTakeMoments(sumQuantitiesPerNonStandaloneDayperiod, sumQuantitiesPerTakeTime)));
-            cell.setColspan(6);
-            table.addCell(cell);
-
-        // standalone take times
-        } else {
-
-            Set<String> standaloneTakeTimes = takeTimeManager.getStandaloneTakeTimes();
-            for (String takeTimeHeader : standaloneTakeTimes) {
-
-                if (sumQuantitiesPerTakeTime.containsKey(takeTimeHeader)) {
-                    cell = getQuantityWithValueCell();
-                    cell.setPhrase(getQuantityPhrase(translateQuantity(sumQuantitiesPerTakeTime.get(takeTimeHeader))));
-                    cell.setColspan(2);
-                    table.addCell(cell);
-                } else {
-                    cell = getCenteredCell();
-                    cell.setPhrase(getDefaultPhrase(""));
-                    cell.setColspan(2);
-                    table.addCell(cell);
-
-                }
-
-            }
-            if (standaloneTakeTimes.size() < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES) {
-                for (int columnNumber = standaloneTakeTimes.size(); columnNumber < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES; columnNumber++) {
-                    cell = getCenteredCell();
-                    cell.setPhrase(getQuantityPhrase(""));
-                    cell.setColspan(2);
-                    table.addCell(cell);
-                }
-            }
-
-        }
-
-    }
-
     private static String combineStartDateAndCondition(LocalDate date, String condition) {
-
         return joinFields(formatAsDate(date), condition);
-
     }
 
-    private static String combineEndDateAndConditionAndDuration(LocalDate date, String condition, Duration duration, LocalDate startDate) {
-
+    private static String combineEndDateAndConditionAndDuration(LocalDate date, String condition, Duration duration, LocalDate beginDate) {
         if (duration == null) {
             return combineStartDateAndCondition(date, condition);
         }
 
-        String durationString = durationToString(duration, startDate);
+        String durationString = durationToString(duration, beginDate);
 
         return joinFields(durationString, combineStartDateAndCondition(date, condition));
-
     }
 
     @Override

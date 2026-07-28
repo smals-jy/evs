@@ -14,7 +14,7 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTEMPORALITYvalues;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDHCPARTY;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDHCPARTYschemes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
-import com.itextpdf.text.Chunk;
+import com.itextpdf.layout.element.Text;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -125,48 +125,47 @@ public class Translator {
 
     }
 
-    protected static List<Chunk> toLocalIdChunks(LocalId localId) {
+    protected static List<Text> toLocalIdChunks(LocalId localId) {
 
-        List<Chunk> uriChunks = new ArrayList<>();
+        List<Text> uriChunks = new ArrayList<>();
 
         if (localId == null) {
             return uriChunks;
         }
 
         if (localId instanceof GenericLocalId) {
-            uriChunks.add(new Chunk(String.valueOf(localId.getValue()), getMedicationUriFont()));
+            uriChunks.add(new Text(String.valueOf(localId.getValue())).setFont(getMedicationUriFont()));
         } else if (localId instanceof URI) {
             URI uri = (URI) localId;
-            uriChunks.add(new Chunk(String.valueOf(uri.getTransactionId()), getMedicationUriFont()));
-            uriChunks.add(new Chunk(" / ", getMedicationUriFont()));
-            uriChunks.add(new Chunk(String.valueOf(uri.getTransactionVersion()), getMedicationUriFont()));
+            uriChunks.add(new Text(String.valueOf(uri.getTransactionId())).setFont(getMedicationUriFont()));
+            uriChunks.add(new Text(" / ").setFont(getMedicationUriFont()));
+            uriChunks.add(new Text(String.valueOf(uri.getTransactionVersion())).setFont(getMedicationUriFont()));
         }
 
         return uriChunks;
 
     }
 
-    protected static List<Chunk> toCommentHeaderAndValueChunk(String header, String value) {
+    protected static List<Text> toCommentHeaderAndValueChunk(String header, String value) {
 
-        List<Chunk> uriChunks = new ArrayList<>();
+        List<Text> uriChunks = new ArrayList<>();
 
         if (value == null) {
             return uriChunks;
         }
 
-        Chunk headerChunk = new Chunk(header, getCommentTitleUnderlineFont());
+        Text headerChunk = new Text(header).setFont(getCommentTitleUnderlineFont());
         uriChunks.add(headerChunk);
-        Chunk valueChunk = new Chunk(" " + value, getTableDefaultFont());
+        Text valueChunk = new Text(" " + value).setFont(getTableDefaultFont());
         uriChunks.add(valueChunk);
 
         return uriChunks;
 
     }
 
+    protected static List<Text> toHCPartyChunks(List<HcpartyType> hcpartyTypes) {
 
-    protected static List<Chunk> toHCPartyChunks(List<HcpartyType> hcpartyTypes) {
-
-        List<Chunk> hcPartyChunks = new ArrayList<>();
+        List<Text> hcPartyChunks = new ArrayList<>();
 
         if (hcpartyTypes == null) {
             return hcPartyChunks;
@@ -174,27 +173,27 @@ public class Translator {
 
         for (HcpartyType hcpartyType : hcpartyTypes) {
 
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuilder = new StringBuilder();
 
-            hcPartyChunks.add(new Chunk(System.lineSeparator(), MSTableFormatter.getMedicationAuthorFont()));
+            hcPartyChunks.add(new Text(System.lineSeparator()).setFont(MSTableFormatter.getMedicationAuthorFont()));
 
             String authorName = StringUtils.joinWith(" ", hcpartyType.getFirstname(), hcpartyType.getFamilyname(), hcpartyType.getName());
-            hcPartyChunks.add(new Chunk(authorName, MSTableFormatter.getMedicationAuthorBoldFont()));
-            hcPartyChunks.add(new Chunk(System.lineSeparator(), MSTableFormatter.getMedicationAuthorFont()));
+            hcPartyChunks.add(new Text(authorName).setFont(MSTableFormatter.getMedicationAuthorBoldFont()));
+            hcPartyChunks.add(new Text(System.lineSeparator()).setFont(MSTableFormatter.getMedicationAuthorFont()));
 
-            String hcPartyDescriptions = stringBuffer.append(StringUtils.joinWith(",", getHCPartyDescriptions(hcpartyType).toArray())).toString();
-            hcPartyChunks.add(new Chunk(hcPartyDescriptions, MSTableFormatter.getMedicationAuthorFont()));
+            String hcPartyDescriptions = stringBuilder.append(StringUtils.joinWith(",", getHCPartyDescriptions(hcpartyType).toArray())).toString();
+            hcPartyChunks.add(new Text(hcPartyDescriptions).setFont(MSTableFormatter.getMedicationAuthorFont()));
 
             List<String> hcPartyIds = getHCPartyIds(hcpartyType);
             if (CollectionsUtil.notEmptyOrNull(hcPartyIds)) {
-                stringBuffer = new StringBuffer();
-                stringBuffer.append(" (");
-                stringBuffer.append(StringUtils.joinWith(",", hcPartyIds.toArray()));
-                stringBuffer.append(")");
-                hcPartyChunks.add(new Chunk(stringBuffer.toString(), MSTableFormatter.getMedicationAuthorFont()));
+                stringBuilder = new StringBuilder();
+                stringBuilder.append(" (");
+                stringBuilder.append(StringUtils.joinWith(",", hcPartyIds.toArray()));
+                stringBuilder.append(")");
+                hcPartyChunks.add(new Text(stringBuilder.toString()).setFont(MSTableFormatter.getMedicationAuthorFont()));
             }
 
-            hcPartyChunks.add(new Chunk(System.lineSeparator(), MSTableFormatter.getMedicationAuthorFont()));
+            hcPartyChunks.add(new Text(System.lineSeparator()).setFont(MSTableFormatter.getMedicationAuthorFont()));
 
         }
 
@@ -561,6 +560,5 @@ public class Translator {
         RangeChecker rangeChecker = new RangeChecker();
         return StringUtils.joinWith(" ", duration.getValue().getMappedOrThrow(), conjugateTimeunit(duration.getUnit().getMappedOrThrow(), duration.getValue().getMappedOrThrow()), "[" + formatAsDate(rangeChecker.calculateEndDateForDuration(startDate, duration)) + "]");
     }
-
 
 }

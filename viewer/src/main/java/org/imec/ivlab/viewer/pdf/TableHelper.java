@@ -1,6 +1,6 @@
 package org.imec.ivlab.viewer.pdf;
 
-import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultPhrase;
+import static org.imec.ivlab.viewer.pdf.MSTableFormatter.getDefaultParagraph;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getCellWithoutBorder;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getSubtitleFont;
 import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getSubtitleHighlightFont;
@@ -10,17 +10,15 @@ import static org.imec.ivlab.viewer.pdf.SumehrTableFormatter.getUnparsedtitlePhr
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDate;
 import static org.imec.ivlab.viewer.pdf.Translator.formatAsDateTime;
 
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import java.io.IOException;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import java.math.BigDecimal;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,41 +27,50 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.imec.ivlab.core.model.internal.parser.ParsedItem;
 import org.imec.ivlab.core.util.CollectionsUtil;
 import org.imec.ivlab.core.util.StringUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 public class TableHelper {
 
-  public static List<PdfPTable> toUnparsedContentTables(List<? extends ParsedItem<?>> parsedItems, String topic) {
+  public static List<Table> toUnparsedContentTables(List<? extends ParsedItem<?>> parsedItems, String topic) {
 
     if (CollectionsUtil.emptyOrNull(parsedItems)) {
       return Collections.emptyList();
     }
 
-    List<PdfPTable> tables = new ArrayList<>();
+    List<Table> tables = new ArrayList<>();
 
-    PdfPTable titleTable = initializeUnparsedTable();
+    Table titleTable = initializeUnparsedTable();
 
-    PdfPCell unparsedTitleCell = getUnparsedTitleCell();
-    unparsedTitleCell.setPhrase(getUnparsedtitlePhrase(StringUtils.joinWith(" - ", topic, "Unparsed content")));
+    Cell unparsedTitleCell = getUnparsedTitleCell();
+    unparsedTitleCell.add(getUnparsedtitlePhrase(StringUtils.joinWith(" - ", topic, "Unparsed content")));
     titleTable.addCell(unparsedTitleCell);
 
     tables.add(titleTable);
 
-    PdfPTable contentTable = initializeUnparsedTable();
+    Table contentTable = initializeUnparsedTable();
 
     for (ParsedItem<?> parsedItem : parsedItems) {
       String unparsedAsString = parsedItem.getUnparsedAsString();
       if (unparsedAsString == null) {
         continue;
       }
-      PdfPCell contentCell = getUnparsedCell();
-      Phrase phrase = new Phrase();
-      phrase.setMultipliedLeading(1.1f);
-      phrase.addAll(Highlighter.syntaxHighlightXml(unparsedAsString));
-      contentCell.addElement(phrase);
+      Cell contentCell = getUnparsedCell();
+      Paragraph paragraph = new Paragraph();
+      paragraph.setMultipliedLeading(1.1f);
+      
+      List<Text> highlightedText = Highlighter.syntaxHighlightXml(unparsedAsString);
+      if (highlightedText != null) {
+        for (Text text : highlightedText) {
+          paragraph.add(text);
+        }
+      }
+      
+      contentCell.add(paragraph);
       contentTable.addCell(contentCell);
     }
 
-    if (contentTable.getRows().size() > 0) {
+    if (contentTable.getNumberOfRows() > 0) {
       tables.add(contentTable);
       return tables;
     } else {
@@ -71,54 +78,48 @@ public class TableHelper {
     }
   }
 
+  public static Table combineTables(Table titleTable, Table contentTable, List<Table> unparsedContentTables) {
 
-  public static PdfPTable combineTables(PdfPTable titleTable, PdfPTable contentTable, List<PdfPTable> unparsedContentTables) {
-
-    List<PdfPTable> contentTables = new ArrayList<>();
+    List<Table> contentTables = new ArrayList<>();
     contentTables.add(contentTable);
     return combineTables(titleTable, contentTables, unparsedContentTables);
 
   }
 
-  public static PdfPTable combineTables(PdfPTable titleTable, Collection<PdfPTable> tablesForDualColumn, Collection<PdfPTable> tablesForSingleColumn) {
+  public static Table combineTables(Table titleTable, Collection<Table> tablesForDualColumn, Collection<Table> tablesForSingleColumn) {
 
-    PdfPTable table = new PdfPTable(2);
-
+    Table table = new Table(UnitValue.createPercentArray(2));
+    table.useAllAvailableWidth();
     table.setKeepTogether(true);
-    table.setSpacingAfter(10f);
+    table.setMarginBottom(10f);
 
     if (titleTable != null) {
-      PdfPCell titleCell = getCellWithoutBorder();
-      titleCell.setColspan(2);
-      titleCell.addElement(titleTable);
+      Cell titleCell = getCellWithoutBorder(1, 2);
+      titleCell.add(titleTable);
       table.addCell(titleCell);
     }
 
     if (CollectionsUtil.notEmptyOrNull(tablesForDualColumn)) {
 
-      for (PdfPTable contentTable : tablesForDualColumn) {
-        PdfPCell contentCell = getCellWithoutBorder();
-        contentCell.setColspan(1);
-        contentCell.addElement(contentTable);
+      for (Table contentTable : tablesForDualColumn) {
+        Cell contentCell = getCellWithoutBorder(1, 1);
+        contentCell.add(contentTable);
         table.addCell(contentCell);
       }
 
       if (CollectionsUtil.size(tablesForDualColumn) % 2 == 1) {
-        PdfPCell spacerCell = getCellWithoutBorder();
-        spacerCell.setColspan(1);
-        spacerCell.addElement(getDefaultPhrase(""));
+        Cell spacerCell = getCellWithoutBorder(1, 1);
+        spacerCell.add(getDefaultParagraph(""));
         table.addCell(spacerCell);
       }
-
 
     }
 
     if (CollectionsUtil.notEmptyOrNull(tablesForSingleColumn)) {
 
-      for (PdfPTable contentTable : tablesForSingleColumn) {
-        PdfPCell contentCell = getCellWithoutBorder();
-        contentCell.setColspan(2);
-        contentCell.addElement(contentTable);
+      for (Table contentTable : tablesForSingleColumn) {
+        Cell contentCell = getCellWithoutBorder(1, 2);
+        contentCell.add(contentTable);
         table.addCell(contentCell);
       }
 
@@ -128,49 +129,45 @@ public class TableHelper {
 
   }
 
-  public static PdfPTable initializeUnparsedTable() {
-    PdfPTable table = new PdfPTable(1);
-    table.setWidthPercentage(100);
-    table.setHeaderRows(0);
-    table.setHorizontalAlignment(Element.ALIGN_CENTER);
+  public static Table initializeUnparsedTable() {
+    Table table = new Table(UnitValue.createPercentArray(1));
+    table.useAllAvailableWidth();
+    table.setHorizontalAlignment(HorizontalAlignment.CENTER);
     return table;
   }
 
-  public static PdfPTable createTitleTable(String title) {
+  public static Table createTitleTable(String title) {
 
-    PdfPTable table = initializeTitleTable();
+    Table table = initializeTitleTable();
 
-    PdfPCell cell = SumehrTableFormatter.getMaintitleCell();
-    cell.setPhrase(SumehrTableFormatter.getMaintitlePhrase(title));
-    cell.setColspan(100);
+    Cell cell = SumehrTableFormatter.getMaintitleCell(1, 100);
+    cell.add(SumehrTableFormatter.getMaintitlePhrase(title));
     table.addCell(cell);
 
     return table;
   }
 
-  public static PdfPTable initializeDetailTable() {
-    PdfPTable table = new PdfPTable(100);
-    table.setWidthPercentage(100);
-    table.setHeaderRows(0);
+  public static Table initializeDetailTable() {
+    Table table = new Table(UnitValue.createPercentArray(100));
+    table.useAllAvailableWidth();
     return table;
   }
 
-  public static PdfPTable initializeTitleTable() {
-    PdfPTable table = new PdfPTable(100);
-    table.setWidthPercentage(100);
-    table.setHeaderRows(0);
-    table.setHorizontalAlignment(Element.ALIGN_CENTER);
+  public static Table initializeTitleTable() {
+    Table table = new Table(UnitValue.createPercentArray(100));
+    table.useAllAvailableWidth();
+    table.setHorizontalAlignment(HorizontalAlignment.CENTER);
     return table;
   }
 
-  public static List<PdfPCell> toDetailRowsIfHasValue(List<Pair<String, String>> columns) {
+  public static List<Cell> toDetailRowsIfHasValue(List<Pair<String, String>> columns) {
     if (columns == null) {
       return null;
     }
 
-    List<PdfPCell> cells = new ArrayList<>();
+    List<Cell> cells = new ArrayList<>();
     for (Pair<String, String> column : columns) {
-      List<PdfPCell> cellsForRow = toDetailRowIfHasValue(column.getLeft(), column.getRight());
+      List<Cell> cellsForRow = toDetailRowIfHasValue(column.getLeft(), column.getRight());
       if (cellsForRow != null) {
         cells.addAll(cellsForRow);
       }
@@ -179,7 +176,7 @@ public class TableHelper {
     return cells;
   }
 
-  public static List<PdfPCell> toDetailRowIfHasValue(String key, Object value) {
+  public static List<Cell> toDetailRowIfHasValue(String key, Object value) {
     if (value == null) {
       return null;
     }
@@ -194,11 +191,11 @@ public class TableHelper {
     } else if (value instanceof LocalDateTime) {
       valueString = formatAsDateTime((LocalDateTime) value);
     } else if (value instanceof Integer) {
-      valueString = String.valueOf( value);
+      valueString = String.valueOf(value);
     } else if (value instanceof BigDecimal) {
       valueString = value.toString();
     } else if (value instanceof Boolean) {
-      valueString = ((Boolean) value) != null ? ((Boolean) value).toString() : null;
+      valueString = value.toString();
     } else {
       valueString = (String) value;
     }
@@ -211,92 +208,87 @@ public class TableHelper {
 
   }
 
-  public static void addRow(PdfPTable table, List<PdfPCell> cells) {
+  public static void addRow(Table table, List<Cell> cells) {
     if (CollectionsUtil.notEmptyOrNull(cells)) {
-      for (PdfPCell cell : cells) {
+      for (Cell cell : cells) {
         table.addCell(cell);
       }
     }
   }
 
-  public static List<PdfPCell> createDetailHeader(String titlePartHighlight, String titlePartNormal) {
+  public static List<Cell> createDetailHeader(String titlePartHighlight, String titlePartNormal) {
 
-    List<Chunk> titleChunks = new ArrayList<>();
+    List<Text> titleChunks = new ArrayList<>();
 
     if (org.apache.commons.lang3.StringUtils.isNotEmpty(titlePartHighlight)) {
-      titleChunks.add(new Chunk(titlePartHighlight, getSubtitleHighlightFont()));
+      titleChunks.add(new Text(titlePartHighlight).addStyle(getSubtitleHighlightFont()));
     }
 
     if (org.apache.commons.lang3.StringUtils.isNotEmpty(titlePartNormal)) {
-      titleChunks.add(new Chunk(titlePartNormal, getSubtitleFont()));
+      titleChunks.add(new Text(titlePartNormal).addStyle(getSubtitleFont()));
     }
 
     if (CollectionsUtil.emptyOrNull(titleChunks)) {
-      titleChunks.add(new Chunk(" ", getSubtitleFont()));
+      titleChunks.add(new Text(" ").addStyle(getSubtitleFont()));
     }
 
-    List<PdfPCell> cells = new ArrayList<>();
-    PdfPCell cell = SumehrTableFormatter.getSubtitleCell();
-    Phrase phrase = new Phrase();
-    phrase.addAll(titleChunks);
-    cell.setPhrase(phrase);
-    cell.setColspan(100);
+    List<Cell> cells = new ArrayList<>();
+    Cell cell = SumehrTableFormatter.getSubtitleCell(1, 100);
+    Paragraph paragraph = new Paragraph();
+    for (Text text : titleChunks) {
+      paragraph.add(text);
+    }
+    cell.add(paragraph);
     cells.add(cell);
     return cells;
   }
 
-  public static List<PdfPCell> createDetailHeader(String titlePartNormal) {
+  public static List<Cell> createDetailHeader(String titlePartNormal) {
     return createDetailHeader(null, titlePartNormal);
   }
 
-  public static List<PdfPCell> createDetailRow(String key, String value) {
-    List<PdfPCell> cells = new ArrayList<>();
-    PdfPCell cell = SumehrTableFormatter.getKeyCell();
-    cell.setPhrase(getDefaultPhrase(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+  public static List<Cell> createDetailRow(String key, String value) {
+    List<Cell> cells = new ArrayList<>();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
-    cell.setPhrase(getDefaultPhrase(StringUtils.nullToString(value)));
-    cell.setColspan(70);
+    cell = SumehrTableFormatter.getValueCell(1, 70);
+    cell.add(getDefaultParagraph(StringUtils.nullToString(value)));
     cells.add(cell);
     return cells;
   }
 
-  public static List<PdfPCell> createDetailRow(String key, Phrase valuePhrase) {
-    List<PdfPCell> cells = new ArrayList<>();
-    PdfPCell cell = SumehrTableFormatter.getKeyCell();
-    cell.setPhrase(getDefaultPhrase(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+  public static List<Cell> createDetailRow(String key, Paragraph valuePhrase) {
+    List<Cell> cells = new ArrayList<>();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
-    cell.setPhrase(valuePhrase);
-    cell.setColspan(70);
+    cell = SumehrTableFormatter.getValueCell(1, 70);
+    cell.add(valuePhrase);
     cells.add(cell);
     return cells;
   }
 
-  public static List<PdfPCell> createDetailRow(String content) {
-    List<PdfPCell> cells = new ArrayList<>();
-    PdfPCell cell = SumehrTableFormatter.getValueCell();
-    cell.setPhrase(getDefaultPhrase(StringUtils.nullToString(content)));
-    cell.setColspan(100);
+  public static List<Cell> createDetailRow(String content) {
+    List<Cell> cells = new ArrayList<>();
+    Cell cell = SumehrTableFormatter.getValueCell(1, 100);
+    cell.add(getDefaultParagraph(StringUtils.nullToString(content)));
     cells.add(cell);
     return cells;
   }
 
-  public static List<PdfPCell> createDetailRow(String key, byte[] value) {
-    List<PdfPCell> cells = new ArrayList<>();
-    PdfPCell cell = SumehrTableFormatter.getKeyCell();
-    cell.setPhrase(getDefaultPhrase(StringUtils.nullToString(key)));
-    cell.setColspan(30);
+  public static List<Cell> createDetailRow(String key, byte[] value) {
+    List<Cell> cells = new ArrayList<>();
+    Cell cell = SumehrTableFormatter.getKeyCell(1, 30);
+    cell.add(getDefaultParagraph(StringUtils.nullToString(key)));
     cells.add(cell);
-    cell = SumehrTableFormatter.getValueCell();
+    cell = SumehrTableFormatter.getValueCell(1, 70);
     try {
-      cell.setImage(Image.getInstance(value));
-    } catch (BadElementException | IOException e) {
-      cell.setPhrase(getDefaultPhrase("Failed to render image"));
+      Image img = new Image(ImageDataFactory.create(value));
+      cell.add(img);
+    } catch (Exception e) {
+      cell.add(getDefaultParagraph("Failed to render image"));
     }
-    cell.setColspan(70);
     cells.add(cell);
     return cells;
   }

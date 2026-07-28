@@ -1,21 +1,22 @@
 package org.imec.ivlab.viewer.pdf;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import com.itextpdf.layout.Canvas;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.core.version.LocalVersionReader;
@@ -23,55 +24,66 @@ import org.imec.ivlab.viewer.converter.exceptions.SchemaConversionException;
 
 public class PdfHelper {
 
-  private final static Logger LOG = LogManager.getLogger(Writer.class);
+    private final static Logger LOG = LogManager.getLogger(PdfHelper.class);
 
+    public static void writeToDocument(String fileLocation, Table generalInfoTable, List<Table> detailTables) throws SchemaConversionException {
+        try {
+            File tempPdfFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
+            tempPdfFile.deleteOnExit();
 
-  public static void writeToDocument(String fileLocation, PdfPTable generalInfoTable, List<PdfPTable> detailTables) throws SchemaConversionException {
-    try {
-      File tempPdfFile = File.createTempFile(UUID.randomUUID().toString(), "pdf");
+            // Create PdfWriter and PdfDocument with try-with-resources
+            try (PdfWriter writer = new PdfWriter(tempPdfFile.getAbsolutePath());
+                 PdfDocument pdfDoc = new PdfDocument(writer);
+                 Document document = new Document(pdfDoc, PageSize.A4.rotate(), false)) {
 
-      tempPdfFile.deleteOnExit();
+                // Set default page size to landscape A4
+                pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
 
-      // step 1
-      Document document = new Document(PageSize.A4.rotate(), 0, 0, 25, 30);
-      // step 2
-      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tempPdfFile.getAbsolutePath()));
+                // Set custom margins (Top=25, Right=0, Bottom=30, Left=0)
+                document.setMargins(25, 0, 30, 0);
 
-      // step 3
-      document.open();
-      // step 4
-      document.add(generalInfoTable);
-      for (PdfPTable pdfPTable : detailTables) {
-        document.add(pdfPTable);
-      }
+                // Add table elements
+                document.add(generalInfoTable);
+                for (Table table : detailTables) {
+                    document.add(table);
+                }
 
-      // step 5
-      document.close();
-      writer.close();
+                // Resources are automatically closed here
+            }
 
+            // Stamp/manipulate the temporary PDF to the final destination path
+            manipulatePdf(tempPdfFile.getAbsolutePath(), fileLocation);
 
-      manipulatePdf(tempPdfFile.getAbsolutePath(), fileLocation);
+            LOG.debug("Wrote pdf to: " + fileLocation);
 
-      LOG.debug("Wrote pdf to: " + fileLocation);
-
-    } catch (Throwable t) {
-      throw new SchemaConversionException("Failed to create pdf", t);
+        } catch (Throwable t) {
+            throw new SchemaConversionException("Failed to create pdf", t);
+        }
     }
-  }
 
-  private static void manipulatePdf(String src, String dest) throws IOException, DocumentException {
-    PdfReader reader = new PdfReader(src);
-    int n = reader.getNumberOfPages();
-    PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
-    PdfContentByte pagecontent;
-    for (int i = 0; i < n; ) {
-      pagecontent = stamper.getOverContent(++i);
-      ColumnText.showTextAligned(pagecontent, Element.ALIGN_LEFT, new Phrase("IMEC TESTVERSIE - " + LocalVersionReader.getInstalledSoftwareAndVersion()), 20, 13, 0);
-      ColumnText.showTextAligned(pagecontent, Element.ALIGN_RIGHT,
-          new Phrase(String.format("Pagina %s van %s", i, n)), 820, 13, 0);
+    private static void manipulatePdf(String src, String dest) throws IOException {
+        // In iText 9, simultaneous reading and writing replaces PdfStamper
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(src), new PdfWriter(dest))) {
+            int numberOfPages = pdfDoc.getNumberOfPages();
+
+            for (int i = 1; i <= numberOfPages; i++) {
+                PdfPage page = pdfDoc.getPage(i);
+                
+                // Use PdfCanvas to draw on top of the existing page content
+                PdfCanvas pdfCanvas = new PdfCanvas(page);
+                
+                // High-level Canvas API to easily render formatted text
+                try (Canvas canvas = new Canvas(pdfCanvas, page.getPageSize())) {
+                    
+                    // Left-aligned footer text
+                    String leftText = "IMEC TESTVERSIE - " + LocalVersionReader.getInstalledSoftwareAndVersion();
+                    canvas.showTextAligned(new Paragraph(leftText), 20, 13, i, TextAlignment.LEFT, null, 0);
+
+                    // Right-aligned footer text
+                    String rightText = String.format("Pagina %d van %d", i, numberOfPages);
+                    canvas.showTextAligned(new Paragraph(rightText), 820, 13, i, TextAlignment.RIGHT, null, 0);
+                }
+            }
+        }
     }
-    stamper.close();
-    reader.close();
-  }
-
 }

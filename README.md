@@ -34,6 +34,6 @@ No formal support, warranty, or guarantee of future maintenance is provided. Use
 ## Terms & Conditions
 The EVS source code is licensed as open source software under the terms of the GNU Affero General Public License v3 ([AGPLv3](https://www.gnu.org/licenses/agpl-3.0.txt)).
 
-The EVS PDF Viewer components relies on, the equally AGPLv3-licensed, iText library (v5.x) by [iText Group nv](https://itextpdf.com/en). The iText library is not distributed from this repository. Instead, in order to compile and run the EVS PDF Viewer, a copy of the iText binaries needs to be present on your machine (easily fetched for you by the Maven build tool).
+The EVS PDF Viewer components relies on, the equally AGPLv3-licensed, [iText library](https://github.com/itext/itext-java) (v9.x) by [iText Group nv](https://itextpdf.com/en). The iText library is not distributed from this repository. Instead, in order to compile and run the EVS PDF Viewer, a copy of the iText binaries needs to be present on your machine (easily fetched for you by the Maven build tool).
 
 If you do not agree with the terms & conditions of AGPLv3 do not use this software.
