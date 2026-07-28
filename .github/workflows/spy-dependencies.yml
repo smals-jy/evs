@@ -34,7 +34,7 @@ jobs:
           cd builder && ./release.sh        
       - name: List dependancies 
         run: |
-          mvn dependency:tree --file builder/pom.xml
+          mvn dependency:tree --file builder/pom.xml --batch-mode
       - name: Find duplicated dependancies
         run: |  
-          mvn dependency:analyze-duplicate --file builder/pom.xml   
+          cd builder && mvn dependency:analyze-duplicate --batch-mode
