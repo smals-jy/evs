@@ -25,6 +25,9 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - name: ✨ Fix permissions
+        run: |
+          chmod u+x builder/release.sh    
       - name: 🔨 Build project with Maven
         shell: bash
         run: |
