@@ -25,10 +25,10 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Install dependancies
+      - name: 🔨 Build project with Maven
+        shell: bash
         run: |
-          cd builder   
-          mvn clean install -DskipTests          
+          cd builder && ./release.sh        
       - name: List dependancies 
         run: |
           mvn dependency:tree --file builder/pom.xml
