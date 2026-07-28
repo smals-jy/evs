@@ -37,4 +37,4 @@ jobs:
           mvn dependency:tree --file builder/pom.xml --batch-mode
       - name: Find duplicated dependancies
         run: |  
-          cd builder && mvn dependency:analyze-duplicate --batch-mode
+          mvn dependency:analyze-duplicate --file builder/pom.xml --batch-mode
