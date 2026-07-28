@@ -1,7 +1,7 @@
 package org.imec.ivlab.validator.validators.business;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
