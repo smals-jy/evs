@@ -4,7 +4,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.AdministrationquantityType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.WeekdayType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Regimen;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Daytime;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.imec.ivlab.core.kmehr.model.RegimenEntry;
 import org.imec.ivlab.core.util.ArrayUtil;
