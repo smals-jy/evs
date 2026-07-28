@@ -3,7 +3,7 @@ package org.imec.ivlab.core.kmehr.model.util;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENT;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDCONTENTschemes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ContentType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.exceptions.MultipleEntitiesFoundException;
 
