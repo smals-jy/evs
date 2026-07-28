@@ -167,7 +167,7 @@ public class BusinessValidator {
         try {
             return kmehrMessageRule.performValidation(kmehrmessage);
         } catch (Throwable t) {
-            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getFullStackTrace(t).replace(System.lineSeparator(), " "));
+            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getStackTrace(t).replace(System.lineSeparator(), " "));
         }
     }
 
@@ -175,7 +175,7 @@ public class BusinessValidator {
         try {
             return kmehrMessageStringRule.performValidation(kmehrMessageString);
         } catch (Throwable t) {
-            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getFullStackTrace(t).replace(System.lineSeparator(), " "));
+            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getStackTrace(t).replace(System.lineSeparator(), " "));
         }
     }
 
@@ -183,7 +183,7 @@ public class BusinessValidator {
         try {
             return msEntryRule.performValidation(msEntry);
         } catch (Throwable t) {
-            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getFullStackTrace(t).replace(System.lineSeparator(), " "));
+            return new RuleExecution(ExecutionStatus.INTERRUPTED, ExceptionUtils.getStackTrace(t).replace(System.lineSeparator(), " "));
         }
     }
 
