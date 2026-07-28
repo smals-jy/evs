@@ -1,4 +1,4 @@
-name: Spy BouncyCastle
+name: Spy Dependencies
 
 on:
   push:
@@ -8,6 +8,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      search_term:
+        description: 'Maven group or keyword to search'
+        required: false
+        default: 'org.bouncycastle'
+        type: string
 
 permissions:
   contents: read
@@ -27,25 +33,29 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: 👀 Analyse BouncyCastle dependencies
+      - name: 👀 Analyze dependencies
         id: spy_step
+        env:
+          # Get input from manual dispatch, fallback to 'org.bouncycastle'
+          SEARCH_TERM: ${{ inputs.search_term || 'org.bouncycastle' }}
         shell: bash
         run: |
           set -euo pipefail
 
           REACTOR_POM="${GITHUB_WORKSPACE}/builder/pom.xml"
           FULL_REPORT="${GITHUB_WORKSPACE}/full-dependency-tree.txt"
-          BOUNCYCASTLE_REPORT="${GITHUB_WORKSPACE}/bouncycastle-dependency-tree.txt"
+          FILTERED_REPORT="${GITHUB_WORKSPACE}/filtered-dependency-tree.txt"
 
           {
             echo "full_report=${FULL_REPORT}"
-            echo "bouncycastle_report=${BOUNCYCASTLE_REPORT}"
+            echo "filtered_report=${FILTERED_REPORT}"
           } >> "$GITHUB_OUTPUT"
 
           : > "$FULL_REPORT"
-          : > "$BOUNCYCASTLE_REPORT"
+          : > "$FILTERED_REPORT"
 
           echo "================================================================================"
+          echo "Target search term: ${SEARCH_TERM}"
           echo "Installing internal reactor artifacts into the local Maven repository..."
           echo "================================================================================"
 
@@ -93,21 +103,24 @@ jobs:
               -DappendOutput=true
           done
 
-          # Filter the complete flat lists for BouncyCastle coordinates.
-          grep -E \
-            '(^|[[:space:]])org\.bouncycastle:[^[:space:]]+' \
-            "$FULL_REPORT" > "$BOUNCYCASTLE_REPORT" || true
+          if grep -i -F -- "$SEARCH_TERM" "$FULL_REPORT" > "$FILTERED_REPORT"; then
+            :
+          else
+            grep_status=$?
+            [[ "$grep_status" -eq 1 ]] || exit "$grep_status"
+          fi
 
           echo "================================================================================"
-          if [[ -s "$BOUNCYCASTLE_REPORT" ]]; then
-            echo "🕵️ BouncyCastle dependencies found:"
-            cat "$BOUNCYCASTLE_REPORT"  
-            echo "Full logs :"   
+          if [[ -s "$FILTERED_REPORT" ]]; then
+            echo "🕵️ Dependencies matching '${SEARCH_TERM}' found:"
+            cat "$FILTERED_REPORT"  
+            echo
+            echo "Full logs:"   
             cat "$FULL_REPORT"  
             echo
             echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
           else
-            echo "No resolved org.bouncycastle dependencies were found."
+            echo "No resolved dependencies matching '${SEARCH_TERM}' were found."
           fi
           echo "================================================================================"
 
@@ -116,7 +129,7 @@ jobs:
         with:
           name: EVS-dependency-tree
           path: |
-            ${{ steps.spy_step.outputs.bouncycastle_report }}
+            ${{ steps.spy_step.outputs.filtered_report }}
             ${{ steps.spy_step.outputs.full_report }}
           if-no-files-found: error
           retention-days: 1
