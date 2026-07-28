@@ -32,11 +32,8 @@ jobs:
       - name: List dependancies 
         shell: bash
         run: |
-          cd builder   
-          mvn dependency:tree
+          mvn dependency:tree --file builder/pom.xml
       - name: Find duplicated dependancies
         shell: bash
-        run: |
-          cd builder   
-          mvn dependency:analyze-duplicate  
-
+        run: |  
+          mvn dependency:analyze-duplicate --file builder/pom.xml   
