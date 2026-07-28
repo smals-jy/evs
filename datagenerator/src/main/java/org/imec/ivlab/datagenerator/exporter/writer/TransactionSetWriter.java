@@ -7,7 +7,6 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.NullArgumentException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,7 +61,7 @@ public class TransactionSetWriter extends AbstractWriter implements SetWriter<Ge
     public ExportResult<GetTransactionSetResponse> writePdf(Patient patient, byte[] pdfContent, File outputDirectory, String filename, String extension) {
 
         if (filename == null) {
-            throw new NullArgumentException("A filename for the pdf must be specified");
+            throw new IllegalArgumentException("A filename for the pdf must be specified");
         }
 
         if (StringUtils.isBlank(extension)) {
