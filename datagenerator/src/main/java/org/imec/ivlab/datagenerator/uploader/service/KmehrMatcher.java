@@ -44,7 +44,7 @@ public class KmehrMatcher {
         }
 
         for (Identifiable identifiable : addList.getIdentifiables()) {
-            LOG.info("Entry " + identifiable.getReference().getFormatted() + " will be ADDED");
+            LOG.info("Entry " + getFormattedReference(identifiable) + " will be ADDED");
             Identifiable clone = SerializationUtils.clone(identifiable);
             newList.getIdentifiables().add(clone);
         }
@@ -63,7 +63,7 @@ public class KmehrMatcher {
 
         for (Identifiable identifiable : removeList.getIdentifiables()) {
             if (!removeFromListByEvsRef(newList, identifiable.getReference())) {
-                throw new NoMatchingEvsRefException("No EVSRef with reference " + identifiable.getReference().getFormatted()+ " found in vault");
+                throw new NoMatchingEvsRefException("No EVSRef with reference " + getFormattedReference(identifiable) + " found in vault");
             }
         }
 
@@ -90,7 +90,7 @@ public class KmehrMatcher {
             if (identifiable.getReference() != null) {
                 Identifiable correspondingIdentifiable = findIdentifiableByReference(vaultList, identifiable.getReference());
                 if (correspondingIdentifiable == null) {
-                    throw new NoMatchingEvsRefException("No EVSRef with reference " + identifiable.getReference().getFormatted()+ " found in vault");
+                    throw new NoMatchingEvsRefException("No EVSRef with reference " + getFormattedReference(identifiable) + " found in vault");
                 }
                 newList.getIdentifiables().add(correspondingIdentifiable);
             }
@@ -113,7 +113,7 @@ public class KmehrMatcher {
             if (identifiable.getReference() != null) {
                 Identifiable correspondingIdentifiable = findIdentifiableByReference(vaultList, identifiable.getReference());
                 if (correspondingIdentifiable == null) {
-                    throw new NoMatchingEvsRefException("No EVSRef with reference " + identifiable.getReference().getFormatted()+ " found in vault");
+                    throw new NoMatchingEvsRefException("No EVSRef with reference " + getFormattedReference(identifiable) + " found in vault");
                 }
 
                 Identifiable combinedIdentifiable = combineContentAndLocalIds(identifiable, correspondingIdentifiable);
@@ -140,7 +140,7 @@ public class KmehrMatcher {
             }
 
             if (Objects.equals(identifiable.getReference(), evsref)) {
-                LOG.info("Entry " + identifiable.getReference().getFormatted() + " will be REMOVED");
+                LOG.info("Entry " + getFormattedReference(identifiable) + " will be REMOVED");
                 iterator.remove();
                 removed = true;
             }
@@ -162,17 +162,18 @@ public class KmehrMatcher {
         for (MSEntry msEntryInVault : newList.getMsEntries().stream().filter(Objects::nonNull).collect(Collectors.toList())) {
             MSEntry msEntryLocalVersion = getEntryByReference(uploadList, msEntryInVault.getReference());
             // in vault and in upload list
+            String identifier = getFormattedReference(msEntryInVault);
             if (msEntryLocalVersion != null) {
                 // in vault and in upload list, check if the entry was modified locally
                 if (equal(msEntryLocalVersion, msEntryInVault)) {
-                    LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will not be updated");
+                    LOG.info("MS entry " + identifier + " will not be updated");
                 } else {
-                    LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will be UPDATED");
+                    LOG.info("MS entry " + identifier + " will be UPDATED");
 
                     applyVaultEntryPropertiesToLocalEntry(msEntryInVault, msEntryLocalVersion);
                 }
             } else {
-                    LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will not be updated");
+                    LOG.info("MS entry " + identifier + " will not be updated");
             }
         }
 
@@ -219,16 +220,16 @@ public class KmehrMatcher {
 
             // in vault but not in upload list
             if (msEntryLocalVersion == null) {
-                LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will be REMOVED");
+                LOG.info("MS entry " + getFormattedReference(msEntryInVault) + " will be REMOVED");
                 iterator.remove();
                 continue;
             }
 
             // in vault and in upload list, check if the entry was modified locally
             if (equal(msEntryLocalVersion, msEntryInVault)) {
-                LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will not be updated");
+                LOG.info("MS entry " + getFormattedReference(msEntryInVault) + " will not be updated");
             } else {
-                LOG.info("MS entry " + msEntryInVault.getReference().getFormatted() + " will be UPDATED");
+                LOG.info("MS entry " + getFormattedReference(msEntryInVault) + " will be UPDATED");
 
                 applyVaultEntryPropertiesToLocalEntry(msEntryInVault, msEntryLocalVersion);
 
@@ -246,7 +247,7 @@ public class KmehrMatcher {
                 if (msEntryLocalVersion.getReference() == null) {
                     LOG.info("an MS entry without EVSREF will be ADDED");
                 } else {
-                    LOG.info("MS entry " + msEntryLocalVersion.getReference().getFormatted() + " will be ADDED");
+                    LOG.info("MS entry " + getFormattedReference(msEntryLocalVersion) + " will be ADDED");
                 }
 
                 newList.getMsEntries().add(msEntryLocalVersion);
@@ -291,6 +292,9 @@ public class KmehrMatcher {
         }
 
         for (Identifiable identifiable : listOfIdentifiables.getIdentifiables()) {
+            if (identifiable == null) {
+                continue;
+            }
             if (Objects.equals(identifiable.getReference(), evsref)) {
                 return identifiable;
             }
@@ -437,5 +441,12 @@ public class KmehrMatcher {
         transactionType.setDate(null);
         transactionType.setTime(null);
         transactionType.setAuthor(null);
+    }
+
+    private static String getFormattedReference(Identifiable identifiable) {
+        if (identifiable != null && identifiable.getReference() != null) {
+            return identifiable.getReference().getFormatted();
+        }
+        return "UNKNOWN (no EVSREF)";
     }
 }
