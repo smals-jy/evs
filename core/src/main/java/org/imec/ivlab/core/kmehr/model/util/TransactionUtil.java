@@ -9,7 +9,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.HeadingType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TextWithLayoutType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.TransactionType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.util.CollectionsUtil;
