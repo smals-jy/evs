@@ -7,13 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      search_term:
-        description: 'Maven group or keyword to search'
-        required: false
-        default: 'org.bouncycastle'
-        type: string
 
 permissions:
   contents: read
@@ -32,125 +25,18 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - name: Install dependancies
+        run: |
+          cd builder   
+          mvn clean install -DskipTests          
       - name: List dependancies 
         shell: bash
         run: |
-          cd builder && mvn dependency:tree
+          cd builder   
+          mvn dependency:tree
       - name: Find duplicated dependancies
         shell: bash
         run: |
-          cd builder && mvn dependency:analyze-duplicate  
-  search_dependencies:
-    runs-on: ubuntu-latest
+          cd builder   
+          mvn dependency:analyze-duplicate  
 
-    steps:
-      - name: 📂 Checkout repository
-        uses: actions/checkout@v7
-
-      - name: ☕ Set up JDK 21
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "21"
-          cache: maven
-
-      - name: 👀 Analyze dependencies
-        id: spy_step
-        env:
-          # Get input from manual dispatch, fallback to 'org.bouncycastle'
-          SEARCH_TERM: ${{ inputs.search_term || 'org.bouncycastle' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          REACTOR_POM="${GITHUB_WORKSPACE}/builder/pom.xml"
-          FULL_REPORT="${GITHUB_WORKSPACE}/full-dependency-tree.txt"
-          FILTERED_REPORT="${GITHUB_WORKSPACE}/filtered-dependency-tree.txt"
-
-          {
-            echo "full_report=${FULL_REPORT}"
-            echo "filtered_report=${FILTERED_REPORT}"
-          } >> "$GITHUB_OUTPUT"
-
-          : > "$FULL_REPORT"
-          : > "$FILTERED_REPORT"
-
-          echo "================================================================================"
-          echo "Target search term: ${SEARCH_TERM}"
-          echo "Installing internal reactor artifacts into the local Maven repository..."
-          echo "================================================================================"
-
-          # `ehconnector`, `validator`, `viewer`, and `datagenerator` depend on
-          # sibling modules such as `core`. Installing them first prevents
-          # dependency resolution issues.
-          mvn --batch-mode --no-transfer-progress \
-            --file "$REACTOR_POM" \
-            --projects ':core,:ehconnector,:validator,:viewer,:datagenerator' \
-            --also-make \
-            install \
-            -Dmaven.test.skip=true \
-            -Dmdep.skip=true
-
-          echo "================================================================================"
-          echo "Generating complete dependency lists for every Maven module..."
-          echo "================================================================================"
-
-          POMS=(
-            "${GITHUB_WORKSPACE}/super/pom.xml"
-            "${GITHUB_WORKSPACE}/core/pom.xml"
-            "${GITHUB_WORKSPACE}/ehconnector/pom.xml"
-            "${GITHUB_WORKSPACE}/validator/pom.xml"
-            "${GITHUB_WORKSPACE}/viewer/pom.xml"
-            "${GITHUB_WORKSPACE}/datagenerator/pom.xml"
-            "${GITHUB_WORKSPACE}/distribution/pom.xml"
-          )
-
-          for pom in "${POMS[@]}"; do
-            module="$(basename "$(dirname "$pom")")"
-
-            {
-              echo
-              echo "################################################################################"
-              echo "# Module: ${module}"
-              echo "################################################################################"
-            } >> "$FULL_REPORT"
-
-            # Added -Dsort=true for cleaner alphabetical sorting.
-            mvn --batch-mode --no-transfer-progress \
-              --file "$pom" \
-              dependency:tree \
-              -Dsort=true \
-              -DoutputFile="$FULL_REPORT" \
-              -DappendOutput=true
-          done
-
-          if grep -i -F -- "$SEARCH_TERM" "$FULL_REPORT" > "$FILTERED_REPORT"; then
-            :
-          else
-            grep_status=$?
-            [[ "$grep_status" -eq 1 ]] || exit "$grep_status"
-          fi
-
-          echo "================================================================================"
-          if [[ -s "$FILTERED_REPORT" ]]; then
-            echo "🕵️ Dependencies matching '${SEARCH_TERM}' found:"
-            cat "$FILTERED_REPORT"  
-            echo
-            echo "Full logs:"   
-            cat "$FULL_REPORT"  
-            echo
-            echo "The complete resolved dependency lists are available in full-dependency-tree.txt."
-          else
-            echo "No resolved dependencies matching '${SEARCH_TERM}' were found."
-          fi
-          echo "================================================================================"
-
-      - name: 📁 Archive dependency trees
-        uses: actions/upload-artifact@v6
-        with:
-          name: EVS-dependency-tree
-          path: |
-            ${{ steps.spy_step.outputs.filtered_report }}
-            ${{ steps.spy_step.outputs.full_report }}
-          if-no-files-found: error
-          retention-days: 1
