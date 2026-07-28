@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -464,22 +465,34 @@ public class MSWriter extends Writer {
         return paragraph;
     }
 
-    private static void createMedicationRow(MedicationEntry medicationEntry, boolean isGlobalScheme) {
-        LOG.debug("Creating row for medication with instruction: " + medicationEntry.getInstructionForPatient());
+    private static void createMedicationRow(
+            MedicationEntry medicationEntry,
+            boolean isGlobalScheme) {
 
-        int suspensionsCount = 0;
-        int suspensionTable = 0;
-        if (medicationEntry.getSuspensions() != null) {
-            suspensionsCount = medicationEntry.getSuspensions().size();
-            if (suspensionsCount > 0) {
-                suspensionTable = 1;
-            }
-        }
+        LOG.debug("Creating row for medication with instruction: "
+                + medicationEntry.getInstructionForPatient());
 
-        boolean isObsolete = isGlobalScheme && rangeChecker.isObsolete(LocalDate.now(), medicationEntry);
+        /*
+         * Keep each medication entry in its own nested table, as in the iText 5
+         * implementation. This is required for the row spans of medication name,
+         * obsolete marker, and remarks to coexist with a suspension table.
+         */
+        Table parentTable = table;
+        Table medicationEntryTable = new Table(
+                UnitValue.createPercentArray(getNumberOfColumns(isGlobalScheme)));
+        medicationEntryTable.setWidth(UnitValue.createPercentValue(100));
+        table = medicationEntryTable;
+
+        int suspensionsCount = medicationEntry.getSuspensions() == null
+                ? 0
+                : medicationEntry.getSuspensions().size();
+        int suspensionTableRowCount = suspensionsCount > 0 ? 1 : 0;
+
+        boolean isObsolete = isGlobalScheme
+                && rangeChecker.isObsolete(LocalDate.now(), medicationEntry);
 
         if (medicationEntry.getPosologyOrRegimen() instanceof Posology) {
-            int rowspan = 1 + suspensionTable;
+            int rowspan = 1 + suspensionTableRowCount;
 
             if (isGlobalScheme) {
                 table.addCell(createObsoleteCell(isObsolete, rowspan));
@@ -487,143 +500,573 @@ public class MSWriter extends Writer {
 
             Posology posology = (Posology) medicationEntry.getPosologyOrRegimen();
 
-            Cell cell = getCenteredCell(rowspan, 4);
-            cell.add(getMedicationNameParagraph(medicationEntry));
-            table.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            addSimpleCell(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode()), 2, 1);
-            addSimpleCell(combineStartDateAndCondition(medicationEntry.getBeginDate(), medicationEntry.getBeginCondition()), 3, 1);
-            addSimpleCell(combineEndDateAndConditionAndDuration(medicationEntry.getEndDate(), medicationEntry.getEndCondition(), medicationEntry.getDuration(), medicationEntry.getBeginDate()), 3, 1);
+            addSimpleCell(
+                    translateFrequency(medicationEntry.getFrequencyCode())
+                            + translateRegimenRepetition(
+                            null,
+                            medicationEntry.getFrequencyCode()),
+                    2,
+                    1);
+            addSimpleCell(
+                    combineStartDateAndCondition(
+                            medicationEntry.getBeginDate(),
+                            medicationEntry.getBeginCondition()),
+                    3,
+                    1);
+            addSimpleCell(
+                    combineEndDateAndConditionAndDuration(
+                            medicationEntry.getEndDate(),
+                            medicationEntry.getEndCondition(),
+                            medicationEntry.getDuration(),
+                            medicationEntry.getBeginDate()),
+                    3,
+                    1);
             addSimpleCell(translateRoute(medicationEntry.getRoute()), 4, 1);
             addSimpleCell(posology.getText(), 28, 1);
 
-            Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-            cell = getCenteredCell(rowspan, 4);
-            cell.add(remarksParagraph);
-            table.addCell(cell);
+            Cell remarksCell = getCenteredCell(rowspan, 4);
+            remarksCell.add(getRemarksParagraph(medicationEntry));
+            table.addCell(remarksCell);
 
         } else if (medicationEntry.getPosologyOrRegimen() instanceof Regimen) {
-
             Regimen regimen = (Regimen) medicationEntry.getPosologyOrRegimen();
-            List<List<RegimenEntry>> groupedRegimenentries = groupByDayperiodOrTime(regimen.getEntries());
-            int rowspan = groupedRegimenentries.size() + suspensionTable;
+            List<List<RegimenEntry>> groupedRegimenEntries =
+                    groupByDayperiodOrTime(regimen.getEntries());
+
+            /*
+             * Preserve the legacy geometry. An empty regimen still needs one
+             * rendered row, otherwise a zero-row-span Cell would be created.
+             */
+            int regimenRowCount = Math.max(1, groupedRegimenEntries.size());
+            int rowspan = regimenRowCount + suspensionTableRowCount;
 
             if (isGlobalScheme) {
                 table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            Cell cell = getCenteredCell(rowspan, 4);
-            cell.add(getMedicationNameParagraph(medicationEntry));
-            table.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            if (CollectionsUtil.notEmptyOrNull(groupedRegimenentries)) {
+            if (CollectionsUtil.notEmptyOrNull(groupedRegimenEntries)) {
                 int regimenIndex = 0;
-                for (List<RegimenEntry> similarEntries : groupedRegimenentries) {
-                    createMedicationSubRowsPart1(medicationEntry.getFrequencyCode(), similarEntries.get(0));
-                    createMedicationSubRowsPart2(medicationEntry, regimen.getAdministrationUnit());
+
+                for (List<RegimenEntry> similarEntries : groupedRegimenEntries) {
+                    createMedicationSubRowsPart1(
+                            medicationEntry.getFrequencyCode(),
+                            similarEntries.get(0));
+                    createMedicationSubRowsPart2(
+                            medicationEntry,
+                            regimen.getAdministrationUnit());
                     createMedicationSubRowsPart3(similarEntries);
 
                     if (regimenIndex == 0) {
-                        Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
                         Cell remarksCell = getCenteredCell(rowspan, 4);
-                        remarksCell.add(remarksParagraph);
+                        remarksCell.add(getRemarksParagraph(medicationEntry));
                         table.addCell(remarksCell);
                     }
+
                     regimenIndex++;
                 }
             } else {
-                createMedicationSubRowsPart1(medicationEntry.getFrequencyCode(), null);
-                createMedicationSubRowsPart2(medicationEntry, regimen.getAdministrationUnit());
-                createMedicationSubRowsPart3(null);
+                createMedicationSubRowsPart1(
+                        medicationEntry.getFrequencyCode(),
+                        null);
+                createMedicationSubRowsPart2(
+                        medicationEntry,
+                        regimen.getAdministrationUnit());
+                createMedicationSubRowsPart3(Collections.emptyList());
 
-                Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
                 Cell remarksCell = getCenteredCell(rowspan, 4);
-                remarksCell.add(remarksParagraph);
+                remarksCell.add(getRemarksParagraph(medicationEntry));
                 table.addCell(remarksCell);
             }
 
         } else {
-            int rowspan = 1 + suspensionTable;
+            int rowspan = 1 + suspensionTableRowCount;
 
             if (isGlobalScheme) {
                 table.addCell(createObsoleteCell(isObsolete, rowspan));
             }
 
-            Cell cell = getCenteredCell(rowspan, 4);
-            cell.add(getMedicationNameParagraph(medicationEntry));
-            table.addCell(cell);
+            Cell medicationNameCell = getCenteredCell(rowspan, 4);
+            medicationNameCell.add(getMedicationNameParagraph(medicationEntry));
+            table.addCell(medicationNameCell);
 
-            addSimpleCell(translateFrequency(medicationEntry.getFrequencyCode()) + translateRegimenRepetition(null, medicationEntry.getFrequencyCode()), 2, 1);
-            addSimpleCell(combineStartDateAndCondition(medicationEntry.getBeginDate(), medicationEntry.getBeginCondition()), 3, 1);
-            addSimpleCell(combineEndDateAndConditionAndDuration(medicationEntry.getEndDate(), medicationEntry.getEndCondition(), medicationEntry.getDuration(), medicationEntry.getBeginDate()), 3, 1);
+            addSimpleCell(
+                    translateFrequency(medicationEntry.getFrequencyCode())
+                            + translateRegimenRepetition(
+                            null,
+                            medicationEntry.getFrequencyCode()),
+                    2,
+                    1);
+            addSimpleCell(
+                    combineStartDateAndCondition(
+                            medicationEntry.getBeginDate(),
+                            medicationEntry.getBeginCondition()),
+                    3,
+                    1);
+            addSimpleCell(
+                    combineEndDateAndConditionAndDuration(
+                            medicationEntry.getEndDate(),
+                            medicationEntry.getEndCondition(),
+                            medicationEntry.getDuration(),
+                            medicationEntry.getBeginDate()),
+                    3,
+                    1);
             addSimpleCell(translateRoute(medicationEntry.getRoute()), 4, 1);
             addSimpleCell("Geen posologie of regime gedefinieerd", 28, 1);
 
-            Paragraph remarksParagraph = getRemarksParagraph(medicationEntry);
-            cell = getCenteredCell(rowspan, 4);
-            cell.add(remarksParagraph);
-            table.addCell(cell);
+            Cell remarksCell = getCenteredCell(rowspan, 4);
+            remarksCell.add(getRemarksParagraph(medicationEntry));
+            table.addCell(remarksCell);
         }
 
         if (suspensionsCount > 0) {
-            for (Suspension suspension : medicationEntry.getSuspensions()) {
-                createSuspensionRow(suspension, isGlobalScheme);
-            }
+            /*
+             * Do not span the entire 48/49-column medication table.
+             *
+             * In the legacy layout this cell spans exactly 40 columns; the
+             * medication name + remarks (+ obsolete marker for global schemes)
+             * occupy the preceding row-spanning columns.
+             */
+            Cell suspensionContainer = new Cell(1, 40);
+            suspensionContainer.setBorder(Border.NO_BORDER);
+            suspensionContainer.setPadding(0f);
+            suspensionContainer.add(createSuspensionTable(
+                    medicationEntry.getSuspensions(),
+                    40,
+                    medicationEntry.getLocalId()));
+            table.addCell(suspensionContainer);
         }
+
+        table = parentTable;
+
+        /*
+         * Restore the legacy PdfPCell(medicationEntryTable) wrapper: one nested
+         * medication table occupies a complete row of the outer medication table.
+         */
+        Cell medicationEntryContainer = new Cell(
+                1,
+                getNumberOfColumns(isGlobalScheme));
+        medicationEntryContainer.setBorder(Border.NO_BORDER);
+        medicationEntryContainer.setPadding(0f);
+        medicationEntryContainer.add(medicationEntryTable);
+        table.addCell(medicationEntryContainer);
     }
 
-    private static void createSuspensionRow(Suspension suspension, boolean isGlobalScheme) {
-        Cell cell = getSuspensionHeaderCell(1, 40);
-        cell.add(getSuspensionHeaderParagraph("Onderbroken: " + formatAsDate(suspension.getBeginDate()) + " tot " + formatAsDate(suspension.getEndDate())));
-        table.addCell(cell);
+    private static Table createSuspensionTable(
+            List<Suspension> suspensions,
+            int tableColumnCount,
+            LocalId localId) {
+
+        if (CollectionsUtil.emptyOrNull(suspensions)) {
+            return null;
+        }
+
+        Table suspensionTable = new Table(
+                UnitValue.createPercentArray(tableColumnCount));
+        suspensionTable.setWidth(UnitValue.createPercentValue(100));
+
+        Cell stopCell = getSuspensionHeaderCell(suspensions.size() + 1, 1);
+        stopCell.add(getSuspensionHeaderParagraph("STOP"));
+        stopCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        stopCell.setRotationAngle(Math.toRadians(90));
+        suspensionTable.addCell(stopCell);
+
+        addSuspensionHeaderCell(suspensionTable, "ID", 1);
+        addSuspensionHeaderCell(suspensionTable, "Type", 3);
+        addSuspensionHeaderCell(suspensionTable, "Van", 3);
+        addSuspensionHeaderCell(suspensionTable, "Tot", 3);
+        addSuspensionHeaderCell(suspensionTable, "Reden", 18);
+        addSuspensionHeaderCell(suspensionTable, "Aangemaakt op", 3);
+        addSuspensionHeaderCell(suspensionTable, "Aangemaakt door", 8);
+
+        for (Suspension suspension : suspensions) {
+            Cell localIdCell = getCenteredCell(1, 1);
+            Paragraph localIdParagraph = getDefaultParagraph("");
+            toLocalIdChunks(localId).forEach(localIdParagraph::add);
+            localIdCell.add(localIdParagraph);
+            localIdCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+            localIdCell.setRotationAngle(Math.toRadians(90));
+            suspensionTable.addCell(localIdCell);
+
+            addSuspensionValueCell(
+                    suspensionTable,
+                    translateLifecycle(suspension.getLifecycle()),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineStartDateAndCondition(
+                            suspension.getBeginDate(),
+                            null),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineEndDateAndConditionAndDuration(
+                            suspension.getEndDate(),
+                            null,
+                            suspension.getDuration(),
+                            suspension.getBeginDate()),
+                    3);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    suspension.getReason(),
+                    18);
+            addSuspensionValueCell(
+                    suspensionTable,
+                    combineDateAndTime(
+                            suspension.getCreatedDate(),
+                            suspension.getCreatedTime()),
+                    3);
+
+            Cell authorsCell = getCenteredCell(1, 8);
+            Paragraph authorsParagraph = getDefaultParagraph("");
+            toHCPartyChunks(suspension.getAuthors()).forEach(authorsParagraph::add);
+            authorsParagraph.add(System.lineSeparator());
+            authorsCell.add(authorsParagraph);
+            suspensionTable.addCell(authorsCell);
+        }
+
+        return suspensionTable;
+    }
+
+    private static void addSuspensionHeaderCell(
+            Table suspensionTable,
+            String text,
+            int colspan) {
+
+        Cell cell = getSuspensionHeaderCell(1, colspan);
+        cell.add(getSuspensionHeaderParagraph(text));
+        suspensionTable.addCell(cell);
+    }
+
+    private static void addSuspensionValueCell(
+            Table suspensionTable,
+            String text,
+            int colspan) {
+
+        Cell cell = getCenteredCell(1, colspan);
+        cell.add(getDefaultParagraph(text));
+        suspensionTable.addCell(cell);
     }
 
     private static Cell createObsoleteCell(boolean obsolete, int rowspan) {
-        Cell cell;
         if (obsolete) {
-            cell = getObsoleteMedicationCellObsolete(rowspan, 1);
+            Cell cell = getObsoleteMedicationCellObsolete(rowspan, 1);
             cell.add(getMedicationObsoleteParagraph("obsolete"));
-        } else {
-            cell = getObsoleteMedicationCellNotObsolete(rowspan, 1);
+            return cell;
         }
+
+        return getObsoleteMedicationCellNotObsolete(rowspan, 1);
+    }
+
+    /*
+     * Legacy behavior: RegimenEntry contributes only its recurrence information
+     * to this column. It does not own begin or end dates.
+     */
+    private static void createMedicationSubRowsPart1(
+            FrequencyCode frequencyCode,
+            RegimenEntry regimenEntry) {
+
+        addSimpleCell(
+                translateFrequency(frequencyCode)
+                        + translateRegimenRepetition(regimenEntry, frequencyCode),
+                2,
+                1);
+    }
+
+    /*
+     * Legacy behavior: MedicationEntry owns begin/end, duration, route, and
+     * administration unit.
+     */
+    private static void createMedicationSubRowsPart2(
+            MedicationEntry medicationEntry,
+            String administrationUnit) {
+
+        addSimpleCell(
+                combineStartDateAndCondition(
+                        medicationEntry.getBeginDate(),
+                        adaptLengthIfNecessary(
+                                medicationEntry.getBeginCondition())),
+                3,
+                1);
+
+        addSimpleCell(
+                combineEndDateAndConditionAndDuration(
+                        medicationEntry.getEndDate(),
+                        adaptLengthIfNecessary(
+                                medicationEntry.getEndCondition()),
+                        medicationEntry.getDuration(),
+                        medicationEntry.getBeginDate()),
+                3,
+                1);
+
+        addSimpleCell(
+                translateRoute(medicationEntry.getRoute())
+                        + " / "
+                        + translateAdministrationUnit(administrationUnit),
+                4,
+                1);
+    }
+
+    private static Cell prepareQuantityCell(BigDecimal quantity) {
+        if (quantity == null) {
+            Cell cell = getCenteredCell(1, 2);
+            cell.add(getQuantityParagraph(""));
+            return cell;
+        }
+
+        Cell cell = getQuantityWithValueCell(1, 2);
+        cell.add(getQuantityParagraph(translateQuantity(quantity)));
         return cell;
     }
 
-    private static void createMedicationSubRowsPart1(FrequencyCode frequencyCode, RegimenEntry regimenEntry) {
-        addSimpleCell(translateFrequency(frequencyCode), 2, 1);
-        addSimpleCell(combineStartDateAndCondition(regimenEntry != null ? regimenEntry.getBeginDate() : null, null), 3, 1);
-        addSimpleCell(combineEndDateAndConditionAndDuration(regimenEntry != null ? regimenEntry.getEndDate() : null, null, null, null), 3, 1);
+    private static Map<Dayperiod, BigDecimal> sumQuantitiesPerDayperiod(
+            List<RegimenEntry> regimenEntries) {
+
+        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod = new HashMap<>();
+
+        for (RegimenEntry regimenEntry : regimenEntries) {
+            if (regimenEntry.getDayperiodOrTime() instanceof RegimenDayperiod) {
+                RegimenDayperiod regimenDayperiod =
+                        (RegimenDayperiod) regimenEntry.getDayperiodOrTime();
+
+                quantitiesPerDayperiod.merge(
+                        regimenDayperiod.getDayperiod(),
+                        regimenEntry.getQuantity(),
+                        BigDecimal::add);
+            }
+        }
+
+        return quantitiesPerDayperiod;
     }
 
-    private static void createMedicationSubRowsPart2(MedicationEntry medicationEntry, String administrationUnit) {
-        addSimpleCell(translateRoute(medicationEntry.getRoute()) + " " + translateAdministrationUnit(administrationUnit), 4, 1);
+    private static Map<Dayperiod, BigDecimal>
+    sumQuantitiesPerNonStandaloneDayperiod(
+            Map<Dayperiod, BigDecimal> quantitiesPerDayperiod) {
+
+        Map<Dayperiod, BigDecimal> nonStandaloneDayperiods =
+                new HashMap<>();
+
+        for (Map.Entry<Dayperiod, BigDecimal> entry
+                : quantitiesPerDayperiod.entrySet()) {
+            if (!dayperiodTakeManager.isStandaloneDayperiod(entry.getKey())) {
+                nonStandaloneDayperiods.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return nonStandaloneDayperiods;
     }
 
-    private static void createMedicationSubRowsPart3(List<RegimenEntry> similarEntries) {
-        for (int i = 0; i < 14; i++) {
-            addSimpleCell(similarEntries != null && i < similarEntries.size() ? translateQuantity(similarEntries.get(i).getQuantity()) : "", 2, 1);
+    private static Map<String, BigDecimal> sumQuantitiesPerTakeTime(
+            List<RegimenEntry> regimenEntries) {
+
+        Map<String, BigDecimal> quantitiesPerTakeTime = new HashMap<>();
+
+        for (RegimenEntry regimenEntry : regimenEntries) {
+            if (regimenEntry.getDayperiodOrTime() instanceof RegimenTime) {
+                RegimenTime regimenTime =
+                        (RegimenTime) regimenEntry.getDayperiodOrTime();
+
+                String timeString =
+                        takeTimeManager.toTakeTimeString(regimenTime.getTime());
+
+                quantitiesPerTakeTime.merge(
+                        timeString,
+                        regimenEntry.getQuantity(),
+                        BigDecimal::add);
+            }
+        }
+
+        return quantitiesPerTakeTime;
+    }
+
+    private static Map<String, BigDecimal>
+    sumQuantitiesPerNonStandaloneTakeTime(
+            Map<String, BigDecimal> quantitiesPerTakeTime) {
+
+        Map<String, BigDecimal> nonStandaloneTakeTimes = new HashMap<>();
+
+        for (Map.Entry<String, BigDecimal> entry
+                : quantitiesPerTakeTime.entrySet()) {
+            if (!takeTimeManager.isStandaloneTakeTime(entry.getKey())) {
+                nonStandaloneTakeTimes.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return nonStandaloneTakeTimes;
+    }
+
+    private static String concatenateTakeMoments(
+            Map<Dayperiod, BigDecimal> nonStandaloneDayperiods,
+            Map<String, BigDecimal> nonStandaloneTakeTimes) {
+
+        List<String> takeMoments = new ArrayList<>();
+
+        for (Map.Entry<Dayperiod, BigDecimal> entry
+                : nonStandaloneDayperiods.entrySet()) {
+            takeMoments.add(
+                    translateQuantity(entry.getValue())
+                            + " "
+                            + translateDayperiod(entry.getKey()));
+        }
+
+        for (Map.Entry<String, BigDecimal> entry
+                : nonStandaloneTakeTimes.entrySet()) {
+            takeMoments.add(
+                    translateQuantity(entry.getValue())
+                            + " om "
+                            + entry.getKey());
+        }
+
+        Collections.sort(takeMoments, NumberAwareStringComparator.INSTANCE);
+
+        return StringUtils.joinWith(
+                System.lineSeparator() + System.lineSeparator(),
+                takeMoments.toArray());
+    }
+
+    private static void createMedicationSubRowsPart3(
+            List<RegimenEntry> similarEntries) {
+
+        List<RegimenEntry> entries = similarEntries == null
+                ? Collections.emptyList()
+                : similarEntries;
+
+        Map<Dayperiod, BigDecimal> quantitiesPerDayperiod =
+                sumQuantitiesPerDayperiod(entries);
+        Map<String, BigDecimal> quantitiesPerTakeTime =
+                sumQuantitiesPerTakeTime(entries);
+
+        Map<Dayperiod, BigDecimal> nonStandaloneDayperiods =
+                sumQuantitiesPerNonStandaloneDayperiod(quantitiesPerDayperiod);
+        Map<String, BigDecimal> nonStandaloneTakeTimes =
+                sumQuantitiesPerNonStandaloneTakeTime(quantitiesPerTakeTime);
+
+        for (Dayperiod dayperiod
+                : dayperiodTakeManager.getAllPossibleStandaloneDayperiods()) {
+            table.addCell(prepareQuantityCell(
+                    quantitiesPerDayperiod.get(dayperiod)));
+        }
+
+        if (!nonStandaloneDayperiods.isEmpty()
+                || !nonStandaloneTakeTimes.isEmpty()) {
+
+            Cell cell = getQuantityWithValueCell(1, 6);
+            cell.add(getQuantityParagraph(
+                    concatenateTakeMoments(
+                            nonStandaloneDayperiods,
+                            nonStandaloneTakeTimes)));
+            table.addCell(cell);
+            return;
+        }
+
+        Set<String> standaloneTakeTimes =
+                takeTimeManager.getStandaloneTakeTimes();
+
+        for (String takeTime : standaloneTakeTimes) {
+            BigDecimal quantity = quantitiesPerTakeTime.get(takeTime);
+
+            if (quantity != null) {
+                Cell cell = getQuantityWithValueCell(1, 2);
+                cell.add(getQuantityParagraph(translateQuantity(quantity)));
+                table.addCell(cell);
+            } else {
+                Cell cell = getCenteredCell(1, 2);
+                cell.add(getDefaultParagraph(""));
+                table.addCell(cell);
+            }
+        }
+
+        for (int columnNumber = standaloneTakeTimes.size();
+             columnNumber < MAX_NUMBER_OF_STANDALONE_TAKING_TIMES;
+             columnNumber++) {
+            Cell cell = getCenteredCell(1, 2);
+            cell.add(getQuantityParagraph(""));
+            table.addCell(cell);
         }
     }
 
-    private static void addSimpleCell(String text, int colspan, int rowspan) {
+    private static void addSimpleCell(
+            String text,
+            int colspan,
+            int rowspan) {
+
         Cell cell = getCenteredCell(rowspan, colspan);
         cell.add(getDefaultParagraph(text));
         table.addCell(cell);
     }
 
-    private static Paragraph getRemarksParagraph(MedicationEntry medicationEntry) {
+    private static Paragraph getRemarksParagraph(
+            MedicationEntry medicationEntry) {
+
         Paragraph paragraph = getDefaultParagraph("");
         paragraph.setMultipliedLeading(REMARKS_CONTENT_LEADING);
-        if (StringUtils.isNotEmpty(medicationEntry.getInstructionForPatient())) {
-            paragraph.add(adaptLengthIfNecessary(medicationEntry.getInstructionForPatient()));
-        }
+
+        boolean hasPreviousRemark = false;
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "indicatie:",
+                medicationEntry.getMedicationUse());
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "gebruiksaanwijzing:",
+                medicationEntry.getInstructionForPatient());
+
+        hasPreviousRemark = addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "magistrale bereiding:",
+                medicationEntry.getCompoundPrescription());
+
+        addRemark(
+                paragraph,
+                hasPreviousRemark,
+                "overdosis:",
+                medicationEntry.getInstructionForOverdosing());
+
         return paragraph;
+    }
+
+    private static boolean addRemark(
+            Paragraph paragraph,
+            boolean hasPreviousRemark,
+            String header,
+            String value) {
+
+        if (StringUtils.isEmpty(value)) {
+            return hasPreviousRemark;
+        }
+
+        if (hasPreviousRemark) {
+            paragraph.add(System.lineSeparator());
+        }
+
+        for (Text text : toCommentHeaderAndValueChunk(
+                header,
+                adaptLengthIfNecessary(value))) {
+            paragraph.add(text);
+        }
+
+        return true;
     }
 
     private static String adaptLengthIfNecessary(String text) {
         if (text != null && text.length() > MAX_LENGTH_TEXT_FIELDS) {
-            return text.substring(0, MAX_LENGTH_TEXT_FIELDS) + " " + TOO_LARGE_TEXT;
+            return text.substring(0, MAX_LENGTH_TEXT_FIELDS)
+                    + " "
+                    + TOO_LARGE_TEXT;
         }
+
         return text;
     }
 
