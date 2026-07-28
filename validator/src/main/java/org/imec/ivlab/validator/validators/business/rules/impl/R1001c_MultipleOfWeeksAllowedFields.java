@@ -3,7 +3,7 @@ package org.imec.ivlab.validator.validators.business.rules.impl;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDITEMvalues;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDPERIODICITY;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.core.kmehr.model.Frequency;
 import org.imec.ivlab.core.kmehr.model.FrequencyCode;
 import org.imec.ivlab.core.kmehr.model.util.FrequencyUtil;
