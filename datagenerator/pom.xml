@@ -72,7 +72,6 @@
                                         <format>dir</format>
                                     </formats>
                                     <includeBaseDirectory>false</includeBaseDirectory>
-                                    <finalName>.</finalName>
                                     <dependencySets>
                                         <dependencySet>
                                             <outputDirectory>dependency-jars</outputDirectory>
