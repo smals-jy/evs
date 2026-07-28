@@ -676,16 +676,22 @@ public class MSWriter extends Writer {
 
     }
 
-    private static String combineDateAndTime(LocalDate date, org.joda.time.LocalTime time) {
-        return joinFields(" ", formatAsDate(date), formatAsTime(time));
+    private static String combineDateAndTime(LocalDate date, DateTime time) {
+        return joinFields(formatAsDate(date), formatAsTime(time), System.lineSeparator());
     }
 
     private static String combineStartDateAndCondition(LocalDate date, String condition) {
-        return joinFields(" ", formatAsDate(date), condition);
+        return joinFields(formatAsDate(date), condition);
     }
 
     private static String combineEndDateAndConditionAndDuration(LocalDate date, String condition, Duration duration, LocalDate beginDate) {
-        return joinFields(" ", formatAsDate(date), condition, durationToString(duration, beginDate));
+        if (duration == null) {
+            return combineStartDateAndCondition(date, condition);
+        }
+
+        String durationString = durationToString(duration, startDate);
+
+        return joinFields(durationString, combineStartDateAndCondition(date, condition));
     }
 
     @Override
