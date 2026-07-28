@@ -3,7 +3,7 @@ package org.imec.ivlab.ehconnector.hub.util;
 import be.fgov.ehealth.hubservices.core.v3.TransactionSummaryType;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTION;
 import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTIONschemes;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.exceptions.MultipleEntitiesFoundException;

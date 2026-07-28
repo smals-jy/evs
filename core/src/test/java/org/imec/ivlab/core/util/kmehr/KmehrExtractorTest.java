@@ -1,6 +1,6 @@
 package org.imec.ivlab.core.util.kmehr;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.core.model.upload.kmehrentrylist.KmehrEntryList;
 import org.imec.ivlab.core.TestUtil;
 import org.testng.annotations.Test;

@@ -2,7 +2,7 @@ package org.imec.ivlab.core.kmehr.model.util;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 
 public class KmehrMessageUtil {

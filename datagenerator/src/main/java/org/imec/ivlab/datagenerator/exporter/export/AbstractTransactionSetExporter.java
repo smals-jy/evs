@@ -10,7 +10,7 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDTRANSACTIONschemes;
 import be.fgov.ehealth.standards.kmehr.cd.v1.LnkType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.FolderType;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

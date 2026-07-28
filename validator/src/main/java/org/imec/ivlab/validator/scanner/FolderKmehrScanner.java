@@ -1,7 +1,7 @@
 package org.imec.ivlab.validator.scanner;
 
 import be.fgov.ehealth.standards.kmehr.schema.v1.Kmehrmessage;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
