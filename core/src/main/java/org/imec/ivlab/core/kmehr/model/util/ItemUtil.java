@@ -10,7 +10,7 @@ import be.fgov.ehealth.standards.kmehr.schema.v1.ContentType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.ItemType;
 import be.fgov.ehealth.standards.kmehr.schema.v1.PersonType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.exceptions.MultipleEntitiesFoundException;
 import org.imec.ivlab.core.util.CollectionsUtil;
