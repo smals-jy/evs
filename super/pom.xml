@@ -85,6 +85,13 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+         <!-- This transitive dependancy is used by many deps ( https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy/used-by ) and we care about only the latest version  -->
+         <dependency>
+             <groupId>net.bytebuddy</groupId>
+             <artifactId>byte-buddy</artifactId>
+             <version>1.18.11</version>
+         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
