@@ -6,7 +6,7 @@ import be.fgov.ehealth.standards.kmehr.cd.v1.CDHCPARTYvalues;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDHCPARTY;
 import be.fgov.ehealth.standards.kmehr.id.v1.IDHCPARTYschemes;
 import be.fgov.ehealth.standards.kmehr.schema.v1.HcpartyType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.imec.ivlab.core.exceptions.DataNotFoundException;
 import org.imec.ivlab.core.exceptions.MultipleEntitiesFoundException;
