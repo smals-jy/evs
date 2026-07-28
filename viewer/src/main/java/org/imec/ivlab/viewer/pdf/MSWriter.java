@@ -689,7 +689,7 @@ public class MSWriter extends Writer {
             return combineStartDateAndCondition(date, condition);
         }
 
-        String durationString = durationToString(duration, startDate);
+        String durationString = durationToString(duration, beginDate);
 
         return joinFields(durationString, combineStartDateAndCondition(date, condition));
     }
