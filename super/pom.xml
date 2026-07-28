@@ -141,8 +141,8 @@
 
             <dependency>
                 <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.2</version>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.5.0</version>
             </dependency>
 
             <dependency>
