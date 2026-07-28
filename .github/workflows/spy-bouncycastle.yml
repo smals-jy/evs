@@ -103,11 +103,12 @@ jobs:
               -DappendOutput=true
           done
 
-          # Escape special characters in SEARCH_TERM for grep
-          ESCAPED_SEARCH_TERM=$(printf '%s\n' "$SEARCH_TERM" | sed 's/[.[\*^$]/\\&/g')
-
-          # Case-insensitive dynamic filtering
-          grep -i -E "(^|[[:space:]])${ESCAPED_SEARCH_TERM}" "$FULL_REPORT" > "$FILTERED_REPORT" || true
+          if grep -i -F -- "$SEARCH_TERM" "$FULL_REPORT" > "$FILTERED_REPORT"; then
+            :
+          else
+            grep_status=$?
+            [[ "$grep_status" -eq 1 ]] || exit "$grep_status"
+          fi
 
           echo "================================================================================"
           if [[ -s "$FILTERED_REPORT" ]]; then
