@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>super</artifactId>
@@ -55,7 +55,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-<executions>
+                <executions>
                     <execution>
                         <id>copy-dependencies-assembly</id>
                         <phase>package</phase>
@@ -65,27 +65,30 @@
                         <configuration>
                             <outputDirectory>${build.install.jar.directory}</outputDirectory>
                             <appendAssemblyId>false</appendAssemblyId>
-                            <inline>
-                                <id>dependency-jars</id>
-                                <formats>
-                                    <format>dir</format>
-                                </formats>
-                                <includeBaseDirectory>false</includeBaseDirectory>
-                                <dependencySets>
-                                    <dependencySet>
-                                        <outputDirectory>dependency-jars</outputDirectory>
-                                        <useProjectArtifact>false</useProjectArtifact>
-                                        <scope>runtime</scope>
-                                        <excludes>
-                                            <exclude>be.fgov.ehealth.standards:*</exclude>
-                                            <exclude>org.imec.ivlab.ehealth.automation:*</exclude>
-                                            <exclude>*:bcprov-jdk15on</exclude>
-                                            <exclude>*:bcmail-jdk15on</exclude>
-                                            <exclude>*:bcpkix-jdk15on</exclude>
-                                        </excludes>
-                                    </dependencySet>
-                                </dependencySets>
-                            </inline>
+                            <inlineDescriptors>
+                                <inlineDescriptor>
+                                    <id>dependency-jars</id>
+                                    <formats>
+                                        <format>dir</format>
+                                    </formats>
+                                    <includeBaseDirectory>false</includeBaseDirectory>
+                                    <finalName>.</finalName>
+                                    <dependencySets>
+                                        <dependencySet>
+                                            <outputDirectory>dependency-jars</outputDirectory>
+                                            <useProjectArtifact>false</useProjectArtifact>
+                                            <scope>runtime</scope>
+                                            <excludes>
+                                                <exclude>be.fgov.ehealth.standards:*</exclude>
+                                                <exclude>org.imec.ivlab.ehealth.automation:*</exclude>
+                                                <exclude>*:bcprov-jdk15on</exclude>
+                                                <exclude>*:bcmail-jdk15on</exclude>
+                                                <exclude>*:bcpkix-jdk15on</exclude>
+                                            </excludes>
+                                        </dependencySet>
+                                    </dependencySets>
+                                </inlineDescriptor>
+                            </inlineDescriptors>
                         </configuration>
                     </execution>
                 </executions>
