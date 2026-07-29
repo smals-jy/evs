@@ -144,30 +144,6 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.objenesis</groupId>
-            <artifactId>objenesis</artifactId>
-            <version>3.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <version>3.4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-core</artifactId>
-            <version>3.4.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <version>1.6</version>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Internal project core -->
         <dependency>
