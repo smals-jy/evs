@@ -31,12 +31,20 @@
             <artifactId>itext-core</artifactId>
             <version>${itext.version}</version>
             <type>pom</type>
+            <!-- TODO You have to use your own version of itextpdf for local builds -->
+            <!-- Uncomment these lines so it works on local
+            <systemPath>${basedir}/lib/itext-core-9.7.1.pom</systemPath>
+            -->
         </dependency>
 
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>bouncy-castle-adapter</artifactId>
             <version>${itext.version}</version>
+            <!-- TODO You have to use your own version of itextpdf for local builds -->
+            <!-- Uncomment these lines so it works on local
+            <systemPath>${basedir}/lib/bouncy-castle-connector-9.7.1.jar</systemPath>
+            -->
             <!-- Needed as eHealth uses their own version of Bouncy Castle that could crash with it -->
             <exclusions>
                 <exclusion>
