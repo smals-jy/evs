@@ -38,5 +38,5 @@ jobs:
             echo "=================================================="
             echo "Analyzing: $pom"
             echo "=================================================="
-            mvn dependency:tree --file "$pom" --batch-mode
+            mvn dependency:analyze --file "$pom" --batch-mode
           done
