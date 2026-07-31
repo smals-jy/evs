@@ -55,6 +55,9 @@ jobs:
           cd ${{ env.artifacts_path }}  
           find . -type f \( -name ".gitignore" -o -name ".gitkeep" \) -exec rm -f {} \;  
           zip -r -q EVS-${{ env.EVS_VERSION }}.zip .
+      - name: 📜 List zip contents
+        run: |
+          unzip -l ${{ env.artifacts_path }}/EVS-${{ env.EVS_VERSION }}.zip     
       - name: 📁 Archive artifacts
         uses: actions/upload-artifact@v6
         with:
