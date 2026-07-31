@@ -28,15 +28,34 @@
 
         <dependency>
             <groupId>com.itextpdf</groupId>
-            <artifactId>itext-core</artifactId>
+            <artifactId>kernel</artifactId>
             <version>${itext.version}</version>
-            <type>pom</type>
             <!-- TODO You have to use your own version of itextpdf for local builds -->
             <!-- Uncomment these lines so it works on local
-            <systemPath>${basedir}/lib/itext-core-9.7.1.pom</systemPath>
+            <systemPath>${basedir}/lib/kernel-9.7.1.jar</systemPath>
             -->
         </dependency>
-
+    
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
+            <version>${itext.version}</version>
+            <!-- TODO You have to use your own version of itextpdf for local builds -->
+            <!-- Uncomment these lines so it works on local
+            <systemPath>${basedir}/lib/io-9.7.1.jar</systemPath>
+            -->
+        </dependency>
+    
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>${itext.version}</version>
+            <!-- TODO You have to use your own version of itextpdf for local builds -->
+            <!-- Uncomment these lines so it works on local
+            <systemPath>${basedir}/lib/layout-9.7.1.jar</systemPath>
+            -->
+        </dependency>
+        
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>bouncy-castle-adapter</artifactId>
