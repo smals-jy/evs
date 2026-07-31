@@ -24,19 +24,10 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-          cache: maven
-      - name: ✨ Fix permissions
+          cache: maven         
+      - name: ✨ List dependancies 
         run: |
-          chmod u+x builder/release.sh    
-      - name: 🔨 Build project with Maven
-        shell: bash
-        run: |
-          cd builder && ./release.sh        
-      - name: List dependancies 
-        run: |
-          find . -maxdepth 2 -name "pom.xml" -not -path "*/target/*" | while read -r pom; do
-            echo "=================================================="
-            echo "Analyzing: $pom"
-            echo "=================================================="
-            mvn dependency:analyze --file "$pom" --batch-mode
-          done
+          echo "=================================================="
+          echo "Analyzing multi-module project via builder/pom.xml"
+          echo "=================================================="
+          mvn dependency:analyze --file builder/pom.xml --batch-mode
