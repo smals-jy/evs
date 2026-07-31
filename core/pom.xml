@@ -10,7 +10,7 @@
         <relativePath>../super</relativePath>
     </parent>
     <artifactId>core</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
 
     <dependencies>
 
