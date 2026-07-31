@@ -10,7 +10,7 @@
         <relativePath>../super</relativePath>
     </parent>
     <artifactId>distribution</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
 
     <build>
         <plugins>
