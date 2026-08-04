@@ -92,7 +92,7 @@ public class PdfHelper {
 
         } catch (IOException e) {
             throw new SchemaConversionException("Failed to create pdf", e);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             throw new SchemaConversionException("Failed to create pdf", t);
         }
     }
