@@ -2,6 +2,9 @@ package org.imec.ivlab.viewer.pdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,14 +30,18 @@ public class PdfHelper {
     private final static Logger LOG = LogManager.getLogger(PdfHelper.class);
 
     public static void writeToDocument(String fileLocation, Table generalInfoTable, List<Table> detailTables) throws SchemaConversionException {
+        File tempInitialFile = null;
+        File tempFinalFile = null;
         try {
-            // Ensure parent directory exists
-            File outputFile = new File(fileLocation);
-            outputFile.getParentFile().mkdirs();
+            File destinationFile = new File(fileLocation);
+            // A bare filename (no directory component) has no parent, so only create one when present
+            File parentDir = destinationFile.getAbsoluteFile().getParentFile();
+            if (parentDir != null) {
+                parentDir.mkdirs();
+            }
 
             // Create a temporary file for initial content
-            File tempInitialFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
-            tempInitialFile.deleteOnExit();
+            tempInitialFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
 
             // STEP 1: Create initial PDF with tables in temporary file
             try (PdfWriter writer = new PdfWriter(tempInitialFile.getAbsolutePath());
@@ -51,11 +58,10 @@ public class PdfHelper {
             }
 
             // STEP 2: Create final PDF by reading temp and adding footers
-            // Create another temp file for the final output
-            File tempFinalFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
-            tempFinalFile.deleteOnExit();
+            // Create the final temp file in the destination directory so the move in STEP 3 can be atomic
+            tempFinalFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf", parentDir);
 
-            try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(tempInitialFile.getAbsolutePath()), 
+            try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(tempInitialFile.getAbsolutePath()),
                                                        new PdfWriter(tempFinalFile.getAbsolutePath()))) {
                 int numberOfPages = pdfDoc.getNumberOfPages();
 
@@ -73,20 +79,13 @@ public class PdfHelper {
                 }
             }
 
-            // STEP 3: Move final temp file to destination
-            File destinationFile = new File(fileLocation);
-            if (destinationFile.exists()) {
-                destinationFile.delete();
+            // STEP 3: Move final temp file to destination, preserving the existing file until replacement succeeds
+            try {
+                Files.move(tempFinalFile.toPath(), destinationFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(tempFinalFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
-            
-            if (!tempFinalFile.renameTo(destinationFile)) {
-                // Fallback: copy if rename fails
-                java.nio.file.Files.copy(tempFinalFile.toPath(), destinationFile.toPath(), 
-                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            // Clean up temp initial file
-            tempInitialFile.delete();
 
             LOG.debug("Wrote pdf to: " + fileLocation);
 
@@ -94,6 +93,15 @@ public class PdfHelper {
             throw new SchemaConversionException("Failed to create pdf", e);
         } catch (Exception t) {
             throw new SchemaConversionException("Failed to create pdf", t);
+        } finally {
+            deleteQuietly(tempInitialFile);
+            deleteQuietly(tempFinalFile);
+        }
+    }
+
+    private static void deleteQuietly(File file) {
+        if (file != null && file.exists() && !file.delete()) {
+            LOG.warn("Failed to delete temporary file: " + file.getAbsolutePath());
         }
     }
 }
