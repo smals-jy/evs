@@ -28,11 +28,13 @@ public class PdfHelper {
 
     public static void writeToDocument(String fileLocation, Table generalInfoTable, List<Table> detailTables) throws SchemaConversionException {
         try {
-            File tempPdfFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
-            tempPdfFile.deleteOnExit();
+            // Create the final PDF directly at the destination instead of using a temporary file
+            // This avoids the cross-document object reference issue when manipulating PDFs
+            File outputFile = new File(fileLocation);
+            outputFile.getParentFile().mkdirs();
 
             // Create PdfWriter and PdfDocument with try-with-resources
-            try (PdfWriter writer = new PdfWriter(tempPdfFile.getAbsolutePath());
+            try (PdfWriter writer = new PdfWriter(fileLocation);
                  PdfDocument pdfDoc = new PdfDocument(writer);
                  Document document = new Document(pdfDoc, PageSize.A4.rotate(), false)) {
 
@@ -51,8 +53,9 @@ public class PdfHelper {
                 // Resources are automatically closed here
             }
 
-            // Stamp/manipulate the temporary PDF to the final destination path
-            manipulatePdf(tempPdfFile.getAbsolutePath(), fileLocation);
+            // NOW manipulate the PDF by adding footers
+            // The PDF document from above is now fully closed and written
+            manipulatePdf(fileLocation);
 
             LOG.debug("Wrote pdf to: " + fileLocation);
 
@@ -61,9 +64,14 @@ public class PdfHelper {
         }
     }
 
-    private static void manipulatePdf(String src, String dest) throws IOException {
-        // In iText 9, simultaneous reading and writing replaces PdfStamper
-        try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(src), new PdfWriter(dest))) {
+    private static void manipulatePdf(String dest) throws IOException {
+        // Create a temporary file to hold the manipulated PDF
+        File tempPdfFile = File.createTempFile(UUID.randomUUID().toString(), ".pdf");
+        tempPdfFile.deleteOnExit();
+        String tempPath = tempPdfFile.getAbsolutePath();
+
+        // Read the original PDF and write it to a temporary file with manipulations
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(dest), new PdfWriter(tempPath))) {
             int numberOfPages = pdfDoc.getNumberOfPages();
 
             for (int i = 1; i <= numberOfPages; i++) {
@@ -84,6 +92,28 @@ public class PdfHelper {
                     canvas.showTextAligned(new Paragraph(rightText), 820, 13, i, TextAlignment.RIGHT, null, 0);
                 }
             }
+        }
+
+        // Replace the original file with the manipulated one
+        File originalFile = new File(dest);
+        File backupFile = new File(dest + ".backup");
+        
+        if (originalFile.exists()) {
+            if (backupFile.exists()) {
+                backupFile.delete();
+            }
+            originalFile.renameTo(backupFile);
+        }
+        
+        if (!tempPdfFile.renameTo(originalFile)) {
+            // If rename fails, copy the file instead
+            java.nio.file.Files.copy(tempPdfFile.toPath(), originalFile.toPath(), 
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            tempPdfFile.delete();
+        }
+        
+        if (backupFile.exists()) {
+            backupFile.delete();
         }
     }
 }
