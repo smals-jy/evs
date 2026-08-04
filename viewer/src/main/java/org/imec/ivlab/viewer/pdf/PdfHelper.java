@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.imec.ivlab.viewer.converter.exceptions.SchemaConversionException;
-import org.imec.ivlab.viewer.locale.LocalVersionReader;
+import org.imec.ivlab.core.version.LocalVersionReader;
 
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
