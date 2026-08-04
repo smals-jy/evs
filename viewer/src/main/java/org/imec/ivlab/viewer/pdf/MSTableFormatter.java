@@ -160,13 +160,17 @@ public class MSTableFormatter {
     }
 
     protected static Paragraph getDefaultParagraph(String text) {
-        return new Paragraph(text)
+        // FIX: Handle null text by replacing with empty string
+        String safeText = text != null ? text : "";
+        return new Paragraph(safeText)
                 .setFont(HELVETICA_FONT)
                 .setFontSize(7f);
     }
 
     protected static Paragraph getDefaultParagraphBold(String text) {
-        return new Paragraph(text)
+        // FIX: Handle null text by replacing with empty string
+        String safeText = text != null ? text : "";
+        return new Paragraph(safeText)
                 .setFont(HELVETICA_BOLD_FONT)
                 .setFontSize(7f);
     }
@@ -179,7 +183,9 @@ public class MSTableFormatter {
     }
 
     protected static Paragraph getFrontPageHeaderParagraph(String text) {
-        return new Paragraph(text)
+        // FIX: Handle null text by replacing with empty string
+        String safeText = text != null ? text : "";
+        return new Paragraph(safeText)
                 .setFont(HELVETICA_FONT)
                 .setFontSize(16f);
     }
