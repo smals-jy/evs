@@ -212,7 +212,7 @@
         <joda-time.version>2.14.2</joda-time.version>
         <apache.poi.version>5.5.1</apache.poi.version>
         <apache.velocity.version>2.4.1</apache.velocity.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <commons-lang3.version>3.21.0</commons-lang3.version>
     </properties>
 
     <repositories>
