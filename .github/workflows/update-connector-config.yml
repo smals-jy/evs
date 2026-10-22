@@ -27,20 +27,29 @@ jobs:
 
       - name: Get latest version zip URL
         id: get_latest
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          version="${{ inputs.version }}"
+          version="$INPUT_VERSION"
           if [ -z "$version" ]; then
             html=$(curl -s 'https://repo.ehealth.fgov.be/artifactory/maven2/be/fgov/ehealth/connector/connector-packaging-generic/')
             version=$(echo "$html" | grep -oP '(?<=href=")[^"/]+(?=/")' | grep -v 'maven-metadata.xml' | tail -1)
           fi
 
+          if [[ ! "$version" =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]]; then
+            printf '%s\n' 'Invalid connector packaging version' >&2
+            exit 1
+          fi
+
           zip_url="https://repo.ehealth.fgov.be/artifactory/maven2/be/fgov/ehealth/connector/connector-packaging-generic/${version}/connector-packaging-generic-${version}-java.zip"
 
-          echo "zip_url=$zip_url" >> "$GITHUB_OUTPUT"
-          echo "latest_ver=$version" >> "$GITHUB_OUTPUT"
+          printf 'zip_url=%s\n' "$zip_url" >> "$GITHUB_OUTPUT"
+          printf 'latest_ver=%s\n' "$version" >> "$GITHUB_OUTPUT"
 
       - name: Download latest zip
-        run: curl -L "${{ steps.get_latest.outputs.zip_url }}" -o connector-packaging-generic.zip
+        env:
+          ZIP_URL: ${{ steps.get_latest.outputs.zip_url }}
+        run: curl -L "$ZIP_URL" -o connector-packaging-generic.zip
 
       - name: Unzip config/P12 contents
         run: |
