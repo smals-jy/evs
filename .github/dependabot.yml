@@ -3,13 +3,6 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 version: 2
-
-registries:
-  ehealth-maven:
-    type: maven-repository
-    url: https://repo.ehealth.fgov.be/artifactory/maven2
-    replaces-base: false
-
 updates:
 # Files stored in repository builder
   - package-ecosystem: "maven"
@@ -19,8 +12,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository super
   - package-ecosystem: "maven"
     directory: "/super"
@@ -29,8 +20,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository core
   - package-ecosystem: "maven"
     directory: "/core"
@@ -39,8 +28,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository ehconnector
   - package-ecosystem: "maven"
     directory: "/ehconnector"
@@ -49,8 +36,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository viewer
   - package-ecosystem: "maven"
     directory: "/viewer"
@@ -59,8 +44,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository datagenerator
   - package-ecosystem: "maven"
     directory: "/datagenerator"
@@ -69,8 +52,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Files stored in repository distribution
   - package-ecosystem: "maven"
     directory: "/distribution"
@@ -79,8 +60,6 @@ updates:
       include: "scope"
     schedule:
       interval: "weekly"
-    registries:
-      - ehealth-maven
 # Workflow files stored in the default location of `.github/workflows`
   - package-ecosystem: "github-actions"
     directory: "/"
