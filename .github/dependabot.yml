@@ -8,7 +8,6 @@ registries:
   ehealth-maven:
     type: maven-repository
     url: https://repo.ehealth.fgov.be/artifactory/maven2
-    replaces-base: false
 
 updates:
 # Files stored in repository builder
