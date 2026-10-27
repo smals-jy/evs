@@ -4,10 +4,14 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 version: 2
 
+# To fix Dependabot can't authenticate to a private package registry ... whereas they are public
 registries:
   ehealth-maven:
     type: maven-repository
     url: https://repo.ehealth.fgov.be/artifactory/maven2
+  e-contract-maven:
+    type: maven-repository
+    url: https://www.e-contract.be/maven2
 
 updates:
 # Files stored in repository builder
@@ -20,6 +24,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository super
   - package-ecosystem: "maven"
     directory: "/super"
@@ -30,6 +35,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository core
   - package-ecosystem: "maven"
     directory: "/core"
@@ -40,6 +46,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository ehconnector
   - package-ecosystem: "maven"
     directory: "/ehconnector"
@@ -50,6 +57,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository viewer
   - package-ecosystem: "maven"
     directory: "/viewer"
@@ -60,6 +68,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository datagenerator
   - package-ecosystem: "maven"
     directory: "/datagenerator"
@@ -70,6 +79,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Files stored in repository distribution
   - package-ecosystem: "maven"
     directory: "/distribution"
@@ -80,6 +90,7 @@ updates:
       interval: "weekly"
     registries:
       - ehealth-maven
+      - e-contract-maven
 # Workflow files stored in the default location of `.github/workflows`
   - package-ecosystem: "github-actions"
     directory: "/"
